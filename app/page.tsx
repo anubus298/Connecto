@@ -1,7 +1,16 @@
+export const fetchCache = "force-no-store";
 import { cookies } from "next/headers";
 
+import { createClient } from "@/utils/supabase/server";
+import Main from "./components/main";
+
 export default async function Index() {
-  return (
-    <div className="flex flex-col items-center flex-1 w-full gap-20"></div>
-  );
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  let { data: profiles } = await supabase.from("profiles").select("*");
+
+  return <Main profile={profiles} user={user} />;
 }

@@ -92,7 +92,7 @@ const ageGreaterThan18Schema = z.string().refine(
     const age = today.getFullYear() - birthdate.getFullYear();
 
     // Check if the calculated age is greater than 18
-    return age > 18;
+    return age > 18 && age < 100;
   },
   {
     message: "User must be 18 years or older.",

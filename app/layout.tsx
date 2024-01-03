@@ -25,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={spaceGrotesk.className}>
       <body>
-        <main className="container grid min-h-screen grid-cols-12 gap-1 mx-auto">
+        <main className="grid min-h-screen grid-cols-12 gap-1 ">
           {children}
         </main>
       </body>

@@ -1,20 +1,35 @@
-import { createClient } from '@/utils/supabase/server'
-import { NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
+import { redirect } from "next/navigation";
+import { createClient } from "@/utils/supabase/server";
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 export async function GET(request: Request) {
-  // The `/auth/callback` route is required for the server-side auth flow implemented
-  // by the Auth Helpers package. It exchanges an auth code for the user's session.
-  // https://supabase.com/docs/guides/auth/auth-helpers/nextjs#managing-sign-in-with-code-exchange
-  const requestUrl = new URL(request.url)
-  const code = requestUrl.searchParams.get('code')
-
+  const requestUrl = new URL(request.url);
+  const code = requestUrl.searchParams.get("code");
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
   if (code) {
-    const cookieStore = cookies()
-    const supabase = createClient(cookieStore)
-    await supabase.auth.exchangeCodeForSession(code)
+    await supabase.auth.exchangeCodeForSession(code);
   }
-
-  // URL to redirect to after sign in process completes
-  return NextResponse.redirect(requestUrl.origin)
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { data: profile, error: profile_error } = await supabase
+    .from("profiles")
+    .select("is_first_initialised")
+    .eq("id", user?.id as string);
+  const { data: personal_info, error: personal_info_error } = await supabase
+    .from("personal_info")
+    .select("is_first_initialised")
+    .eq("id", user?.id as string);
+  if (personal_info_error) {
+    return redirect("/auth/signIn?error=1&message=Could not authenticate user");
+  }
+  if (!profile?.[0].is_first_initialised) {
+    return redirect("/constructors/newAccount");
+  } else if (!personal_info?.[0].is_first_initialised) {
+    return redirect("/constructors/finishAccount");
+  }
+  if (profile) return redirect("/?islogged");
+  return NextResponse.redirect(requestUrl.origin);
 }

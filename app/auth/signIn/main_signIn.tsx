@@ -18,8 +18,6 @@ function Main_signIn({ signIn, message, error }: Props) {
       {!isMobileScreen && (
         <div className="col-start-1 col-end-7 p-4 mt-10">
           <Image
-            items-center
-            justify-betweenge
             src={"/svg/boombox.svg"}
             alt="boombox cat"
             height={500}
@@ -62,16 +60,14 @@ function Main_signIn({ signIn, message, error }: Props) {
             <p>Sign Up</p>
             <FontAwesomeIcon icon={faArrowRightLong} />
           </Link>
-          {message && (
-            <p
-              className={
-                "p-4 mt-4 text-center " +
-                (error == "1" ? "text-red-600" : "text-primary")
-              }
-            >
-              {message} {error}
-            </p>
-          )}
+          <p
+            className={
+              "p-4 mt-4 text-center " +
+              (error == "1" ? "text-red-600" : "text-primary")
+            }
+          >
+            {message && message}
+          </p>
         </form>
       </div>
     </>
