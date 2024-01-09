@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
 import { emailSchema, passwordSchema } from "../../zod/schemas";
-export const signIn = async (formData: FormData) => {
+export const signInAction = async (formData: FormData) => {
   "use server";
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
@@ -38,13 +38,12 @@ export const signIn = async (formData: FormData) => {
     .from("personal_info")
     .select("is_first_initialised")
     .eq("id", user?.id as string);
-  if (personal_info_error) {
+  if (personal_info_error || profile_error) {
     return redirect("/auth/signIn?error=1&message=Could not authenticate user");
-  }
-  if (!profile?.[0].is_first_initialised) {
+  } else if (!profile?.[0].is_first_initialised) {
     return redirect("/constructors/newAccount");
   } else if (!personal_info?.[0].is_first_initialised) {
     return redirect("/constructors/finishAccount");
   }
-  if (profile) return redirect("/?islogged");
+  if (profile[0].is_first_initialised) return redirect("/");
 };

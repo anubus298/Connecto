@@ -16,7 +16,7 @@ function Main_signUp({ signUp, message, error }: Props) {
   return (
     <>
       {!isMobileScreen && (
-        <div className="col-start-1 col-end-7 p-4 mt-10">
+        <div className="flex items-center justify-center col-start-1 col-end-7 p-4 mt-10">
           <Image
             items-center
             justify-betweenge

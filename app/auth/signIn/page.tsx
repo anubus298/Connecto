@@ -1,4 +1,4 @@
-import { signIn } from "../../lib/functions/auth/signIn";
+import { signInAction } from "../../lib/functions/auth/signIn";
 import Main_signIn from "./main_signIn";
 
 export default function Login({
@@ -9,7 +9,7 @@ export default function Login({
   return (
     <Main_signIn
       error={searchParams?.error}
-      signIn={signIn}
+      signIn={signInAction}
       message={searchParams?.message}
     />
   );

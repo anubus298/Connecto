@@ -1,32 +1,38 @@
 "use client";
 
-import { Database } from "@/utils/supabase/supabase";
-import { SupabaseClient } from "@supabase/supabase-js";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import If_logged_bar from "./if_logged_bar";
 
 interface Props {
-  user: Database["public"]["Tables"]["profiles"]["Row"];
+  profile?: {
+    avatar_url: string | null;
+    username: string | null;
+  };
   avatar: string;
+  signOutAction: any;
 }
-function Primary_navbar({ user, avatar }: Props) {
-  const router = useRouter();
+function Primary_navbar({ profile, avatar, signOutAction }: Props) {
   return (
-    <div className="flex items-center justify-between col-span-12 px-4 py-3 border-b-2 text-dark border-dark h-fit">
+    <nav className="flex items-center justify-between col-span-12 px-8 py-3 bg-white border-b-2 select-none text-dark h-fit ">
       <div className="">
-        <p>logo here</p>
+        <Link href={"/"}>
+          <Image
+            height={50}
+            width={50}
+            src="/svg/logo_only_yellow_dark_stroke.svg"
+            alt="Connecto Logo"
+          />
+        </Link>
       </div>
-
-      <div className="flex items-center gap-2">
-        <div className="rounded-3xl flex justify-center items-center h-[30px] w-[30px] overflow-hidden">
-          <Image height={30} width={30} alt="avatar" src={avatar} />
-        </div>
-        {user?.username && <p className="font-semibold">{user.username}</p>}
-        <form action={"/auth/signOut"} method="post">
-          <button type="submit">sign out</button>
-        </form>
-      </div>
-    </div>
+      {profile && (
+        <If_logged_bar
+          avatar={avatar}
+          profile={profile}
+          signOutAction={signOutAction}
+        />
+      )}
+    </nav>
   );
 }
 

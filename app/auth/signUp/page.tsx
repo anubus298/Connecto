@@ -1,4 +1,4 @@
-import { signUp } from "../../lib/functions/auth/signUp";
+import { signUpAction } from "../../lib/functions/auth/signUp";
 import Main_signUp from "./main_signUp";
 
 export default function Login({
@@ -8,7 +8,7 @@ export default function Login({
 }) {
   return (
     <Main_signUp
-      signUp={signUp}
+      signUp={signUpAction}
       message={searchParams?.message}
       error={searchParams?.error}
     />

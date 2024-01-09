@@ -9,6 +9,113 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      comments: {
+        Row: {
+          comment_id: number
+          content: string | null
+          created_at: string
+          post_id: number | null
+          user_id: string | null
+        }
+        Insert: {
+          comment_id?: number
+          content?: string | null
+          created_at?: string
+          post_id?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          comment_id?: number
+          content?: string | null
+          created_at?: string
+          post_id?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      likes: {
+        Row: {
+          created_at: string
+          like_id: number
+          post_id: number | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          like_id?: number
+          post_id?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          like_id?: number
+          post_id?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      media: {
+        Row: {
+          created_at: string
+          id: number
+          "media_type ": string | null
+          media_url: string | null
+          post_id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          "media_type "?: string | null
+          media_url?: string | null
+          post_id: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          "media_type "?: string | null
+          media_url?: string | null
+          post_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       personal_info: {
         Row: {
           address: string | null
@@ -46,6 +153,47 @@ export interface Database {
             columns: ["id"]
             isOneToOne: true
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      posts: {
+        Row: {
+          comments_count: number | null
+          content: string | null
+          created_at: string
+          id: number
+          likes_count: number | null
+          media_url: string | null
+          shares_count: number | null
+          user_id: string | null
+        }
+        Insert: {
+          comments_count?: number | null
+          content?: string | null
+          created_at?: string
+          id?: number
+          likes_count?: number | null
+          media_url?: string | null
+          shares_count?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          comments_count?: number | null
+          content?: string | null
+          created_at?: string
+          id?: number
+          likes_count?: number | null
+          media_url?: string | null
+          shares_count?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
         ]

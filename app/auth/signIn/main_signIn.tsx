@@ -16,7 +16,7 @@ function Main_signIn({ signIn, message, error }: Props) {
   return (
     <>
       {!isMobileScreen && (
-        <div className="col-start-1 col-end-7 p-4 mt-10">
+        <div className="flex items-center justify-center col-start-1 col-end-7 p-4 mt-10 ite">
           <Image
             src={"/svg/boombox.svg"}
             alt="boombox cat"
@@ -26,7 +26,7 @@ function Main_signIn({ signIn, message, error }: Props) {
         </div>
       )}
       <div className="flex flex-col items-center justify-center col-span-12 gap-5 p-4 mt-10 md:col-start-7 md:col-end-12">
-        <h1 className="text-center h1 text-dark">Connect To Connecto</h1>
+        <h1 className="text-center h1 text-dark">Connect</h1>
         <form
           className="flex flex-col justify-center flex-1 gap-2 animate-in"
           action={signIn}

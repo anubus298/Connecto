@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { passwordSchema } from "../../zod/schemas";
 import { emailSchema } from "../../zod/schemas";
-export const signUp = async (formData: FormData) => {
+export const signUpAction = async (formData: FormData) => {
   "use server";
   const origin = headers().get("origin");
   const email = formData.get("email") as string;
