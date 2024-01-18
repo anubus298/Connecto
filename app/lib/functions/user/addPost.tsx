@@ -1,12 +1,13 @@
 import { cookies } from "next/headers";
-import { createClient } from "@/utils/supabase/server";
+
+import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
+import { revalidatePath } from "next/cache";
 
 export const postAction = async (formData: FormData) => {
   "use server";
   try {
     const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
-    await supabase.auth.refreshSession();
+    const supabase = createServerActionClient({ cookies });
     const content = formData.get("content") as string;
     const {
       data: { user },
@@ -18,4 +19,5 @@ export const postAction = async (formData: FormData) => {
   } catch (error: any) {
     return error.message;
   }
+  revalidatePath("/home");
 };

@@ -32,9 +32,19 @@ export default function RootLayout({ children }: Props) {
       <body>
         <AntdRegistry>
           <ConfigProvider
-            theme={{ token: { fontFamily: "var(--spaceGrotesk)" } }}
+            theme={{
+              token: {
+                fontFamily: "var(--spaceGrotesk)",
+                colorPrimary: "#ac47f5",
+              },
+              components: {
+                Menu: {
+                  itemBg: "#ffffff",
+                },
+              },
+            }}
           >
-            <main className="grid grid-cols-12 gap-1 bg-gray-100 ">
+            <main className="grid min-h-screen grid-cols-12 gap-1 bg-gray-100">
               {children}
             </main>
           </ConfigProvider>

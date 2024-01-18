@@ -15,21 +15,21 @@ export interface Database {
           content: string | null
           created_at: string
           post_id: number | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           comment_id?: number
           content?: string | null
           created_at?: string
           post_id?: number | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           comment_id?: number
           content?: string | null
           created_at?: string
           post_id?: number | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -43,6 +43,42 @@ export interface Database {
             foreignKeyName: "comments_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      comments_like: {
+        Row: {
+          comment_id: number
+          created_at: string
+          id: number
+          user_id: string
+        }
+        Insert: {
+          comment_id: number
+          created_at?: string
+          id?: number
+          user_id: string
+        }
+        Update: {
+          comment_id?: number
+          created_at?: string
+          id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_like_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["comment_id"]
+          },
+          {
+            foreignKeyName: "comments_like_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           }
@@ -52,20 +88,20 @@ export interface Database {
         Row: {
           created_at: string
           like_id: number
-          post_id: number | null
-          user_id: string | null
+          post_id: number
+          user_id: string
         }
         Insert: {
           created_at?: string
           like_id?: number
-          post_id?: number | null
-          user_id?: string | null
+          post_id: number
+          user_id: string
         }
         Update: {
           created_at?: string
           like_id?: number
-          post_id?: number | null
-          user_id?: string | null
+          post_id?: number
+          user_id?: string
         }
         Relationships: [
           {
@@ -201,6 +237,8 @@ export interface Database {
       profiles: {
         Row: {
           avatar_url: string | null
+          bio: string | null
+          cover_url: string | null
           id: string
           is_first_initialised: boolean
           updated_at: string | null
@@ -208,6 +246,8 @@ export interface Database {
         }
         Insert: {
           avatar_url?: string | null
+          bio?: string | null
+          cover_url?: string | null
           id: string
           is_first_initialised?: boolean
           updated_at?: string | null
@@ -215,6 +255,8 @@ export interface Database {
         }
         Update: {
           avatar_url?: string | null
+          bio?: string | null
+          cover_url?: string | null
           id?: string
           is_first_initialised?: boolean
           updated_at?: string | null

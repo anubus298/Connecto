@@ -1,13 +1,11 @@
 import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { Database } from "./utils/supabase/supabase";
 export const revalidate = 0;
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
   const supabase = createMiddlewareClient<Database>({ req, res });
-  await supabase.auth.getSession();
-
+  await supabase.auth.refreshSession();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -35,8 +33,7 @@ export async function middleware(req: NextRequest) {
       .eq("id", user.id as string);
     if (profile_error) {
       return NextResponse.redirect(new URL("/home", req.url));
-    }
-    if (!profile[0].is_first_initialised) {
+    } else if (!profile[0].is_first_initialised) {
       return res;
     } else {
       return NextResponse.redirect(new URL("/home", req.url));

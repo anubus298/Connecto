@@ -8,7 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { ConfigProvider, Dropdown, MenuProps } from "antd";
+import { Avatar, ConfigProvider, Dropdown, MenuProps } from "antd";
 import Link from "next/link";
 import React, { useRef } from "react";
 interface Props {
@@ -62,37 +62,34 @@ function If_logged_bar({ avatar, profile, signOutAction }: Props) {
     },
   ];
   return (
-    <ConfigProvider
-      theme={{
-        components: {
-          Menu: {
-            itemBg: "#ffffff",
-          },
-        },
-      }}
-    >
-      <div className="flex items-center gap-2">
-        {profile?.username && (
-          <Link href={"/user/profile"} className="font-semibold ">
-            {profile.username}
-          </Link>
-        )}
-        <div className="rounded-3xl me-5 flex justify-center items-center overflow-hidden size-[30px]">
-          <Image height={30} width={30} alt="avatar" src={avatar} />
-        </div>
-        <div className="flex items-center gap-2 me-6">
-          <FontAwesomeIcon icon={faEnvelope} />
-        </div>
-        <Dropdown
-          menu={{ items, onClick: handleFormClick }}
-          trigger={["click"]}
-        >
-          <button>
-            <FontAwesomeIcon icon={faBars} />
-          </button>
-        </Dropdown>
+    <div className="flex items-center gap-2">
+      {profile?.username && (
+        <Link href={"/home/profile"} className="font-semibold ">
+          {profile.username}
+        </Link>
+      )}
+      <Link href={"/home/profile"} className="font-semibold ">
+        <Avatar
+          shape="square"
+          src={
+            <Image
+              src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${profile?.avatar_url}`}
+              height={30}
+              width={30}
+              alt={"user avatar"}
+            />
+          }
+        />
+      </Link>
+      <div className="flex items-center gap-2 me-6">
+        <FontAwesomeIcon icon={faEnvelope} />
       </div>
-    </ConfigProvider>
+      <Dropdown menu={{ items, onClick: handleFormClick }} trigger={["click"]}>
+        <button>
+          <FontAwesomeIcon icon={faBars} />
+        </button>
+      </Dropdown>
+    </div>
   );
 }
 

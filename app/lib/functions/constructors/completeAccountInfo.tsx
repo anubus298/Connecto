@@ -1,4 +1,4 @@
-import { createClient } from "@/utils/supabase/server";
+import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import {
@@ -30,8 +30,7 @@ export const completeAccountInfoAction = async (formData: FormData) => {
       "/constructors/newAccount?message=age must be greater than 18"
     );
   }
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createServerActionClient({ cookies });
   const {
     data: { user },
   } = await supabase.auth.getUser();

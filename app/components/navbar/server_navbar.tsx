@@ -1,17 +1,18 @@
 import { signOutAction } from "@/app/lib/functions/auth/signOut";
-import { createClient } from "@/utils/supabase/server";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import Primary_navbar from "./primary_navbar";
-
+export const revalidate = 0;
 async function Server_Navbar() {
   const cookiesStore = cookies();
-  const supabase = createClient(cookiesStore);
-  await supabase.auth.getSession();
+  const supabase = createServerComponentClient({ cookies: () => cookiesStore });
+
   const {
     data: { user },
+    error: user_error,
   } = await supabase.auth.getUser();
 
-  const { data: profile } = await supabase
+  const { data: profile, error: profile_error } = await supabase
     .from("profiles")
     .select("avatar_url,username")
     .eq("id", user?.id as string);

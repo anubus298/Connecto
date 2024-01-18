@@ -1,15 +1,14 @@
-"use client";
-
 import { Database } from "@/utils/supabase/supabase";
 import Post from "./post";
 
 interface Props {
-  posts?: (Database["public"]["Tables"]["posts"]["Row"] & {
+  posts: (Database["public"]["Tables"]["posts"]["Row"] & {
     profiles: Database["public"]["Tables"]["profiles"]["Row"];
+    is_liked: boolean;
   })[];
-  incrementLikeAction: any;
+  user_id: string | undefined;
 }
-function Posts({ posts, incrementLikeAction }: Props) {
+function Posts({ posts, user_id }: Props) {
   return (
     <div className="flex flex-col gap-2">
       {posts?.map((post, index) => {
@@ -17,7 +16,7 @@ function Posts({ posts, incrementLikeAction }: Props) {
           <Post
             post={post}
             key={index + post.id}
-            incrementlike={incrementLikeAction}
+            is_self={post.user_id === user_id}
           />
         );
       })}

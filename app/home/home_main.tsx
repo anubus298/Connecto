@@ -8,17 +8,19 @@ interface Props {
     avatar_url: string | null;
     username: string | null;
   };
-  incrementLikeAction: any;
+  user_id: string | undefined;
   postAction: any;
   posts?: (Database["public"]["Tables"]["posts"]["Row"] & {
-    profiles: Database["public"]["Tables"]["profiles"]["Row"];
+    profiles: Database["public"]["Tables"]["profiles"]["Row"] & {
+      is_liked: boolean;
+    };
   })[];
 }
-function Home_main({ profile, postAction, posts, incrementLikeAction }: Props) {
+function Home_main({ profile, postAction, posts, user_id }: Props) {
   return (
     <div className="flex flex-col justify-center col-span-6">
       <Post_something avatar={profile?.avatar_url} postAction={postAction} />
-      <Posts posts={posts} incrementLikeAction={incrementLikeAction} />
+      <Posts posts={posts} user_id={user_id} />
     </div>
   );
 }

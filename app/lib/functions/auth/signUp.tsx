@@ -1,9 +1,10 @@
 import { headers, cookies } from "next/headers";
-import { createClient } from "@/utils/supabase/server";
+
 import { redirect } from "next/navigation";
 
 import { passwordSchema } from "../../zod/schemas";
 import { emailSchema } from "../../zod/schemas";
+import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 export const signUpAction = async (formData: FormData) => {
   "use server";
   const origin = headers().get("origin");
@@ -25,8 +26,7 @@ export const signUpAction = async (formData: FormData) => {
     return redirect("/auth/signUp?error=1&message=Invalid Email");
   }
 
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createServerActionClient({ cookies });
 
   const { error } = await supabase.auth.signUp({
     email,
