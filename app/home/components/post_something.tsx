@@ -1,6 +1,9 @@
 import { faImage, faPlus, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Avatar } from "antd";
+import { Avatar, Button } from "antd";
+// prettier-ignore
+//@ts-ignore
+import { useFormStatus } from "react-dom";
 import Image from "next/image";
 import { ChangeEvent, useRef, useState } from "react";
 interface Props {
@@ -12,14 +15,34 @@ function Post_something({ avatar, postAction }: Props) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
   const [imagePreviews, setImagePreviews] = useState<string[] | null>(null);
-
+  function SubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+      <Button
+        type="primary"
+        loading={pending}
+        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+          e.preventDefault();
+          e.currentTarget.form?.requestSubmit();
+          e.currentTarget.form?.reset();
+        }}
+        className="h-full text-white rounded-sm bg-primary"
+      >
+        Post
+      </Button>
+    );
+  }
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
 
     if (files) {
-      setSelectedFiles((prevFiles) =>
-        prevFiles ? [...Array.from(prevFiles), ...Array.from(files)] : files
-      );
+      // @ts-ignore
+      setSelectedFiles((prevFiles) => {
+        const updatedFiles = prevFiles
+          ? [...Array.from(prevFiles), ...Array.from(files)]
+          : Array.from(files);
+        return updatedFiles;
+      });
 
       const previews: string[] = [];
       const totalFiles = (selectedFiles?.length || 0) + files.length;
@@ -107,18 +130,14 @@ function Post_something({ avatar, postAction }: Props) {
           />
           <button>
             <FontAwesomeIcon
+              onClick={() => fileInputRef.current?.click()}
               icon={faImage}
               className="text-gray-400"
               size="lg"
             />
           </button>
         </div>
-        <button
-          type="submit"
-          className="p-1 px-3 text-white rounded-sm bg-primary"
-        >
-          Post
-        </button>
+        <SubmitButton />
       </form>
       {imagePreviews && (
         <div className="flex items-center gap-2">
@@ -144,13 +163,6 @@ function Post_something({ avatar, postAction }: Props) {
           ))}
         </div>
       )}
-
-      <FontAwesomeIcon
-        onClick={() => fileInputRef.current?.click()}
-        icon={faPlus}
-        size="2x"
-        className="cursor-pointer text-dark"
-      />
     </div>
   );
 }

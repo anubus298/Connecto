@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/utils/supabase/supabase";
+import { revalidatePath } from "next/cache";
 async function AddCommentAction(id: number, formData: FormData) {
   const supabase = createServerActionClient<Database>({ cookies });
   const content = (formData.get("content") as string) ?? "";

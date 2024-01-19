@@ -14,21 +14,27 @@ export interface Database {
           comment_id: number
           content: string | null
           created_at: string
+          likes_count: number
           post_id: number | null
+          replies_count: number
           user_id: string
         }
         Insert: {
           comment_id?: number
           content?: string | null
           created_at?: string
+          likes_count?: number
           post_id?: number | null
+          replies_count?: number
           user_id: string
         }
         Update: {
           comment_id?: number
           content?: string | null
           created_at?: string
+          likes_count?: number
           post_id?: number | null
+          replies_count?: number
           user_id?: string
         }
         Relationships: [
@@ -80,6 +86,58 @@ export interface Database {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      friends: {
+        Row: {
+          action_timestamp: string | null
+          action_user_id: string
+          created_at: string
+          friendship_id: number
+          status: string
+          user_id_1: string
+          user_id_2: string
+        }
+        Insert: {
+          action_timestamp?: string | null
+          action_user_id: string
+          created_at?: string
+          friendship_id?: number
+          status: string
+          user_id_1: string
+          user_id_2: string
+        }
+        Update: {
+          action_timestamp?: string | null
+          action_user_id?: string
+          created_at?: string
+          friendship_id?: number
+          status?: string
+          user_id_1?: string
+          user_id_2?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "friends_action_user_id_fkey"
+            columns: ["action_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "friends_user_id_1_fkey"
+            columns: ["user_id_1"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "friends_user_id_2_fkey"
+            columns: ["user_id_2"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
         ]
@@ -239,6 +297,7 @@ export interface Database {
           avatar_url: string | null
           bio: string | null
           cover_url: string | null
+          friends_count: number
           id: string
           is_first_initialised: boolean
           updated_at: string | null
@@ -248,6 +307,7 @@ export interface Database {
           avatar_url?: string | null
           bio?: string | null
           cover_url?: string | null
+          friends_count?: number
           id: string
           is_first_initialised?: boolean
           updated_at?: string | null
@@ -257,6 +317,7 @@ export interface Database {
           avatar_url?: string | null
           bio?: string | null
           cover_url?: string | null
+          friends_count?: number
           id?: string
           is_first_initialised?: boolean
           updated_at?: string | null

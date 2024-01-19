@@ -1,8 +1,9 @@
 "use server";
 import { cookies } from "next/headers";
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/utils/supabase/supabase";
 async function incrementLikeAction(id: number) {
-  const supabase = createServerActionClient({ cookies });
+  const supabase = createServerActionClient<Database>({ cookies });
   const {
     data: { user },
   } = await supabase.auth.getUser();

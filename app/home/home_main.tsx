@@ -8,17 +8,17 @@ interface Props {
     avatar_url: string | null;
     username: string | null;
   };
-  user_id: string | undefined;
+  user_id: string | null;
   postAction: any;
-  posts?: (Database["public"]["Tables"]["posts"]["Row"] & {
-    profiles: Database["public"]["Tables"]["profiles"]["Row"] & {
-      is_liked: boolean;
-    };
+  posts: (Database["public"]["Tables"]["posts"]["Row"] & {
+    profiles: Database["public"]["Tables"]["profiles"]["Row"];
+    is_liked: boolean;
+    is_self: boolean;
   })[];
 }
 function Home_main({ profile, postAction, posts, user_id }: Props) {
   return (
-    <div className="flex flex-col justify-center col-span-6">
+    <div className="flex flex-col justify-center col-span-12 mx-2 sm:col-span-8 md:col-span-6 sm:mx-0">
       <Post_something avatar={profile?.avatar_url} postAction={postAction} />
       <Posts posts={posts} user_id={user_id} />
     </div>

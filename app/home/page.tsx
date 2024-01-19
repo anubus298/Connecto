@@ -47,7 +47,7 @@ async function Page() {
       <Left_home_panel />
       <Home_main
         posts={posts_data}
-        user_id={user?.id}
+        user_id={user?.id ?? null}
         profile={profile?.[0]}
         postAction={postAction}
       />

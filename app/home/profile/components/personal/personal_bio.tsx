@@ -11,7 +11,7 @@ function Personal_bio({ bio }: { bio: string | null }) {
   return (
     <div className="flex justify-center ">
       <div
-        className="relative px-2 py-1 bg-gray-200 rounded-sm w-[280px]"
+        className="relative px-2 py-1 bg-white rounded-sm w-[280px]"
         onMouseOver={() => setis_hovered_over_bio(true)}
         onMouseLeave={() => setis_hovered_over_bio(false)}
       >

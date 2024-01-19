@@ -5,8 +5,9 @@ interface Props {
   posts: (Database["public"]["Tables"]["posts"]["Row"] & {
     profiles: Database["public"]["Tables"]["profiles"]["Row"];
     is_liked: boolean;
+    is_self: boolean;
   })[];
-  user_id: string | undefined;
+  user_id: string | null;
 }
 function Posts({ posts, user_id }: Props) {
   return (

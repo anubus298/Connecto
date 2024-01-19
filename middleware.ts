@@ -5,7 +5,7 @@ export const revalidate = 0;
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
   const supabase = createMiddlewareClient<Database>({ req, res });
-  await supabase.auth.refreshSession();
+  await supabase.auth.getSession();
   const {
     data: { user },
   } = await supabase.auth.getUser();

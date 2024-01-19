@@ -1,6 +1,6 @@
 "use client";
 
-import incrementLikeAction from "@/app/lib/functions/user/incrementlike";
+import incrementLikeAction from "@/app/lib/functions/user/post/incrementlike";
 import { Avatar, Dropdown, MenuProps, Modal } from "antd";
 import decrementLikeAction from "@/app/lib/functions/user/post/decrementlike";
 import { Database } from "@/utils/supabase/supabase";
@@ -21,36 +21,28 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import deletePostAction from "@/app/lib/functions/user/post/deletePost";
-import AddCommentAction from "@/app/lib/functions/user/post/addComment";
+import Post_modal from "./post_modal";
+import Link from "next/link";
 
 interface Props {
   post: Database["public"]["Tables"]["posts"]["Row"] & {
     profiles: Database["public"]["Tables"]["profiles"]["Row"];
     is_liked: boolean;
+    is_self: boolean;
   };
   is_self: boolean;
 }
 function Post({ post, is_self }: Props) {
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+  const [is_deleting_post_pending, setis_deleting_post_pending] =
+    useState(false);
   const date = new Date(post.created_at);
-  const AddCommentActionBind = AddCommentAction.bind(null, post.id);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [postContent, setPostContent] = useState<string | undefined>(
     post.content?.slice(0, 150)
   );
   const [isPostContentCut, setisPostContentCut] = useState(true);
-
-  const [isModalPostContentCut, setisModalPostContentCut] = useState(true);
-  const [ModalpostContent, setModalPostContent] = useState<string | undefined>(
-    post.content?.slice(0, 50)
-  );
   const [formattedDate, setFormattedDate] = useState("");
-  const [comments, setComments] = useState<
-    (Database["public"]["Tables"]["comments"]["Row"] & {
-      profiles: Database["public"]["Tables"]["profiles"]["Row"];
-    })[]
-  >([]);
-
-  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const handleDropDownClick: MenuProps["onClick"] = async ({ key }) => {
     if (key == "2") {
       setIsDeleteModalOpen(true);
@@ -92,8 +84,10 @@ function Post({ post, is_self }: Props) {
     ];
   }
   const [likes_count, setlikes_count] = useState<number>(post.likes_count ?? 0);
+  const [comments_count, setcomments_count] = useState<number>(
+    post.comments_count ?? 0
+  );
   const [is_liked, setis_liked] = useState(post.is_liked);
-
   async function handle_like_click() {
     if (is_liked) {
       setlikes_count(likes_count - 1);
@@ -105,6 +99,7 @@ function Post({ post, is_self }: Props) {
       await incrementLikeAction(post.id);
     }
   }
+
   useEffect(() => {
     setFormattedDate(
       new Intl.DateTimeFormat("en-US", {
@@ -116,25 +111,21 @@ function Post({ post, is_self }: Props) {
       }).format(date)
     );
   }, []);
-  useEffect(() => {
-    function getComments() {
-      fetch(`/api/post/getComments?id=${post.id}`, { method: "GET" })
-        .then((res) => res.json())
-        .then((data) => setComments(data.data));
-    }
-    if (isPostModalOpen) {
-      getComments();
-    }
-  }, [isPostModalOpen]);
   return (
     <div className="flex flex-col gap-6 p-3 bg-white">
+      {/* delete post modal */}
       <Modal
         title="Delete post"
         centered
         open={isDeleteModalOpen}
+        okButtonProps={{
+          loading: is_deleting_post_pending,
+        }}
         onOk={async () => {
+          setis_deleting_post_pending(true);
           await deletePostAction(post.id);
           setIsDeleteModalOpen(false);
+          setis_deleting_post_pending(false);
         }}
         onCancel={() => setIsDeleteModalOpen(false)}
       >
@@ -143,22 +134,29 @@ function Post({ post, is_self }: Props) {
           undone
         </p>
       </Modal>
-      <Modal
-        width={"60vw"}
-        open={isPostModalOpen}
-        centered
-        onCancel={() => setIsPostModalOpen(false)}
-        closeIcon={false}
-        footer={null}
-      >
-        <div className="grid grid-cols-12 min-h-[400px] gap-2">
-          <div className="col-span-6">imgs</div>
-          <div className="grid content-start grid-cols-12 col-span-6 gap-x-[15px] gap-y-6">
-            {/* modal post */}
-            {post.profiles.avatar_url && (
-              <>
+      {/* post modal */}
+      <Post_modal
+        setcomments_count={setcomments_count}
+        comments_count={comments_count}
+        post={post}
+        dropDownItems={items}
+        handleDropDownClick={handleDropDownClick}
+        isPostModalOpen={isPostModalOpen}
+        setIsPostModalOpen={setIsPostModalOpen}
+      />
+      {/*real post*/}
+      <div className="flex items-center justify-between">
+        <div className="">
+          {post.profiles.avatar_url && (
+            <div className="flex items-center gap-2">
+              <Link
+                className="col-span-1"
+                href={
+                  is_self ? "/home/profile" : `/home/profile?id=${post.user_id}`
+                }
+              >
                 <Avatar
-                  className="col-span-1 place-self-center"
+                  className=" "
                   shape="square"
                   src={
                     <Image
@@ -169,123 +167,18 @@ function Post({ post, is_self }: Props) {
                     />
                   }
                 />
-
-                <div className="flex flex-col col-span-10">
-                  <p className="text-sm font-semibold">
-                    {post.profiles.username}
-                  </p>
-                  <p className="max-h-[100px] overflow-y-auto">
-                    {ModalpostContent}
-                    {(post.content?.length as number) > 50 && (
-                      <span
-                        className="text-sm cursor-pointer text-blue-950"
-                        onClick={() => {
-                          if (isModalPostContentCut) {
-                            setModalPostContent(post.content as string);
-                            setisModalPostContentCut(false);
-                          } else {
-                            setModalPostContent(
-                              post.content?.slice(0, 50) as string
-                            );
-                            setisModalPostContentCut(true);
-                          }
-                        }}
-                      >
-                        {isModalPostContentCut ? "...more" : "...less"}
-                      </span>
-                    )}
-                  </p>
-                </div>
-                <div className="col-span-1 ">
-                  <Dropdown
-                    menu={{ items, onClick: handleDropDownClick }}
-                    trigger={["click"]}
-                    placement="bottomRight"
-                  >
-                    <button>
-                      <FontAwesomeIcon icon={faEllipsisV} className="text-lg" />
-                    </button>
-                  </Dropdown>
-                </div>
-                <div className="h-[1px] col-span-12 bg-dark"></div>
-              </>
-            )}
-            {/* comments */}
-            {comments &&
-              comments?.map((comment, index) => {
-                return (
-                  <>
-                    {comment.profiles.avatar_url && (
-                      <Avatar
-                        className="col-span-1 place-self-center"
-                        shape="square"
-                        key={comment.comment_id * 100 + index + 1}
-                        src={
-                          <Image
-                            src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${comment.profiles.avatar_url}`}
-                            height={30}
-                            width={30}
-                            alt={comment.profiles.username + " avatar"}
-                          />
-                        }
-                      />
-                    )}
-
-                    <div className="flex flex-col col-span-11">
-                      <p className="text-sm font-semibold">
-                        {comment.profiles.username}
-                      </p>
-                      <p className="" key={comment.comment_id * 100 + index}>
-                        {comment.content}
-                      </p>
-                    </div>
-                  </>
-                );
-              })}
-          </div>
-          <div className="grid content-end grid-cols-12 col-span-12 gap-x-2 gap-y-6">
-            <div className="self-end col-span-12">
-              <form action={AddCommentActionBind}>
-                <div className="flex ">
-                  <input
-                    name="content"
-                    type={"text"}
-                    placeholder="Add a Comment"
-                    className="w-full px-4 py-4 bg-gray-200 focus-visible:outline-none"
-                  />
-                  <button
-                    type="submit"
-                    className="p-2 px-10 text-white rounded-sm bg-primary"
-                  >
-                    Add
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </Modal>
-      {/*real post*/}
-      <div className="flex items-center justify-between">
-        <div className="">
-          {post.profiles.avatar_url && (
-            <div className="flex items-center gap-2">
-              <Avatar
-                className="col-span-1"
-                shape="square"
-                src={
-                  <Image
-                    src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${post.profiles.avatar_url}`}
-                    height={30}
-                    width={30}
-                    alt={post.profiles.username + " avatar"}
-                  />
-                }
-              />
+              </Link>
               <div className="flex flex-col">
-                <p className="text-sm font-semibold">
+                <Link
+                  href={
+                    is_self
+                      ? "/home/profile"
+                      : `/home/profile?id=${post.user_id}`
+                  }
+                  className="text-sm font-semibold"
+                >
                   {post.profiles.username}
-                </p>
+                </Link>
                 <p className="text-xs text-gray-400">{formattedDate}</p>
               </div>
             </div>
@@ -337,7 +230,7 @@ function Post({ post, is_self }: Props) {
           className="flex items-center gap-2 p-2 bg-gray-100 rounded-md"
         >
           <FontAwesomeIcon icon={faComment} />
-          <p className="text-sm">{post.comments_count} Comments</p>
+          <p className="text-sm">{comments_count} Comments</p>
         </button>
         <button className="flex items-center gap-2 p-2 bg-gray-100 rounded-md">
           <FontAwesomeIcon icon={faShareFromSquare} />

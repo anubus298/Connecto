@@ -31,7 +31,7 @@ function If_logged_bar({ avatar, profile, signOutAction }: Props) {
     {
       key: "1",
       label: (
-        <div className="flex items-center gap-2 text-dark">
+        <div className="flex items-center gap-2 text-primary">
           <FontAwesomeIcon icon={faUser} />
           <p>Profile</p>
         </div>
@@ -41,7 +41,7 @@ function If_logged_bar({ avatar, profile, signOutAction }: Props) {
     {
       key: "3",
       label: (
-        <div className="flex items-center gap-2 text-dark">
+        <div className="flex items-center gap-2 text-primary">
           <FontAwesomeIcon icon={faGear} />
           <p>Settings</p>
         </div>
@@ -53,7 +53,7 @@ function If_logged_bar({ avatar, profile, signOutAction }: Props) {
         <form
           ref={formRef}
           action={signOutAction}
-          className="flex items-center gap-2 text-dark"
+          className="flex items-center gap-2 text-primary"
         >
           <FontAwesomeIcon icon={faRightFromBracket} />
           <button className="">Sign Out</button>
@@ -81,12 +81,12 @@ function If_logged_bar({ avatar, profile, signOutAction }: Props) {
           }
         />
       </Link>
-      <div className="flex items-center gap-2 me-6">
+      <div className="flex items-center gap-2 me-6 text-primary">
         <FontAwesomeIcon icon={faEnvelope} />
       </div>
       <Dropdown menu={{ items, onClick: handleFormClick }} trigger={["click"]}>
         <button>
-          <FontAwesomeIcon icon={faBars} />
+          <FontAwesomeIcon icon={faBars} className="text-primary" />
         </button>
       </Dropdown>
     </div>

@@ -1,15 +1,13 @@
 "use client";
 import { updateCoverAction } from "@/app/lib/functions/user/profile/updateCover";
 import { Database } from "@/utils/supabase/supabase";
-import { faPeace, faPen, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Avatar, Button } from "antd";
 import Image from "next/image";
 import React, { ChangeEvent, useRef, useState } from "react";
 interface Props {
   profile: Database["public"]["Tables"]["profiles"]["Row"];
 }
-function Cover({ profile }: Props) {
+function Personal_cover({ profile }: Props) {
   const fileInputRed = useRef<HTMLInputElement | null>(null);
   const [selectedFile, setselectedFile] = useState<File | null>(null);
   const [current_cover_url, setcurrent_cover_url] = useState(profile.cover_url);
@@ -96,7 +94,7 @@ function Cover({ profile }: Props) {
 
       <div className="absolute z-20 flex flex-col items-center -translate-x-1/2 -bottom-8 left-1/2">
         <Avatar
-          className=""
+          className="border-white border-2"
           shape="square"
           size={"large"}
           src={
@@ -113,4 +111,4 @@ function Cover({ profile }: Props) {
   );
 }
 
-export default Cover;
+export default Personal_cover;
