@@ -32,7 +32,7 @@ export const finishAccountAction = async (formData: FormData) => {
       .eq("id", user?.id);
     if (error) {
       return redirect(
-        "/constructors/finishAccount?message=error accrued : " + error.message
+        "/constructors/finishAccount?message=error accrued : " + error.details
       );
     }
   } else {

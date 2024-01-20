@@ -1,13 +1,38 @@
 "use client";
 import React, { ChangeEvent, useState } from "react";
+//prettier-ignore
+//@ts-ignore
+import { useFormStatus } from "react-dom";
 import addBioAction from "@/app/lib/functions/user/profile/addBio";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "antd";
 function Personal_bio({ bio }: { bio: string | null }) {
   const [is_edit_bio, setis_edit_bio] = useState(false);
+  const [is_setting_bio_pending, setis_setting_bio_pending] = useState(false);
   const [current_bio, setcurrent_bio] = useState(bio);
   const [is_hovered_over_bio, setis_hovered_over_bio] = useState(false);
+  function SubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+      <Button
+        loading={pending}
+        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+          if (!is_edit_bio) {
+            setis_edit_bio(true);
+          } else {
+            e.preventDefault();
+            e.currentTarget.form?.requestSubmit();
+            setis_edit_bio(false);
+          }
+        }}
+        type="default"
+        block
+      >
+        {is_edit_bio ? "save" : "Add a bio"}
+      </Button>
+    );
+  }
   return (
     <div className="flex justify-center ">
       <div
@@ -41,21 +66,7 @@ function Personal_bio({ bio }: { bio: string | null }) {
                 }}
               />
             )}
-            <Button
-              block
-              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                if (!is_edit_bio) {
-                  setis_edit_bio(true);
-                } else {
-                  e.preventDefault();
-                  e.currentTarget.form?.requestSubmit();
-                  setis_edit_bio(false);
-                }
-              }}
-              type="default"
-            >
-              {is_edit_bio ? "save" : "Add a bio"}
-            </Button>
+            <SubmitButton />
           </form>
         )}
       </div>

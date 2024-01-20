@@ -1,27 +1,37 @@
 "use client";
 
-import { faEllipsisV, faLeftLong } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faArrowRight,
+  faEllipsisV,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AddCommentAction from "@/app/lib/functions/user/post/addComment";
 import { Database } from "@/utils/supabase/supabase";
-import { Avatar, Button, Dropdown, MenuProps, Modal } from "antd";
+import { Avatar, Button, Carousel, Dropdown, MenuProps, Modal } from "antd";
 import Image from "next/image";
 import React, {
   Dispatch,
-  FormEvent,
   SetStateAction,
-  Suspense,
   useEffect,
+  useRef,
   useState,
 } from "react";
-import Comment from "./comment";
+//prettier-ignore
+//@ts-ignore
 import { useFormStatus } from "react-dom";
+import Comment from "./comment";
 import Suspense_comments from "./suspense/suspense_comments";
 import Link from "next/link";
+import { CarouselRef } from "antd/es/carousel";
 
 interface Props {
   post: Database["public"]["Tables"]["posts"]["Row"] & {
-    profiles: Database["public"]["Tables"]["profiles"]["Row"];
+    profiles: {
+      avatar_url: string | null;
+      username: string;
+      id: number;
+    };
     is_liked: boolean;
     is_self: boolean;
   };
@@ -42,8 +52,16 @@ function Post_modal({
   comments_count,
   setcomments_count,
 }: Props) {
+  const baseUrl: string | undefined = post?.media_url?.slice(
+    0,
+    post.media_url.lastIndexOf("/") + 1
+  );
+  const assets_count: number =
+    post.media_url
+      ?.slice(post.media_url.lastIndexOf("/") + 1, post.media_url.length ?? 0)
+      .split(",").length ?? 1;
   const [isModalPostContentCut, setisModalPostContentCut] = useState(true);
-  const [doneFetching, setdoneFetching] = useState(false);
+  const [doneFetching, setDoneFetching] = useState(false);
   const [should_refresh, setShould_refresh] = useState(false);
   const [ModalpostContent, setModalPostContent] = useState<string | undefined>(
     post.content?.slice(0, 50)
@@ -56,15 +74,15 @@ function Post_modal({
       is_self: boolean;
     })[]
   >([]);
-
+  const CarouselRef = useRef<CarouselRef>(null);
   useEffect(() => {
     function getComments() {
-      setdoneFetching(false);
+      setDoneFetching(false);
       fetch(`/api/post/getComments?id=${post.id}`, { method: "GET" })
         .then((res) => res.json())
         .then((data) => {
           setComments(data.data);
-          setdoneFetching(true);
+          setDoneFetching(true);
         });
     }
     if (isPostModalOpen) {
@@ -84,13 +102,13 @@ function Post_modal({
       <Button
         type="primary"
         loading={pending}
+        className="w-2/12 h-full p-2 rounded-l-none rounded-r-sm"
         onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
           e.preventDefault();
           e.currentTarget.form?.requestSubmit();
           e.currentTarget.form?.reset();
           setcomments_count(comments_count + 1);
         }}
-        className="h-full p-2 px-10 text-white rounded-sm bg-primary"
       >
         Comment
       </Button>
@@ -106,11 +124,59 @@ function Post_modal({
       closeIcon={false}
       footer={null}
     >
-      <div className="grid grid-cols-12 min-h-[400px] gap-2 ">
-        <div className="grid col-span-6 place-content-center">
-          <p>imgs</p>
+      <div className="grid grid-cols-12 overflow-hidden min-h-[400px] gap-2 ">
+        <div className="relative col-span-6 h-[85vh] overflow-hidden bg-gray-100 rounded-md">
+          {post.media_url && (
+            <div className="w-full h-full">
+              <Carousel
+                infinite={false}
+                className="w-full h-full"
+                ref={CarouselRef}
+                dots={false}
+              >
+                {post.media_url
+                  .slice(
+                    post.media_url.lastIndexOf("/") + 1,
+                    post.media_url.length
+                  )
+                  .split(",")
+                  .map((img_src, index) => {
+                    return (
+                      <div
+                        className="flex items-center justify-center w-full h-[85vh]"
+                        key={img_src + index * 11}
+                      >
+                        <Image
+                          src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
+                          key={img_src + index}
+                          height={300}
+                          alt={`post asset number ${index + 1}`}
+                          width={350}
+                        />
+                      </div>
+                    );
+                  })}
+              </Carousel>
+              {assets_count > 1 && (
+                <>
+                  <button
+                    className="absolute bottom-0 right-0 flex items-center justify-center p-1 m-2 text-white rounded-md bg-primary size-6"
+                    onClick={() => CarouselRef.current?.next()}
+                  >
+                    <FontAwesomeIcon icon={faArrowRight} />
+                  </button>
+                  <button
+                    className="absolute bottom-0 left-0 flex items-center justify-center p-1 m-2 text-white rounded-md bg-primary size-6"
+                    onClick={() => CarouselRef.current?.prev()}
+                  >
+                    <FontAwesomeIcon icon={faArrowLeft} />
+                  </button>
+                </>
+              )}
+            </div>
+          )}
         </div>
-        <div className="grid grid-cols-12 col-span-6">
+        <div className="grid grid-cols-12 col-span-6 h-[85vh]">
           {/* the post */}
           <div className="grid col-span-12 grid-cols-12 gap-x-[15px] gap-y-2 content-start ">
             {post.profiles.avatar_url && (
@@ -187,7 +253,7 @@ function Post_modal({
             )}
           </div>
           {/* comments */}
-          <div className="grid col-span-12 grid-cols-12 gap-x-[15px] gap-y-2 content-start overflow-y-scroll box-content h-[60vh] hide-scrollbar">
+          <div className="grid mt-4 col-span-12 grid-cols-12 gap-x-[15px] gap-y-2 content-start overflow-y-scroll box-content h-[60vh] hide-scrollbar">
             {comments &&
               comments?.map((comment, index) => {
                 return (
@@ -206,7 +272,7 @@ function Post_modal({
               <Suspense_comments count={comments_count} />
             )}
             {doneFetching && comments.length === 0 && (
-              <p className="col-span-12 text-center text-gray-400 mt-14">
+              <p className="col-span-12 mt-20 text-lg text-center text-gray-400">
                 Be the First to comment
               </p>
             )}
@@ -214,24 +280,22 @@ function Post_modal({
         </div>
         <div className="grid content-end grid-cols-12 col-span-12 gap-x-2 gap-y-6">
           <div className="self-end col-span-12">
-            <form action={AddCommentActionBind}>
-              <div className="flex ">
-                <input
-                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      e.currentTarget.form?.requestSubmit();
-                      e.currentTarget.form?.reset();
-                      setcomments_count(comments_count + 1);
-                    }
-                  }}
-                  name="content"
-                  type={"text"}
-                  placeholder="Add a Comment"
-                  className="w-full px-2 py-2 bg-gray-200 focus-visible:outline-none"
-                />
-                <SubmitButton />
-              </div>
+            <form action={AddCommentActionBind} className="">
+              <input
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    e.currentTarget.form?.requestSubmit();
+                    e.currentTarget.form?.reset();
+                    setcomments_count(comments_count + 1);
+                  }
+                }}
+                name="content"
+                type={"text"}
+                placeholder="Add a Comment"
+                className="w-10/12 p-2 bg-gray-200 focus-visible:outline-none"
+              />
+              <SubmitButton />
             </form>
           </div>
         </div>

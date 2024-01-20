@@ -41,9 +41,9 @@ export const signInAction = async (formData: FormData) => {
     .eq("id", user?.id as string);
   if (personal_info_error || profile_error) {
     return redirect("/auth/signIn?error=1&message=Could not authenticate user");
-  } else if (!profile?.[0].is_first_initialised) {
-    return redirect("/constructors/newAccount");
   } else if (!personal_info?.[0].is_first_initialised) {
+    return redirect("/constructors/newAccount");
+  } else if (!profile?.[0].is_first_initialised) {
     return redirect("/constructors/finishAccount");
   }
   if (profile[0].is_first_initialised) return redirect("/");

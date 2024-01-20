@@ -1,5 +1,8 @@
 "use client";
-
+//prettier-ignore
+//@ts-ignore
+import { useFormStatus } from "react-dom";
+import { Button } from "antd";
 import { faPen, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
@@ -30,7 +33,23 @@ function Main_finishAccount({ action, message }: Props) {
       setImagePreview(null);
     }
   };
-
+  function SubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+      <Button
+        type="primary"
+        loading={pending}
+        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+          e.preventDefault();
+          e.currentTarget.form?.requestSubmit();
+        }}
+        className=" text-white rounded-sm bg-primary"
+        block
+      >
+        Finish
+      </Button>
+    );
+  }
   return (
     <div className="grid w-full grid-cols-12 col-span-12">
       <div className="flex flex-col items-center col-start-5 col-end-9 gap-6 my-auto">
@@ -69,9 +88,7 @@ function Main_finishAccount({ action, message }: Props) {
             placeholder="username"
             name="username"
           />
-          <button className="px-4 py-2 mb-2 text-white rounded-sm bg-primary text-foreground">
-            Finish
-          </button>
+          <SubmitButton />
           <p className="text-center text-red-600">{message}</p>
         </form>
       </div>

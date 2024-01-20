@@ -1,3 +1,4 @@
+import { postAction } from "@/app/lib/functions/user/post/addPost";
 import { Database } from "@/utils/supabase/supabase";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 
@@ -64,7 +65,39 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
       .eq("id", id as string);
     return profile;
   }
-
+  async function getUserPosts(user_id?: string) {
+    if (!user_id) return null;
+    const { data: posts, error: error } = await supabase
+      .from("posts")
+      .select("*,profiles(*),posts(*)")
+      .eq("user_id", user_id)
+      .order("created_at", { ascending: false });
+    const posts_data = await Promise.all(
+      (posts || []).map(async (post) => {
+        try {
+          let {
+            data: like_related_to_post,
+            error: like_related_to_post_error,
+          } = await supabase
+            .from("likes")
+            .select()
+            .eq("user_id", user!.id)
+            .eq("post_id", post.id);
+          return {
+            ...post,
+            is_liked: like_related_to_post?.length === 1,
+          };
+        } catch (error) {
+          return {
+            ...post,
+            is_liked: false,
+          };
+        }
+      })
+    );
+    return posts_data;
+  }
+  const posts: any = await getUserPosts(searchParams?.id ?? user?.id);
   if (!searchParams.id) {
     const {
       profile,
@@ -75,7 +108,10 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
     return (
       profile && (
         <Main_profile
+          posts={posts}
+          postAction={postAction}
           profile={profile[0]}
+          self_id={user?.id}
           friends={friends}
           personal_info={personal_info?.[0]}
           is_other={false}
@@ -87,6 +123,9 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
     return (
       otherProfile && (
         <Main_profile
+          posts={posts}
+          postAction={postAction}
+          self_id={user?.id}
           friends={null}
           profile={otherProfile[0]}
           is_other={true}

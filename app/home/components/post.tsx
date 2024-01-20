@@ -1,9 +1,15 @@
 "use client";
 
 import incrementLikeAction from "@/app/lib/functions/user/post/incrementlike";
-import { Avatar, Dropdown, MenuProps, Modal } from "antd";
+import {
+  Avatar,
+  Carousel,
+  ConfigProvider,
+  Dropdown,
+  MenuProps,
+  Modal,
+} from "antd";
 import decrementLikeAction from "@/app/lib/functions/user/post/decrementlike";
-import { Database } from "@/utils/supabase/supabase";
 
 import {
   faHeart,
@@ -11,6 +17,8 @@ import {
   faShareFromSquare,
 } from "@fortawesome/free-regular-svg-icons";
 import {
+  faArrowLeft,
+  faArrowRight,
   faFlag,
   faHeart as faHeartSolid,
   faPen,
@@ -19,21 +27,32 @@ import {
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import deletePostAction from "@/app/lib/functions/user/post/deletePost";
 import Post_modal from "./post_modal";
 import Link from "next/link";
+import { CarouselRef } from "antd/es/carousel";
+import shareToProfileAction from "@/app/lib/functions/user/post/shareToProfile";
+import { Post } from "../home_main";
+import Asset_modal from "./asset_modal";
 
 interface Props {
-  post: Database["public"]["Tables"]["posts"]["Row"] & {
-    profiles: Database["public"]["Tables"]["profiles"]["Row"];
-    is_liked: boolean;
-    is_self: boolean;
-  };
+  post: Post;
   is_self: boolean;
+  show_share?: boolean;
 }
-function Post({ post, is_self }: Props) {
+function Post({ post, is_self, show_share = true }: Props) {
+  const CarouselRef = useRef<CarouselRef>(null);
+  const baseUrl: string | undefined = post?.media_url?.slice(
+    0,
+    post.media_url.lastIndexOf("/") + 1
+  );
+  const assets_count: number =
+    post.media_url
+      ?.slice(post.media_url.lastIndexOf("/") + 1, post.media_url.length ?? 0)
+      .split(",").length ?? 1;
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+  const [isAssetsModalOpen, setIsAssetsModalOpen] = useState(false);
   const [is_deleting_post_pending, setis_deleting_post_pending] =
     useState(false);
   const date = new Date(post.created_at);
@@ -99,7 +118,6 @@ function Post({ post, is_self }: Props) {
       await incrementLikeAction(post.id);
     }
   }
-
   useEffect(() => {
     setFormattedDate(
       new Intl.DateTimeFormat("en-US", {
@@ -112,7 +130,7 @@ function Post({ post, is_self }: Props) {
     );
   }, []);
   return (
-    <div className="flex flex-col gap-6 p-3 bg-white">
+    <div className="flex flex-col gap-6 p-3 bg-white rounded-md">
       {/* delete post modal */}
       <Modal
         title="Delete post"
@@ -134,6 +152,16 @@ function Post({ post, is_self }: Props) {
           undone
         </p>
       </Modal>
+      {/* assets post modal */}
+      {post.media_url && (
+        <Asset_modal
+          CarouselRef={CarouselRef}
+          assets_count={assets_count}
+          post={post}
+          isAssetsModalOpen={isAssetsModalOpen}
+          setIsAssetsModalOpen={setIsAssetsModalOpen}
+        />
+      )}
       {/* post modal */}
       <Post_modal
         setcomments_count={setcomments_count}
@@ -156,7 +184,7 @@ function Post({ post, is_self }: Props) {
                 }
               >
                 <Avatar
-                  className=" "
+                  className=""
                   shape="square"
                   src={
                     <Image
@@ -177,7 +205,8 @@ function Post({ post, is_self }: Props) {
                   }
                   className="text-sm font-semibold"
                 >
-                  {post.profiles.username}
+                  {post.profiles.username}{" "}
+                  {<span>{decide_poster_action(post.type)}</span>}
                 </Link>
                 <p className="text-xs text-gray-400">{formattedDate}</p>
               </div>
@@ -194,26 +223,62 @@ function Post({ post, is_self }: Props) {
           </button>
         </Dropdown>
       </div>
-      <p>
-        {postContent}
-        {(post.content?.length as number) > 150 && (
-          <span
-            className="text-sm cursor-pointer text-blue-950"
-            onClick={() => {
-              if (isPostContentCut) {
-                setPostContent(post.content as string);
-                setisPostContentCut(false);
-              } else {
-                setPostContent(post.content?.slice(0, 150) as string);
-                setisPostContentCut(true);
-              }
-            }}
-          >
-            {isPostContentCut ? "...more" : "...less"}
-          </span>
-        )}
-      </p>
-
+      {postContent && (
+        <p>
+          {postContent}
+          {(post.content?.length as number) > 150 && (
+            <span
+              className="text-sm cursor-pointer text-blue-950"
+              onClick={() => {
+                if (isPostContentCut) {
+                  setPostContent(post.content as string);
+                  setisPostContentCut(false);
+                } else {
+                  setPostContent(post.content?.slice(0, 150) as string);
+                  setisPostContentCut(true);
+                }
+              }}
+            >
+              {isPostContentCut ? "...more" : "...less"}
+            </span>
+          )}
+        </p>
+      )}
+      {/* for shared type */}
+      {post?.post && (
+        <div className="w-full border-2 border-gray-200 rounded-md">
+          <Post is_self={false} show_share={false} post={post.post} />
+        </div>
+      )}
+      {post.media_url && (
+        <div className="flex items-center justify-center w-full overflow-hidden max-h-[600px]">
+          {post.media_url
+            .slice(post.media_url.lastIndexOf("/") + 1, post.media_url.length)
+            .split(",")
+            .map((img_src, index) => {
+              return (
+                <div
+                  className="max-h-[600px] overflow-hidden"
+                  key={img_src + 1 + index * 9}
+                >
+                  <Image
+                    src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
+                    height={300}
+                    onClick={() => {
+                      setIsAssetsModalOpen(true);
+                      CarouselRef.current?.goTo(index, false);
+                    }}
+                    className="h-auto cursor-pointer"
+                    style={{ objectFit: "cover" }}
+                    width={600 / assets_count}
+                    // alt={"post asset number " + Number(index + 1)}
+                    alt={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
+                  />
+                </div>
+              );
+            })}
+        </div>
+      )}
       <div className="flex w-full gap-2">
         <button
           onClick={handle_like_click}
@@ -232,13 +297,26 @@ function Post({ post, is_self }: Props) {
           <FontAwesomeIcon icon={faComment} />
           <p className="text-sm">{comments_count} Comments</p>
         </button>
-        <button className="flex items-center gap-2 p-2 bg-gray-100 rounded-md">
-          <FontAwesomeIcon icon={faShareFromSquare} />
-          <p className="text-sm">{post.shares_count} Shares</p>
-        </button>
+        {!is_self && show_share && (
+          <button
+            className="flex items-center gap-2 p-2 bg-gray-100 rounded-md"
+            onClick={async () => {
+              await shareToProfileAction(post.id);
+            }}
+          >
+            <FontAwesomeIcon icon={faShareFromSquare} />
+            <p className="text-sm">{post.shares_count} Shares</p>
+          </button>
+        )}
       </div>
     </div>
   );
 }
-
+export function decide_poster_action(post_type: string) {
+  if (post_type === "shared") {
+    return "shared a post";
+  } else {
+    return "post";
+  }
+}
 export default Post;

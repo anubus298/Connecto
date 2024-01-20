@@ -3,6 +3,17 @@
 import { Database } from "@/utils/supabase/supabase";
 import Posts from "./components/posts";
 import Post_something from "./components/post_something";
+export type Post = Database["public"]["Tables"]["posts"]["Row"] & {
+  profiles: {
+    avatar_url: string | null;
+    username: string;
+    id: number;
+  };
+  post?: Post;
+  is_liked: boolean;
+  is_self: boolean;
+};
+
 interface Props {
   profile?: {
     avatar_url: string | null;
@@ -10,11 +21,7 @@ interface Props {
   };
   user_id: string | null;
   postAction: any;
-  posts: (Database["public"]["Tables"]["posts"]["Row"] & {
-    profiles: Database["public"]["Tables"]["profiles"]["Row"];
-    is_liked: boolean;
-    is_self: boolean;
-  })[];
+  posts: Post[];
 }
 function Home_main({ profile, postAction, posts, user_id }: Props) {
   return (

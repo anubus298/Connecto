@@ -4,18 +4,16 @@ import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 
 export const updateCoverAction = async (formData: FormData) => {
-  const coverFile = formData.get("coverFile") as File;
-
   const supabase = createServerActionClient<Database>({ cookies });
+  const coverFile = formData.get("coverFile") as File;
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (user) {
     const { data: fileData, error: fileError } = await supabase.storage
-
       .from("covers")
       .upload(`public/${user.id.slice(0, 10) + "cv"}.png`, coverFile, {
-        cacheControl: "10",
+        cacheControl: "3600",
         upsert: true,
       });
     if (fileError) {

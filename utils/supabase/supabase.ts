@@ -259,7 +259,9 @@ export interface Database {
           id: number
           likes_count: number | null
           media_url: string | null
+          share_source: number | null
           shares_count: number | null
+          type: string
           user_id: string | null
         }
         Insert: {
@@ -269,7 +271,9 @@ export interface Database {
           id?: number
           likes_count?: number | null
           media_url?: string | null
+          share_source?: number | null
           shares_count?: number | null
+          type?: string
           user_id?: string | null
         }
         Update: {
@@ -279,10 +283,19 @@ export interface Database {
           id?: number
           likes_count?: number | null
           media_url?: string | null
+          share_source?: number | null
           shares_count?: number | null
+          type?: string
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "posts_share_source_fkey"
+            columns: ["share_source"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "posts_user_id_fkey"
             columns: ["user_id"]
@@ -338,7 +351,31 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      delete_avatar: {
+        Args: {
+          avatar_url: string
+        }
+        Returns: Record<string, unknown>
+      }
+      delete_post: {
+        Args: {
+          avatar_url: string
+        }
+        Returns: Record<string, unknown>
+      }
+      delete_posts_assets: {
+        Args: {
+          url: string
+        }
+        Returns: Record<string, unknown>
+      }
+      delete_storage_object: {
+        Args: {
+          bucket: string
+          object: string
+        }
+        Returns: Record<string, unknown>
+      }
     }
     Enums: {
       [_ in never]: never

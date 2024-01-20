@@ -4,6 +4,7 @@ import { Avatar, Button } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useMediaQuery } from "react-responsive";
 import { Friends } from "../main_profile";
 import Friends_modal from "./modal_friends";
 
@@ -14,7 +15,8 @@ interface Props {
 }
 function Personal_friends({ friends, user_id, count }: Props) {
   const [isFriendModalOpen, setisFriendModalOpen] = useState(false);
-  return (
+  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  return !isTabletOrMobile ? (
     <div className="flex flex-col w-full p-3 bg-white rounded-md">
       <div className="flex items-center justify-between mb-6">
         <h3 className=" h3">Friends</h3>
@@ -24,7 +26,10 @@ function Personal_friends({ friends, user_id, count }: Props) {
         <div className="grid w-full grid-cols-3 p-2 rounded-md gap-y-4">
           {friends.map((friend, index) => {
             return (
-              <div className="grid col-span-1 place-content-center">
+              <div
+                className="grid col-span-1 place-content-center"
+                key={index * 2 + 40000}
+              >
                 <Link
                   href={`/home/profile?id=${friend.friend.id}`}
                   className="w-[90px] flex flex-col items-center bg-white rounded-t-md rounded-b-sm"
@@ -62,6 +67,8 @@ function Personal_friends({ friends, user_id, count }: Props) {
         </div>
       )}
     </div>
+  ) : (
+    <></>
   );
 }
 

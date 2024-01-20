@@ -1,6 +1,10 @@
 "use client";
 import { faArrowRightLong } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+//prettier-ignore
+//@ts-ignore
+import { useFormStatus } from "react-dom";
+import { Button } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
@@ -10,6 +14,23 @@ interface Props {
   error?: string;
 }
 function Main_signIn({ signIn, message, error }: Props) {
+  function SubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+      <Button
+        type="primary"
+        loading={pending}
+        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+          e.preventDefault();
+          e.currentTarget.form?.requestSubmit();
+        }}
+        className=" text-white rounded-sm bg-primary"
+        block
+      >
+        Sign In
+      </Button>
+    );
+  }
   const isMobileScreen = useMediaQuery({
     query: "(max-width: 640px)",
   });
@@ -50,9 +71,7 @@ function Main_signIn({ signIn, message, error }: Props) {
             placeholder="••••••••"
             required
           />
-          <button className="px-4 py-2 mb-2 text-white rounded-sm bg-primary text-foreground">
-            Sign In
-          </button>
+          <SubmitButton />
           <Link
             href={"/auth/signUp"}
             className="flex items-center justify-end w-full gap-1 text-dark"

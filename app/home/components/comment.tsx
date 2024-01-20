@@ -98,6 +98,7 @@ function Comment({
   const [likes_count, setlikes_count] = useState<number>(
     comment.likes_count ?? 0
   );
+  const [is_pending, setis_pending] = useState(false);
   const [replies_count, setReplies_count] = useState<number>(
     comment.replies_count ?? 0
   );
@@ -120,8 +121,13 @@ function Comment({
         title="Delete Comment"
         centered
         open={isDeleteModalOpen}
+        okButtonProps={{
+          loading: is_pending,
+        }}
         onOk={async () => {
+          setis_pending(true);
           await deleteCommentAction(comment.comment_id);
+          setis_pending(false);
           if (comments_count > 0) {
             setcomments_count(comments_count - 1);
           }

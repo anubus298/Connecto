@@ -10,7 +10,7 @@ export const completeAccountInfoAction = async (formData: FormData) => {
   "use server";
   const full_name = formData.get("full_name") as string;
   const address = formData.get("address") as string;
-  const phone_number = formData.get("phone_number") as string;
+  const phone_number = formData.get("phone_number");
   const birthday = formData.get("birthday") as string;
   // zod validation
   try {
@@ -18,10 +18,12 @@ export const completeAccountInfoAction = async (formData: FormData) => {
   } catch (_) {
     return redirect("/constructors/newAccount?message=Invalid Full name");
   }
-  try {
-    phoneNumberSchema.parse(phone_number);
-  } catch (_) {
-    return redirect("/constructors/newAccount?message=Invalid phone number");
+  if (phone_number) {
+    try {
+      phoneNumberSchema.parse(phone_number);
+    } catch (_) {
+      return redirect("/constructors/newAccount?message=Invalid phone number");
+    }
   }
   try {
     ageGreaterThan18Schema.parse(birthday);
@@ -40,7 +42,7 @@ export const completeAccountInfoAction = async (formData: FormData) => {
       birthday: birthday,
       full_name: full_name,
       address: address,
-      phone_number: phone_number,
+      phone_number: phone_number ?? null,
       is_first_initialised: true,
     })
     .eq("id", user?.id as string)

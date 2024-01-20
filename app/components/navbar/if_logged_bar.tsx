@@ -1,6 +1,7 @@
 "use client";
 import {
   faBars,
+  faBell,
   faEnvelope,
   faGear,
   faRightFromBracket,
@@ -31,7 +32,7 @@ function If_logged_bar({ avatar, profile, signOutAction }: Props) {
     {
       key: "1",
       label: (
-        <div className="flex items-center gap-2 text-primary">
+        <div className="flex items-center gap-2 text-dark">
           <FontAwesomeIcon icon={faUser} />
           <p>Profile</p>
         </div>
@@ -41,7 +42,7 @@ function If_logged_bar({ avatar, profile, signOutAction }: Props) {
     {
       key: "3",
       label: (
-        <div className="flex items-center gap-2 text-primary">
+        <div className="flex items-center gap-2 text-dark">
           <FontAwesomeIcon icon={faGear} />
           <p>Settings</p>
         </div>
@@ -53,7 +54,7 @@ function If_logged_bar({ avatar, profile, signOutAction }: Props) {
         <form
           ref={formRef}
           action={signOutAction}
-          className="flex items-center gap-2 text-primary"
+          className="flex items-center gap-2 text-dark"
         >
           <FontAwesomeIcon icon={faRightFromBracket} />
           <button className="">Sign Out</button>
@@ -81,12 +82,15 @@ function If_logged_bar({ avatar, profile, signOutAction }: Props) {
           }
         />
       </Link>
-      <div className="flex items-center gap-2 me-6 text-primary">
+      <button className="flex items-center gap-2 text-primary">
+        <FontAwesomeIcon icon={faBell} />
+      </button>
+      <button className="flex items-center gap-2 text-primary me-6">
         <FontAwesomeIcon icon={faEnvelope} />
-      </div>
+      </button>
       <Dropdown menu={{ items, onClick: handleFormClick }} trigger={["click"]}>
         <button>
-          <FontAwesomeIcon icon={faBars} className="text-primary" />
+          <FontAwesomeIcon icon={faBars} className="text-dark" />
         </button>
       </Dropdown>
     </div>

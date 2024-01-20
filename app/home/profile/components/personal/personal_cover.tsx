@@ -1,6 +1,9 @@
 "use client";
 import { updateCoverAction } from "@/app/lib/functions/user/profile/updateCover";
 import { Database } from "@/utils/supabase/supabase";
+//prettier-ignore
+//@ts-ignore
+import { useFormStatus } from "react-dom";
 import { Avatar, Button } from "antd";
 import Image from "next/image";
 import React, { ChangeEvent, useRef, useState } from "react";
@@ -30,6 +33,26 @@ function Personal_cover({ profile }: Props) {
       setImagePreview(null);
     }
   };
+  function SubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+      <Button
+        className="absolute bottom-0 right-0 z-20 m-2"
+        loading={pending}
+        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+          if (!is_edit) {
+            setis_edit(true);
+          } else {
+            e.preventDefault();
+            e.currentTarget.form?.requestSubmit();
+          }
+        }}
+        type="primary"
+      >
+        Save
+      </Button>
+    );
+  }
   const [is_hovered_over_cover, setis_hovered_over_cover] = useState(false);
   const [is_edit, setis_edit] = useState(false);
   return (
@@ -69,24 +92,13 @@ function Personal_cover({ profile }: Props) {
           className="hidden"
           ref={fileInputRed}
         />
-        {is_edit && (
-          <Button
-            type="primary"
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-              e.preventDefault();
-              e.currentTarget.form?.requestSubmit();
-            }}
-            className="absolute bottom-0 left-0 z-20 flex items-center justify-center m-2"
-          >
-            Save
-          </Button>
-        )}
+        {is_edit && <SubmitButton />}
       </form>
       {is_hovered_over_cover && (
         <Button
-          type="link"
+          className="z-20 m-2"
+          type="default"
           onClick={() => fileInputRed.current?.click()}
-          className="absolute bottom-0 right-0 z-20 flex items-center justify-center m-2"
         >
           {is_edit || current_cover_url ? "Change Cover" : "Add Cover"}
         </Button>
@@ -94,7 +106,7 @@ function Personal_cover({ profile }: Props) {
 
       <div className="absolute z-20 flex flex-col items-center -translate-x-1/2 -bottom-8 left-1/2">
         <Avatar
-          className="border-white border-2"
+          className="border-2 border-white"
           shape="square"
           size={"large"}
           src={
