@@ -10,9 +10,8 @@ interface Props {
     username: string | null;
   };
   avatar: string;
-  signOutAction: any;
 }
-function Primary_navbar({ profile, avatar, signOutAction }: Props) {
+function Primary_navbar({ profile, avatar }: Props) {
   return (
     <nav className="flex items-center justify-between col-span-12 px-8 py-3 bg-white border-b-2 select-none text-dark h-fit ">
       <div className="">
@@ -25,13 +24,7 @@ function Primary_navbar({ profile, avatar, signOutAction }: Props) {
           />
         </Link>
       </div>
-      {profile && (
-        <If_logged_bar
-          avatar={avatar}
-          profile={profile}
-          signOutAction={signOutAction}
-        />
-      )}
+      {profile && <If_logged_bar avatar={avatar} profile={profile} />}
     </nav>
   );
 }

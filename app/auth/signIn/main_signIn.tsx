@@ -5,9 +5,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 //@ts-ignore
 import { useFormStatus } from "react-dom";
 import { Button } from "antd";
-import Image from "next/image";
+
 import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
+import Image from "next/image";
 interface Props {
   signIn: any;
   message?: string;
@@ -24,7 +25,7 @@ function Main_signIn({ signIn, message, error }: Props) {
           e.preventDefault();
           e.currentTarget.form?.requestSubmit();
         }}
-        className=" text-white rounded-sm bg-primary"
+        className="text-white rounded-sm bg-primary"
         block
       >
         Sign In
@@ -37,12 +38,12 @@ function Main_signIn({ signIn, message, error }: Props) {
   return (
     <>
       {!isMobileScreen && (
-        <div className="flex items-center justify-center col-start-1 col-end-7 p-4 mt-10 ite">
+        <div className="flex items-center justify-center col-start-1 col-end-7 p-4 mt-10">
           <Image
-            src={"/svg/boombox.svg"}
-            alt="boombox cat"
             height={500}
             width={500}
+            src="/svg/boombox.svg"
+            alt="boombox Logo"
           />
         </div>
       )}

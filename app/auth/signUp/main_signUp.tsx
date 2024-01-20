@@ -28,7 +28,7 @@ function Main_signUp({ signUp, message, error }: Props) {
           e.currentTarget.form?.requestSubmit();
           e.currentTarget.form?.reset();
         }}
-        className=" text-white rounded-sm bg-primary"
+        className="text-white rounded-sm bg-primary"
         block
       >
         Sign Up
@@ -40,8 +40,6 @@ function Main_signUp({ signUp, message, error }: Props) {
       {!isMobileScreen && (
         <div className="flex items-center justify-center col-start-1 col-end-7 p-4 mt-10">
           <Image
-            items-center
-            justify-betweenge
             src={"/svg/boombox.svg"}
             alt="boombox cat"
             height={500}

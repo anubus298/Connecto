@@ -9,7 +9,9 @@ export async function middleware(req: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
+  if (!user && !req.nextUrl.pathname.startsWith("/auth")) {
+    return NextResponse.redirect(new URL("/auth/signIn", req.url));
+  }
   if (user && req.nextUrl.pathname.startsWith("/auth")) {
     return NextResponse.redirect(new URL("/home", req.url));
   }
@@ -41,14 +43,6 @@ export async function middleware(req: NextRequest) {
   }
   if (user && req.nextUrl.pathname === "/") {
     return NextResponse.redirect(new URL("/home", req.url));
-  }
-  if (
-    !user &&
-    (req.nextUrl.pathname === "/" ||
-      req.nextUrl.pathname.startsWith("/home") ||
-      req.nextUrl.pathname.startsWith("/constructors"))
-  ) {
-    return NextResponse.redirect(new URL("/auth/signIn", req.url));
   }
   return res;
 }

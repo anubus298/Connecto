@@ -206,7 +206,11 @@ function Post({ post, is_self, show_share = true }: Props) {
                   className="text-sm font-semibold"
                 >
                   {post.profiles.username}{" "}
-                  {<span>{decide_poster_action(post.type)}</span>}
+                  {
+                    <span className="font-normal">
+                      {decide_poster_action(post.type)}
+                    </span>
+                  }
                 </Link>
                 <p className="text-xs text-gray-400">{formattedDate}</p>
               </div>
@@ -316,7 +320,7 @@ export function decide_poster_action(post_type: string) {
   if (post_type === "shared") {
     return "shared a post";
   } else {
-    return "post";
+    return "posted";
   }
 }
 export default Post;

@@ -9,23 +9,35 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { Avatar, ConfigProvider, Dropdown, MenuProps } from "antd";
+import { Avatar, Dropdown, MenuProps, Modal } from "antd";
 import Link from "next/link";
-import React, { useRef } from "react";
+import { useRouter } from "next/navigation";
+import signOutAction from "@/app/lib/functions/auth/signOut";
+import { useState } from "react";
 interface Props {
   profile?: {
     avatar_url: string | null;
     username: string | null;
   };
   avatar: string;
-  signOutAction: any;
 }
 
-function If_logged_bar({ avatar, profile, signOutAction }: Props) {
-  const formRef = useRef<HTMLFormElement>(null);
-  const handleFormClick: MenuProps["onClick"] = ({ key }) => {
+function If_logged_bar({ avatar, profile }: Props) {
+  const router = useRouter();
+  const [isDeleteModalOpen, setisDeleteModalOpen] = useState(false);
+  const [is_deleting_post_pending, setis_deleting_post_pending] =
+    useState(false);
+  function SubmitButton() {
+    return (
+      <button className="flex items-center gap-2 text-dark">
+        <FontAwesomeIcon icon={faRightFromBracket} />
+        <p>Sign out</p>
+      </button>
+    );
+  }
+  const handleFormClick: MenuProps["onClick"] = async ({ key }) => {
     if (key == "4") {
-      formRef.current?.requestSubmit();
+      setisDeleteModalOpen(true);
     }
   };
   const items: MenuProps["items"] = [
@@ -50,16 +62,7 @@ function If_logged_bar({ avatar, profile, signOutAction }: Props) {
     },
     {
       key: "4",
-      label: (
-        <form
-          ref={formRef}
-          action={signOutAction}
-          className="flex items-center gap-2 text-dark"
-        >
-          <FontAwesomeIcon icon={faRightFromBracket} />
-          <button className="">Sign Out</button>
-        </form>
-      ),
+      label: <SubmitButton />,
     },
   ];
   return (
@@ -88,6 +91,22 @@ function If_logged_bar({ avatar, profile, signOutAction }: Props) {
       <button className="flex items-center gap-2 text-primary me-6">
         <FontAwesomeIcon icon={faEnvelope} />
       </button>
+      <Modal
+        title="Sign Out"
+        centered
+        open={isDeleteModalOpen}
+        okButtonProps={{
+          loading: is_deleting_post_pending,
+        }}
+        onOk={async () => {
+          setis_deleting_post_pending(true);
+          await signOutAction();
+          router.refresh();
+        }}
+        onCancel={() => setisDeleteModalOpen(false)}
+      >
+        <p>Are you sure you want to Sign out ?</p>
+      </Modal>
       <Dropdown menu={{ items, onClick: handleFormClick }} trigger={["click"]}>
         <button>
           <FontAwesomeIcon icon={faBars} className="text-dark" />
