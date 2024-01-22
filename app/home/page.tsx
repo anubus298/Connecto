@@ -1,23 +1,50 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/utils/supabase/supabase";
+import {
+  createServerComponentClient,
+  SupabaseClient,
+  User,
+} from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 
-import { postAction } from "../lib/functions/user/post/addPost";
+import { addPostAction } from "../lib/functions/user/post/addPost";
 import Left_home_panel from "./components/left_home_panel";
 import Right_home_panel from "./components/right_home_panel";
 import Third_grid from "./components/third_grid";
 import Home_main from "./home_main";
 export const revalidate = 0;
+
 async function Page() {
   const cookiesStore = cookies();
   const supabase = createServerComponentClient({ cookies: () => cookiesStore });
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const suggested_friends = await getSuggestedFriends(
+    supabase,
+    user?.id as string
+  );
+  const posts = await getPosts(supabase, user?.id);
+  const profile = await getMyProfile(supabase, user?.id);
+  return (
+    <div className="grid grid-cols-12 gap-1">
+      <Left_home_panel />
+      <Home_main
+        posts={posts}
+        user_id={user?.id ?? null} // @ts-ignore
+        profile={profile}
+        postAction={addPostAction}
+      />
+      {/*@ts-ignore*/}
+      <Third_grid friends={suggested_friends} />
+      <Right_home_panel />
+    </div>
+  );
+}
 
-  const { data: profile, error: profile_error } = await supabase
-    .from("profiles")
-    .select("avatar_url,username")
-    .eq("id", user?.id as string);
+async function getPosts(
+  supabase: SupabaseClient<any, "public", any>,
+  user_id?: string
+) {
   let { data: posts, error: posts_error } = await supabase
     .from("posts")
     .select(
@@ -29,18 +56,19 @@ async function Page() {
         await supabase
           .from("likes")
           .select()
-          .eq("user_id", user!.id)
-          .eq("post_id", post.id);
+          .eq("user_id", user_id)
+          .eq("post_id", post.id)
+          .limit(15);
       //for shared post
       if (post.post) {
         const test = { ...post.post };
         const newPost = Object.fromEntries(
-          Object.entries(post).filter((key) => key !== post)
+          Object.entries(post).filter((key) => key[0] !== "post")
         );
         const { data: sub_post, error: sub_error } = await supabase
           .from("likes")
           .select()
-          .eq("user_id", user!.id)
+          .eq("user_id", user_id)
           .eq("post_id", post.post.id);
         return {
           ...newPost,
@@ -58,19 +86,28 @@ async function Page() {
       }
     })
   );
-  return (
-    <div className="grid grid-cols-12 gap-1">
-      <Left_home_panel />
-      <Home_main
-        posts={posts_data}
-        user_id={user?.id ?? null}
-        profile={profile?.[0]}
-        postAction={postAction}
-      />
-      <Third_grid />
-      <Right_home_panel />
-    </div>
-  );
+  return posts_data;
 }
-
+async function getMyProfile(
+  supabase: SupabaseClient<any, "public", any>,
+  user_id?: string
+) {
+  const { data: profile, error: profile_error } = await supabase
+    .from("profiles")
+    .select("avatar_url,username")
+    .eq("id", user_id as string)
+    .limit(1)
+    .single();
+  return profile;
+}
+async function getSuggestedFriends(
+  supabase: SupabaseClient<Database, "public", Database["public"]>,
+  user_id: string
+) {
+  const { data: suggested_friends, error: suggested_friends_error } =
+    await supabase
+      .rpc("get_non_friends", { user_id: user_id })
+      .select("avatar_url,id,username");
+  return suggested_friends;
+}
 export default Page;

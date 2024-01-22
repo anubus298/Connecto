@@ -43,7 +43,7 @@ function Main_finishAccount({ action, message }: Props) {
           e.preventDefault();
           e.currentTarget.form?.requestSubmit();
         }}
-        className=" text-white rounded-sm bg-primary"
+        className="text-white rounded-sm bg-primary"
         block
       >
         Finish
@@ -54,7 +54,7 @@ function Main_finishAccount({ action, message }: Props) {
     <div className="grid w-full grid-cols-12 col-span-12">
       <div className="flex flex-col items-center col-start-5 col-end-9 gap-6 my-auto">
         <h1 className="text-center h1">Adjust Your Profile</h1>
-        <div className="h-[200px] w-[200px] bg-gray-100 flex justify-center items-center rounded-lg relative overflow-hidden  ">
+        <div className="size-[200px] bg-white flex justify-center items-center rounded-lg relative overflow-hidden  ">
           {imagePreview && (
             <Image height={200} width={200} alt="" src={imagePreview} />
           )}
@@ -66,12 +66,14 @@ function Main_finishAccount({ action, message }: Props) {
               className="cursor-pointer text-dark"
             />
           )}
-          <div
-            className="absolute bottom-0 right-0 flex items-center justify-center w-8 h-8 p-1 transition bg-white rounded-tl-lg cursor-pointer bg-opacity-70 hover:bg-opacity-80"
-            onClick={() => fileInputRed.current?.click()}
-          >
-            {imagePreview && <FontAwesomeIcon icon={faPen} />}
-          </div>
+          {imagePreview && (
+            <button
+              className="absolute bottom-0 right-0 flex items-center justify-center w-8 h-8 p-1 transition bg-white rounded-tl-lg cursor-pointer bg-opacity-70 hover:bg-opacity-80"
+              onClick={() => fileInputRed.current?.click()}
+            >
+              <FontAwesomeIcon icon={faPen} />
+            </button>
+          )}
         </div>
 
         <form action={action} className="flex flex-col justify-center gap-4">

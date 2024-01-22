@@ -37,7 +37,10 @@ export const signUpAction = async (formData: FormData) => {
   });
 
   if (error) {
-    return redirect("/auth/signUp?error=1&message=Could not authenticate user");
+    return redirect(
+      "/auth/signUp?error=1&message=Could not authenticate user : " +
+        error.message
+    );
   }
 
   return redirect(

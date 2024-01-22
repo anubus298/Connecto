@@ -60,12 +60,9 @@ function Friends_modal({
             <div className="col-span-12">
               <div className="flex items-center justify-between">
                 <h3 className="h3">Friends List</h3>
-                <Button
-                  type="dashed"
-                  onClick={() => setisFriendModalOpen(false)}
-                >
+                <button onClick={() => setisFriendModalOpen(false)}>
                   <FontAwesomeIcon icon={faX} />
-                </Button>
+                </button>
               </div>
               <div className="h-[1px] bg-gray-200 w-full mb-4"></div>
             </div>

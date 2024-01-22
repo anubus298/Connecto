@@ -1,16 +1,21 @@
+"use server";
 import { cookies } from "next/headers";
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { revalidatePath } from "next/cache";
 import { Database } from "@/utils/supabase/supabase";
 
-export const postAction = async (formData: FormData) => {
-  "use server";
+export const addPostAction = async (formData: FormData) => {
   try {
     const supabase = createServerActionClient<Database>({ cookies });
     const content = formData.get("content") as string;
-    const assets = formData.getAll("assets") as File[];
+    const assets: File[] = [];
+    let i = 0;
+    while (formData.has(`file${i}`)) {
+      assets.push(formData.get(`file${i}`) as File);
+      i++;
+    }
 
-    if (!(assets.length > 0 && content)) {
+    if (assets.length === 0 && content.length === 0) {
       return 0;
     }
 
@@ -33,7 +38,7 @@ export const postAction = async (formData: FormData) => {
         throw new Error(postError.message);
       }
 
-      if (assets) {
+      if (assets.length > 0) {
         for (let i = 0; i < assets.length; i++) {
           const asset = assets[i];
           const { data: fileData, error: fileError } = await supabase.storage

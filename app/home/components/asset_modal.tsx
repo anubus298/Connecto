@@ -62,7 +62,10 @@ function Asset_modal({
               .split(",")
               .map((img_src, index) => {
                 return (
-                  <div className="flex items-center justify-center h-[90dvh] w-full">
+                  <div
+                    className="flex items-center justify-center h-[90dvh] w-full"
+                    key={img_src + 6000 + index * 20}
+                  >
                     <Image
                       src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
                       key={img_src + index}

@@ -8,15 +8,29 @@ import { Button } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
+import React from "react";
+
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 interface Props {
   signUp: any;
   message?: string;
   error?: string;
 }
 function Main_signUp({ signUp, message, error }: Props) {
+  const supabase = createClientComponentClient();
   const isMobileScreen = useMediaQuery({
     query: "(max-width: 640px)",
   });
+  async function handleOauthClick(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: "http://localhost:3000/auth/callback",
+      },
+    });
+  }
   function SubmitButton() {
     const { pending } = useFormStatus();
     return (
@@ -83,6 +97,15 @@ function Main_signUp({ signUp, message, error }: Props) {
             required
           />
           <SubmitButton />
+          <Button
+            className="flex items-center justify-center gap-2"
+            onClick={async (e: React.MouseEvent<HTMLButtonElement>) =>
+              await handleOauthClick(e)
+            }
+          >
+            <FontAwesomeIcon icon={faGoogle} />
+            Google
+          </Button>
           <Link
             href={"/auth/signIn"}
             className="flex items-center justify-end w-full gap-1 text-dark"
@@ -91,6 +114,7 @@ function Main_signUp({ signUp, message, error }: Props) {
             <FontAwesomeIcon icon={faArrowRightLong} />
           </Link>
         </form>
+
         <div className="">
           {message && (
             <p

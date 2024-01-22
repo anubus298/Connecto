@@ -177,7 +177,7 @@ function Comment({
           {comment.profiles.username}
         </Link>
         <p className="px-1 py-1 rounded-sm bg-gray-50">{comment.content}</p>
-        <div className="flex justify-start">
+        <div className="flex justify-end">
           <Dropdown
             menu={{ items, onClick: handleDropDownClick }}
             trigger={["click"]}

@@ -178,34 +178,67 @@ export interface Database {
           }
         ]
       }
-      media: {
+      notifications: {
         Row: {
+          content_comment_id: number | null
+          content_post_id: number | null
           created_at: string
-          id: number
-          "media_type ": string | null
-          media_url: string | null
-          post_id: number
+          is_read: boolean
+          is_seen: boolean
+          notification_id: number
+          recipient_user_id: string
+          sender_id: string
+          type: string
         }
         Insert: {
+          content_comment_id?: number | null
+          content_post_id?: number | null
           created_at?: string
-          id?: number
-          "media_type "?: string | null
-          media_url?: string | null
-          post_id: number
+          is_read?: boolean
+          is_seen?: boolean
+          notification_id?: number
+          recipient_user_id: string
+          sender_id: string
+          type: string
         }
         Update: {
+          content_comment_id?: number | null
+          content_post_id?: number | null
           created_at?: string
-          id?: number
-          "media_type "?: string | null
-          media_url?: string | null
-          post_id?: number
+          is_read?: boolean
+          is_seen?: boolean
+          notification_id?: number
+          recipient_user_id?: string
+          sender_id?: string
+          type?: string
         }
         Relationships: [
           {
-            foreignKeyName: "media_post_id_fkey"
-            columns: ["post_id"]
+            foreignKeyName: "notifications_content_comment_id_fkey"
+            columns: ["content_comment_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["comment_id"]
+          },
+          {
+            foreignKeyName: "notifications_content_post_id_fkey"
+            columns: ["content_post_id"]
             isOneToOne: false
             referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_recipient_user_id_fkey"
+            columns: ["recipient_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
         ]
@@ -357,24 +390,61 @@ export interface Database {
         }
         Returns: Record<string, unknown>
       }
+      delete_files_in_folder: {
+        Args: {
+          bucket_name: string
+          folder_path: string
+        }
+        Returns: Record<string, unknown>
+      }
       delete_post: {
         Args: {
           avatar_url: string
         }
         Returns: Record<string, unknown>
       }
-      delete_posts_assets: {
+      delete_posts_assets:
+        | {
+            Args: {
+              bucket: string
+              url: string
+            }
+            Returns: Record<string, unknown>
+          }
+        | {
+            Args: {
+              url: string
+            }
+            Returns: Record<string, unknown>
+          }
+      delete_storage_object:
+        | {
+            Args: {
+              bucket: string
+              object: string
+            }
+            Returns: Record<string, unknown>
+          }
+        | {
+            Args: {
+              object: string
+            }
+            Returns: Record<string, unknown>
+          }
+      get_non_friends: {
         Args: {
-          url: string
+          user_id: string
         }
-        Returns: Record<string, unknown>
-      }
-      delete_storage_object: {
-        Args: {
-          bucket: string
-          object: string
-        }
-        Returns: Record<string, unknown>
+        Returns: {
+          id: string
+          updated_at: string
+          username: string
+          avatar_url: string
+          is_first_initialised: boolean
+          bio: string
+          cover_url: string
+          friends_count: number
+        }[]
       }
     }
     Enums: {

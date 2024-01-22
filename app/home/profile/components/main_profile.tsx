@@ -11,7 +11,7 @@ import Edit_profile_section from "./personal/edit_profile_section";
 import Posts from "../../components/posts";
 import Assets from "./personal/assets";
 import Post_something from "../../components/post_something";
-import { Post } from "../../home_main";
+import { Profile, Post } from "../../home_main";
 
 export type Friends = {
   friend: {
@@ -29,11 +29,13 @@ interface Props {
   is_other: boolean;
   friends: Friends[] | null;
   posts: Post[];
+  my_profile: Profile;
 }
 function Main_profile({
   profile,
   postAction,
   personal_info,
+  my_profile,
   is_other,
   friends,
   posts,
@@ -72,13 +74,12 @@ function Main_profile({
         </div>
         <Assets />
         <div className="col-span-12 md:col-span-4">
-          {!is_other && (
-            <Post_something
-              avatar={profile.avatar_url}
-              postAction={postAction}
-            />
-          )}
-          <Posts posts={posts} user_id={self_id as string} />
+          {!is_other && <Post_something avatar={profile.avatar_url} />}
+          <Posts
+            posts={posts}
+            user_id={self_id as string}
+            my_profile={profile}
+          />
         </div>
         <div className="col-span-12 md:col-span-4">
           <Personal_friends

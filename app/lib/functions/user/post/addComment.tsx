@@ -14,11 +14,15 @@ async function AddCommentAction(id: number, formData: FormData) {
     data: { user },
   } = await supabase.auth.getUser();
   if (user && content) {
-    const { data, error } = await supabase.from("comments").insert({
-      content: content,
-      post_id: id,
-      user_id: user.id,
-    });
+    const { data, error } = await supabase
+      .from("comments")
+      .insert({
+        content: content,
+        post_id: id,
+        user_id: user.id,
+      })
+      .select();
+    return data;
   }
 }
 

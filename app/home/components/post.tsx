@@ -1,14 +1,7 @@
 "use client";
 
 import incrementLikeAction from "@/app/lib/functions/user/post/incrementlike";
-import {
-  Avatar,
-  Carousel,
-  ConfigProvider,
-  Dropdown,
-  MenuProps,
-  Modal,
-} from "antd";
+import { Avatar, Dropdown, MenuProps, Modal } from "antd";
 import decrementLikeAction from "@/app/lib/functions/user/post/decrementlike";
 
 import {
@@ -17,8 +10,6 @@ import {
   faShareFromSquare,
 } from "@fortawesome/free-regular-svg-icons";
 import {
-  faArrowLeft,
-  faArrowRight,
   faFlag,
   faHeart as faHeartSolid,
   faPen,
@@ -32,16 +23,24 @@ import deletePostAction from "@/app/lib/functions/user/post/deletePost";
 import Post_modal from "./post_modal";
 import Link from "next/link";
 import { CarouselRef } from "antd/es/carousel";
-import shareToProfileAction from "@/app/lib/functions/user/post/shareToProfile";
-import { Post } from "../home_main";
+import { Profile, Post } from "../home_main";
 import Asset_modal from "./asset_modal";
+import Share_modal from "./share_modal";
 
 interface Props {
   post: Post;
   is_self: boolean;
   show_share?: boolean;
+  show_buttons?: boolean;
+  my_profile: Profile;
 }
-function Post({ post, is_self, show_share = true }: Props) {
+function Post({
+  post,
+  is_self,
+  my_profile,
+  show_share = true,
+  show_buttons = true,
+}: Props) {
   const CarouselRef = useRef<CarouselRef>(null);
   const baseUrl: string | undefined = post?.media_url?.slice(
     0,
@@ -57,6 +56,7 @@ function Post({ post, is_self, show_share = true }: Props) {
     useState(false);
   const date = new Date(post.created_at);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [postContent, setPostContent] = useState<string | undefined>(
     post.content?.slice(0, 150)
   );
@@ -107,6 +107,7 @@ function Post({ post, is_self, show_share = true }: Props) {
     post.comments_count ?? 0
   );
   const [is_liked, setis_liked] = useState(post.is_liked);
+  const [shareCount, setShareCount] = useState(post.shares_count ?? 0);
   async function handle_like_click() {
     if (is_liked) {
       setlikes_count(likes_count - 1);
@@ -119,15 +120,7 @@ function Post({ post, is_self, show_share = true }: Props) {
     }
   }
   useEffect(() => {
-    setFormattedDate(
-      new Intl.DateTimeFormat("en-US", {
-        month: "long",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        hour12: false,
-      }).format(date)
-    );
+    setFormattedDate(getPrettyDate(post.created_at));
   }, []);
   return (
     <div className="flex flex-col gap-6 p-3 bg-white rounded-md">
@@ -152,6 +145,16 @@ function Post({ post, is_self, show_share = true }: Props) {
           undone
         </p>
       </Modal>
+      {/*share modal*/}
+      <Share_modal
+        my_profile={my_profile}
+        isShareModalOpen={isShareModalOpen}
+        setIsShareModalOpen={setIsShareModalOpen}
+        post={post}
+        setShareCount={setShareCount}
+        shareCount={shareCount}
+      />
+
       {/* assets post modal */}
       {post.media_url && (
         <Asset_modal
@@ -217,15 +220,17 @@ function Post({ post, is_self, show_share = true }: Props) {
             </div>
           )}
         </div>
-        <Dropdown
-          menu={{ items, onClick: handleDropDownClick }}
-          trigger={["click"]}
-          placement="bottomRight"
-        >
-          <button>
-            <FontAwesomeIcon icon={faEllipsisV} />
-          </button>
-        </Dropdown>
+        {show_buttons && (
+          <Dropdown
+            menu={{ items, onClick: handleDropDownClick }}
+            trigger={["click"]}
+            placement="bottomRight"
+          >
+            <button>
+              <FontAwesomeIcon icon={faEllipsisV} />
+            </button>
+          </Dropdown>
+        )}
       </div>
       {postContent && (
         <p>
@@ -251,7 +256,12 @@ function Post({ post, is_self, show_share = true }: Props) {
       {/* for shared type */}
       {post?.post && (
         <div className="w-full border-2 border-gray-200 rounded-md">
-          <Post is_self={false} show_share={false} post={post.post} />
+          <Post
+            is_self={false}
+            show_share={false}
+            post={post.post}
+            my_profile={my_profile}
+          />
         </div>
       )}
       {post.media_url && (
@@ -265,54 +275,71 @@ function Post({ post, is_self, show_share = true }: Props) {
                   className="max-h-[600px] overflow-hidden"
                   key={img_src + 1 + index * 9}
                 >
-                  <Image
-                    src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
-                    height={300}
-                    onClick={() => {
-                      setIsAssetsModalOpen(true);
-                      CarouselRef.current?.goTo(index, false);
-                    }}
-                    className="h-auto cursor-pointer"
-                    style={{ objectFit: "cover" }}
-                    width={600 / assets_count}
-                    // alt={"post asset number " + Number(index + 1)}
-                    alt={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
-                  />
+                  {img_src.split(".")[1] === "mp4" ? (
+                    <video
+                      controls
+                      controlsList="nodownload"
+                      style={{
+                        width: 600 / assets_count,
+                        height: 300,
+                        display: "block",
+                      }}
+                    >
+                      <source
+                        src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
+                        type="video/mp4"
+                      />
+                    </video>
+                  ) : (
+                    <Image
+                      src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
+                      height={300}
+                      onClick={() => {
+                        setIsAssetsModalOpen(true);
+                        CarouselRef.current?.goTo(index, false);
+                      }}
+                      className="h-auto cursor-pointer"
+                      style={{ objectFit: "cover" }}
+                      width={600 / assets_count}
+                      // alt={"post asset number " + Number(index + 1)}
+                      alt={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
+                    />
+                  )}
                 </div>
               );
             })}
         </div>
       )}
-      <div className="flex w-full gap-2">
-        <button
-          onClick={handle_like_click}
-          className="flex items-center gap-2 p-2 bg-gray-100 rounded-md"
-        >
-          <FontAwesomeIcon
-            icon={is_liked ? faHeartSolid : faHeart}
-            className={is_liked ? "text-primary" : ""}
-          />
-          <p className="text-sm">{likes_count} likes</p>
-        </button>
-        <button
-          onClick={() => setIsPostModalOpen(true)}
-          className="flex items-center gap-2 p-2 bg-gray-100 rounded-md"
-        >
-          <FontAwesomeIcon icon={faComment} />
-          <p className="text-sm">{comments_count} Comments</p>
-        </button>
-        {!is_self && show_share && (
+      {show_buttons && (
+        <div className="flex w-full gap-2">
           <button
+            onClick={handle_like_click}
             className="flex items-center gap-2 p-2 bg-gray-100 rounded-md"
-            onClick={async () => {
-              await shareToProfileAction(post.id);
-            }}
           >
-            <FontAwesomeIcon icon={faShareFromSquare} />
-            <p className="text-sm">{post.shares_count} Shares</p>
+            <FontAwesomeIcon
+              icon={is_liked ? faHeartSolid : faHeart}
+              className={is_liked ? "text-primary" : ""}
+            />
+            <p className="text-sm">{likes_count} likes</p>
           </button>
-        )}
-      </div>
+          <button
+            onClick={() => setIsPostModalOpen(true)}
+            className="flex items-center gap-2 p-2 bg-gray-100 rounded-md"
+          >
+            <FontAwesomeIcon icon={faComment} />
+            <p className="text-sm">{comments_count} Comments</p>
+          </button>
+          {!is_self && post.type === "default" && show_share && (
+            <button
+              className="flex items-center gap-2 p-2 bg-gray-100 rounded-md"
+              onClick={() => setIsShareModalOpen(true)}
+            >
+              <FontAwesomeIcon icon={faShareFromSquare} />
+              <p className="text-sm">{post.shares_count} Shares</p>
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -324,3 +351,35 @@ export function decide_poster_action(post_type: string) {
   }
 }
 export default Post;
+
+function getPrettyDate(date: string): string {
+  const targetDate = new Date(date);
+  const currentDate = new Date();
+  const now: number = targetDate.getTime() - currentDate.getTime();
+
+  // Calculate the absolute difference in seconds
+  const absDiffInSeconds = Math.abs(now / 1000);
+
+  // Future date
+  if (absDiffInSeconds >= 2592000) {
+    return new Intl.DateTimeFormat("en-US", {
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: false,
+    }).format(targetDate);
+  } else if (absDiffInSeconds >= 86400) {
+    const diffInDays = Math.floor(absDiffInSeconds / 86400);
+    return new Intl.RelativeTimeFormat("en").format(-diffInDays, "day");
+  } else if (absDiffInSeconds >= 3600) {
+    const diffInHours = Math.floor(absDiffInSeconds / 3600);
+    return new Intl.RelativeTimeFormat("en").format(-diffInHours, "hour");
+  } else if (absDiffInSeconds >= 60) {
+    const diffInMinutes = Math.floor(absDiffInSeconds / 60);
+    return new Intl.RelativeTimeFormat("en").format(-diffInMinutes, "minute");
+  } else {
+    const diffInSeconds = Math.floor(absDiffInSeconds);
+    return new Intl.RelativeTimeFormat("en").format(-diffInSeconds, "seconds");
+  }
+}

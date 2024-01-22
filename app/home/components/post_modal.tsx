@@ -88,16 +88,10 @@ function Post_modal({
     if (isPostModalOpen) {
       getComments();
     }
-    setShould_refresh(false);
-  }, [isPostModalOpen, should_refresh]);
+  }, [isPostModalOpen]);
 
   function SubmitButton() {
     const { pending } = useFormStatus();
-    useEffect(() => {
-      if (!pending) {
-        setShould_refresh(true);
-      }
-    }, [pending]);
     return (
       <Button
         type="primary"

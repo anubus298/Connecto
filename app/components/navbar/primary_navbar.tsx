@@ -1,17 +1,20 @@
-"use client";
-
+import { Database } from "@/utils/supabase/supabase";
 import Image from "next/image";
 import Link from "next/link";
 import If_logged_bar from "./if_logged_bar";
 
+export type Notification =
+  Database["public"]["Tables"]["notifications"]["Row"] & {
+    from: { avatar_url: string; username: string; id: string };
+  };
 interface Props {
-  profile?: {
+  profile: {
     avatar_url: string | null;
     username: string | null;
-  };
-  avatar: string;
+  } | null;
+  notifications: Notification[];
 }
-function Primary_navbar({ profile, avatar }: Props) {
+function Primary_navbar({ profile, notifications }: Props) {
   return (
     <nav className="flex items-center justify-between col-span-12 px-8 py-3 bg-white border-b-2 select-none text-dark h-fit ">
       <div className="">
@@ -24,7 +27,9 @@ function Primary_navbar({ profile, avatar }: Props) {
           />
         </Link>
       </div>
-      {profile && <If_logged_bar avatar={avatar} profile={profile} />}
+      {profile && (
+        <If_logged_bar profile={profile} notifications={notifications} />
+      )}
     </nav>
   );
 }

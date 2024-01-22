@@ -14,7 +14,7 @@ export const finishAccountAction = async (formData: FormData) => {
       .from("avatars")
       .upload(`public/${user.id.slice(0, 10) + "av"}.png`, avatarFile, {
         cacheControl: "3600",
-        upsert: false,
+        upsert: true,
       });
     if (fileError) {
       return redirect(
@@ -27,12 +27,11 @@ export const finishAccountAction = async (formData: FormData) => {
       .update({
         avatar_url: fileData?.path,
         username: username,
-        is_first_initialised: true,
       })
       .eq("id", user?.id);
     if (error) {
       return redirect(
-        "/constructors/finishAccount?message=error accrued : " + error.details
+        "/constructors/finishAccount?message=error accrued : " + error.message
       );
     }
   } else {

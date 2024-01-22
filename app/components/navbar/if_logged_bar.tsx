@@ -1,7 +1,6 @@
 "use client";
 import {
   faBars,
-  faBell,
   faEnvelope,
   faGear,
   faRightFromBracket,
@@ -14,15 +13,18 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import signOutAction from "@/app/lib/functions/auth/signOut";
 import { useState } from "react";
+import { Notification } from "./primary_navbar";
+import Notifications_dropdown from "./notifications_dropdown";
+
 interface Props {
   profile?: {
     avatar_url: string | null;
     username: string | null;
   };
-  avatar: string;
+  notifications: Notification[];
 }
 
-function If_logged_bar({ avatar, profile }: Props) {
+function If_logged_bar({ profile, notifications }: Props) {
   const router = useRouter();
   const [isDeleteModalOpen, setisDeleteModalOpen] = useState(false);
   const [is_deleting_post_pending, setis_deleting_post_pending] =
@@ -85,9 +87,7 @@ function If_logged_bar({ avatar, profile }: Props) {
           }
         />
       </Link>
-      <button className="flex items-center gap-2 text-primary">
-        <FontAwesomeIcon icon={faBell} />
-      </button>
+      <Notifications_dropdown notifications_source={notifications} />
       <button className="flex items-center gap-2 text-primary me-6">
         <FontAwesomeIcon icon={faEnvelope} />
       </button>
