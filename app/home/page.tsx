@@ -11,7 +11,6 @@ import Left_home_panel from "./components/left_home_panel";
 import Right_home_panel from "./components/right_home_panel";
 import Third_grid from "./components/third_grid";
 import Home_main from "./home_main";
-export const revalidate = 0;
 
 async function Page() {
   const cookiesStore = cookies();
@@ -30,7 +29,8 @@ async function Page() {
       <Left_home_panel />
       <Home_main
         posts={posts}
-        user_id={user?.id ?? null} // @ts-ignore
+        user_id={user!.id}
+        //@ts-ignore
         profile={profile}
         postAction={addPostAction}
       />

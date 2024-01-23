@@ -11,18 +11,19 @@ import { Avatar, Dropdown, MenuProps, Modal } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Friends } from "../main_profile";
+import { Friends } from "../other/other_profile";
+
 interface Props {
-  friend: Friends & { friendship_id: string };
+  friend: Friends & { friendship_id: number };
   index: number;
   setFriends: React.Dispatch<
     React.SetStateAction<
       (Friends & {
-        friendship_id: string;
+        friendship_id: number;
       })[]
     >
   >;
-  friends: (Friends & { friendship_id: string })[];
+  friends: (Friends & { friendship_id: number })[];
 }
 function Friend_pallete({ friend, index, friends, setFriends }: Props) {
   const [isUnfriendModalOpen, setIsUnfriendModalOpen] = useState(false);
@@ -35,7 +36,7 @@ function Friend_pallete({ friend, index, friends, setFriends }: Props) {
   let items: MenuProps["items"] = [
     {
       key: "1",
-      onClick: async () => await unfriendAction("sdq"),
+
       label: (
         <div className="flex items-center justify-start gap-2 text-dark">
           <FontAwesomeIcon className="w-4" icon={faUserSlash} />

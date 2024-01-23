@@ -57,7 +57,7 @@ function Personal_cover({ profile }: Props) {
   const [is_edit, setis_edit] = useState(false);
   return (
     <div
-      className="col-span-12 bg-gray-200 h-[250px] relative mb-10 cursor-pointer"
+      className="col-span-12 bg-gray-200 h-[250px] relative mb-10 "
       onMouseOver={() => {
         setis_hovered_over_cover(true);
       }}
@@ -80,6 +80,7 @@ function Personal_cover({ profile }: Props) {
         <Image
           src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/covers/${current_cover_url}`}
           style={{ objectFit: "cover" }}
+          className="cursor-pointer"
           fill
           alt=""
         />

@@ -11,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Post from "./post";
 import { Profile } from "../home_main";
+import { Tables } from "@/utils/supabase/supabase";
 
 interface Props {
   post: Post;
@@ -18,7 +19,8 @@ interface Props {
   setIsShareModalOpen: Dispatch<SetStateAction<boolean>>;
   shareCount: number;
   setShareCount: Dispatch<SetStateAction<number>>;
-  my_profile: Profile;
+  my_profile: NonNullable<Tables<"profiles">>;
+  user_id: string;
 }
 function Share_modal({
   post,
@@ -27,6 +29,7 @@ function Share_modal({
   shareCount,
   setShareCount,
   my_profile,
+  user_id,
 }: Props) {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const [is_req_sending, setIs_req_sending] = useState(false);
@@ -124,7 +127,7 @@ function Share_modal({
             <div className="border-2 border-gray-100 rounded-md">
               <Post
                 my_profile={my_profile}
-                is_self={true}
+                user_id={user_id}
                 post={post}
                 show_share={false}
                 show_buttons={false}

@@ -1,4 +1,4 @@
-import { Database } from "@/utils/supabase/supabase";
+import { Database, Tables } from "@/utils/supabase/supabase";
 import { Suspense } from "react";
 import Posts from "./components/posts";
 import Post_something from "./components/post_something";
@@ -15,16 +15,16 @@ export type Post = Database["public"]["Tables"]["posts"]["Row"] & {
   is_self: boolean;
 };
 export type Profile = {
-  avatar_url: string | null;
-  id?: string | null;
-  username: string | null;
+  avatar_url: string;
+  id?: string;
+  username: string;
 };
 interface Props {
-  profile: Profile;
-  user_id: string | null;
+  profile: NonNullable<Tables<"profiles">>;
+  user_id: string;
   postAction: any;
   posts: Post[];
-  suggested_friends: Profile[] | null;
+  suggested_friends: Profile[];
 }
 function Home_main({ profile, postAction, posts, user_id }: Props) {
   return (

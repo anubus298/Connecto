@@ -1,16 +1,8 @@
 "use client";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  Avatar,
-  Badge,
-  ConfigProvider,
-  Dropdown,
-  MenuProps,
-  notification,
-} from "antd";
-import Image from "next/image";
-import Link from "next/link";
+import { Badge, ConfigProvider, Dropdown, MenuProps } from "antd";
+
 import { useState } from "react";
 import Notification_card from "./notification_card";
 import { Notification } from "./primary_navbar";

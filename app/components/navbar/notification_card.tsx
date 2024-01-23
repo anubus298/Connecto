@@ -29,7 +29,7 @@ function Notification_card({
   return (
     <div
       className={
-        "flex p-2 w-80 h-16 " + (!notification.is_read && "bg-gray-100")
+        "flex p-2 w-80 h-16 " + (!notification.is_read && "bg-gray-50")
       }
     >
       <div className="flex items-start w-full gap-2">
@@ -65,7 +65,7 @@ function decide_notifications_text(notification: Notification) {
         <span className="overflow-hidden font-medium max-w-3">
           {notification.from.username}{" "}
         </span>
-        send you a friend request.
+        sent you a friend request.
       </Link>
     );
   } else if (notification.type == "share") {
@@ -77,7 +77,7 @@ function decide_notifications_text(notification: Notification) {
         <span className="overflow-hidden font-medium max-w-3">
           {notification.from.username}{" "}
         </span>
-        shares your post
+        shared your post
       </Link>
     );
   }

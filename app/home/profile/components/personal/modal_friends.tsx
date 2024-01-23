@@ -2,9 +2,10 @@
 
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, ConfigProvider, Modal } from "antd";
+import { ConfigProvider, Modal } from "antd";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Friends } from "../main_profile";
+import { Friends } from "../other/other_profile";
+
 import Friend_pallete from "./friend_pallete";
 
 interface Props {
@@ -72,9 +73,12 @@ function Friends_modal({
                 friends.map((friend, index) => {
                   return (
                     <Friend_pallete
+                      //@ts-ignore
                       friend={friend}
                       index={index}
+                      //@ts-ignore
                       friends={friends}
+                      //@ts-ignore
                       setFriends={setFriends}
                     />
                   );

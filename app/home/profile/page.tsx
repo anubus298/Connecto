@@ -1,4 +1,3 @@
-import { addPostAction } from "@/app/lib/functions/user/post/addPost";
 import { Database } from "@/utils/supabase/supabase";
 import {
   createServerComponentClient,
@@ -6,8 +5,9 @@ import {
 } from "@supabase/auth-helpers-nextjs";
 
 import { cookies } from "next/headers";
-import Main_profile from "./components/main_profile";
-
+import Other_profile from "./components/other/other_profile";
+import Personal_profile from "./components/personal/personal_profile";
+export const revalidate = 0;
 async function Page({ searchParams }: { searchParams: { id?: string } }) {
   const cookiesStore = cookies();
   const supabase = createServerComponentClient<Database>({
@@ -16,28 +16,23 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const profile: any = await getMyProfileData(supabase, user?.id);
-  const posts: any = await getUserPosts(supabase, searchParams?.id ?? user?.id);
+  const my_profile = await getMyProfileData(supabase, user?.id);
   if (!searchParams.id) {
-    const {
-      profile,
-      friends,
-      personal_info,
-    }: { profile: any; friends: any; personal_info: any } = await getMyProfile(
+    const posts = await getUserPosts(supabase, user?.id);
+    const { profile, friends, personal_info } = await getMyProfile(
       supabase,
       user?.id
     );
     return (
       profile && (
-        <Main_profile
+        <Personal_profile
+          //@ts-ignore
           posts={posts}
-          postAction={addPostAction}
-          profile={profile[0]}
-          my_profile={profile}
+          profile={profile}
           self_id={user?.id}
+          //@ts-ignore
           friends={friends}
-          personal_info={personal_info?.[0]}
-          is_other={false}
+          personal_info={personal_info}
         />
       )
     );
@@ -46,16 +41,27 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
       searchParams.id as string,
       supabase
     );
+    const posts: any = await getUserPosts(supabase, searchParams.id);
     return (
       otherProfile && (
-        <Main_profile
+        <Other_profile
           posts={posts}
-          postAction={addPostAction}
-          my_profile={profile}
+          //@ts-ignore
+          friendship={{
+            id: otherProfile.is_friend?.friendship_id,
+            is_my_action: otherProfile.is_friend?.action_user_id == user!.id,
+            status:
+              otherProfile.is_friend?.status === "pending"
+                ? "sent"
+                : otherProfile.is_friend?.status === "accepted"
+                  ? "added"
+                  : "none",
+          }}
+          //@ts-ignore
+          my_profile={my_profile}
           self_id={user?.id}
-          friends={null}
-          profile={otherProfile[0]}
-          is_other={true}
+          friends={null} //@ts-ignore
+          profile={otherProfile.profile}
         />
       )
     );
@@ -64,16 +70,20 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
 
 async function getMyProfile(
   supabase: SupabaseClient<any, "public", any>,
-  user_id: string | undefined
+  user_id?: string
 ) {
   const { data: profile, error: profile_error } = await supabase
     .from("profiles")
     .select("*")
-    .eq("id", user_id as string);
+    .eq("id", user_id as string)
+    .limit(1)
+    .single();
   const { data: personal_info, error: personal_info_error } = await supabase
     .from("personal_info")
     .select("*")
-    .eq("id", user_id as string);
+    .eq("id", user_id as string)
+    .limit(1)
+    .single();
 
   let { data: friendsRaw, error: friends_error } = await supabase
     .from("friends")
@@ -110,16 +120,26 @@ async function getMyProfile(
     personal_info: personal_info,
   };
 }
+
 async function getOtherProfile(
   id: string,
-  supabase: SupabaseClient<any, "public", any>
+  supabase: SupabaseClient<Database, "public", Database["public"]>
 ) {
   const { data: profile, error: profile_error } = await supabase
     .from("profiles")
     .select("*")
-    .eq("id", id as string);
-  return profile;
+    .eq("id", id as string)
+    .limit(1)
+    .single();
+  const { data: friendship, error: friendship_error } = await supabase
+    .from("friends")
+    .select("friendship_id,status,action_user_id")
+    .or(`user_id_1.eq.${id},user_id_2.eq.${id}`)
+    .limit(1)
+    .single();
+  return { profile: profile, is_friend: friendship };
 }
+
 async function getUserPosts(
   supabase: SupabaseClient<any, "public", any>,
   user_id: string | undefined
@@ -176,8 +196,9 @@ async function getMyProfileData(
   const { data: profile, error: profile_error } = await supabase
     .from("profiles")
     .select("avatar_url,username")
-    .eq("id", user_id as string);
+    .eq("id", user_id as string)
+    .limit(1)
+    .single();
   return profile;
 }
-
 export default Page;

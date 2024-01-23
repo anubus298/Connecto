@@ -5,7 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useMediaQuery } from "react-responsive";
-import { Friends } from "../main_profile";
+import { Friends } from "../other/other_profile";
+
 import Friends_modal from "./modal_friends";
 
 interface Props {

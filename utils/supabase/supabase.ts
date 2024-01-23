@@ -90,6 +90,42 @@ export interface Database {
           }
         ]
       }
+      conversations: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          user_id_1: string
+          user_id_2: string
+        }
+        Insert: {
+          conversation_id?: string
+          created_at?: string
+          user_id_1: string
+          user_id_2: string
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          user_id_1?: string
+          user_id_2?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_user_id_1_fkey"
+            columns: ["user_id_1"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversations_user_id_2_fkey"
+            columns: ["user_id_2"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       friends: {
         Row: {
           action_timestamp: string | null
@@ -174,6 +210,48 @@ export interface Database {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          is_read: boolean
+          message_id: number
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          is_read?: boolean
+          message_id?: number
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          is_read?: boolean
+          message_id?: number
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["conversation_id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
         ]
@@ -448,7 +526,7 @@ export interface Database {
       }
     }
     Enums: {
-      [_ in never]: never
+      friend_type: "pending" | "accepted" | "rejected" | "blocked"
     }
     CompositeTypes: {
       [_ in never]: never

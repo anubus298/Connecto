@@ -23,20 +23,21 @@ import deletePostAction from "@/app/lib/functions/user/post/deletePost";
 import Post_modal from "./post_modal";
 import Link from "next/link";
 import { CarouselRef } from "antd/es/carousel";
-import { Profile, Post } from "../home_main";
+import { Post } from "../home_main";
 import Asset_modal from "./asset_modal";
 import Share_modal from "./share_modal";
+import { Tables } from "@/utils/supabase/supabase";
 
 interface Props {
   post: Post;
-  is_self: boolean;
+  user_id: string;
   show_share?: boolean;
   show_buttons?: boolean;
-  my_profile: Profile;
+  my_profile: NonNullable<Tables<"profiles">>;
 }
 function Post({
   post,
-  is_self,
+  user_id,
   my_profile,
   show_share = true,
   show_buttons = true,
@@ -68,7 +69,7 @@ function Post({
     }
   };
   let items: MenuProps["items"];
-  if (is_self) {
+  if (user_id === post.user_id) {
     items = [
       {
         key: "1",
@@ -147,6 +148,7 @@ function Post({
       </Modal>
       {/*share modal*/}
       <Share_modal
+        user_id={user_id}
         my_profile={my_profile}
         isShareModalOpen={isShareModalOpen}
         setIsShareModalOpen={setIsShareModalOpen}
@@ -183,7 +185,9 @@ function Post({
               <Link
                 className="col-span-1"
                 href={
-                  is_self ? "/home/profile" : `/home/profile?id=${post.user_id}`
+                  post.user_id === user_id
+                    ? "/home/profile"
+                    : `/home/profile?id=${post.user_id}`
                 }
               >
                 <Avatar
@@ -202,7 +206,7 @@ function Post({
               <div className="flex flex-col">
                 <Link
                   href={
-                    is_self
+                    post.user_id === user_id
                       ? "/home/profile"
                       : `/home/profile?id=${post.user_id}`
                   }
@@ -257,7 +261,7 @@ function Post({
       {post?.post && (
         <div className="w-full border-2 border-gray-200 rounded-md">
           <Post
-            is_self={false}
+            user_id={user_id}
             show_share={false}
             post={post.post}
             my_profile={my_profile}
@@ -329,15 +333,17 @@ function Post({
             <FontAwesomeIcon icon={faComment} />
             <p className="text-sm">{comments_count} Comments</p>
           </button>
-          {!is_self && post.type === "default" && show_share && (
-            <button
-              className="flex items-center gap-2 p-2 bg-gray-100 rounded-md"
-              onClick={() => setIsShareModalOpen(true)}
-            >
-              <FontAwesomeIcon icon={faShareFromSquare} />
-              <p className="text-sm">{post.shares_count} Shares</p>
-            </button>
-          )}
+          {!(post.user_id === user_id) &&
+            post.type === "default" &&
+            show_share && (
+              <button
+                className="flex items-center gap-2 p-2 bg-gray-100 rounded-md"
+                onClick={() => setIsShareModalOpen(true)}
+              >
+                <FontAwesomeIcon icon={faShareFromSquare} />
+                <p className="text-sm">{post.shares_count} Shares</p>
+              </button>
+            )}
         </div>
       )}
     </div>
