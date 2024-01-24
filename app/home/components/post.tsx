@@ -358,7 +358,7 @@ export function decide_poster_action(post_type: string) {
 }
 export default Post;
 
-function getPrettyDate(date: string): string {
+export function getPrettyDate(date: string): string {
   const targetDate = new Date(date);
   const currentDate = new Date();
   const now: number = targetDate.getTime() - currentDate.getTime();
@@ -384,8 +384,10 @@ function getPrettyDate(date: string): string {
   } else if (absDiffInSeconds >= 60) {
     const diffInMinutes = Math.floor(absDiffInSeconds / 60);
     return new Intl.RelativeTimeFormat("en").format(-diffInMinutes, "minute");
-  } else {
+  } else if (absDiffInSeconds >= 10) {
     const diffInSeconds = Math.floor(absDiffInSeconds);
     return new Intl.RelativeTimeFormat("en").format(-diffInSeconds, "seconds");
+  } else {
+    return "now";
   }
 }

@@ -22,11 +22,10 @@ export type Profile = {
 interface Props {
   profile: NonNullable<Tables<"profiles">>;
   user_id: string;
-  postAction: any;
   posts: Post[];
   suggested_friends: Profile[];
 }
-function Home_main({ profile, postAction, posts, user_id }: Props) {
+function Home_main({ profile, posts, user_id }: Props) {
   return (
     <div className="flex flex-col justify-center col-span-12 mx-2 sm:col-span-8 md:col-span-6 sm:mx-0">
       <Suspense fallback={<Suspense_postSomething />}>

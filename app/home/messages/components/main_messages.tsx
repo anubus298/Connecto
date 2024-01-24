@@ -1,16 +1,128 @@
 "use client";
 
-import { Tables } from "@/utils/supabase/supabase";
+import { createClient } from "@/utils/supabase/client";
+import { Database, Tables } from "@/utils/supabase/supabase";
+import { faEnvelope, faUserGroup } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
+
+import { ConfigProvider, Segmented } from "antd";
+import { useEffect, useState } from "react";
+import { Profile } from "../../home_main";
+import Conversation_pallete from "./conversation.pallete";
+import Current_conversation from "./current_conversation";
 
 interface Props {
-  conversations: NonNullable<Tables<"conversations">[]> | null;
+  conversations: {
+    conversation_id: string;
+    user_id: Profile;
+  }[];
+  my_id: string;
 }
-function Main_messages({ conversations }: Props) {
+function Main_messages({ conversations: conversations_source, my_id }: Props) {
+  const supabase = createClientComponentClient<Database>();
+  useEffect(() => {
+    const channel = supabase
+      .channel("conversations")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "conversations" },
+        async (
+          payload: RealtimePostgresInsertPayload<Tables<"conversations">>
+        ) => {
+          await handleConversationInsert(payload);
+        }
+      )
+      .subscribe();
+    async function handleConversationInsert(
+      payload: RealtimePostgresInsertPayload<Tables<"conversations">>
+    ) {
+      let correspondent_profile_id: string;
+
+      if (my_id === payload.new.user_id_1) {
+        correspondent_profile_id = payload.new.user_id_2;
+      } else {
+        correspondent_profile_id = payload.new.user_id_1;
+      }
+      const res = await fetch(
+        `/api/profile/get?id=${correspondent_profile_id}`,
+        {
+          method: "GET",
+        }
+      );
+      const profile_data: { data: Profile } = await res.json();
+      setConversations([
+        {
+          conversation_id: payload.new.conversation_id,
+          user_id: profile_data.data,
+        },
+        ...conversations,
+      ]);
+    }
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase]);
+  const [conversations, setConversations] = useState(conversations_source);
+  const [current_page, setcurrent_page] = useState<string | number>(
+    "Conversations"
+  );
+  const [current_conversation, setcurrent_conversation] = useState<
+    string | null
+  >(null);
   return (
-    <div className="grid-cols-12 grid gap-2 *:rounded-md *:p-3">
-      <div className="col-span-4 bg-blue-400">ss</div>
-      <div className="col-span-8 bg-yellow-300">ss</div>
-    </div>
+    <ConfigProvider
+      theme={{
+        components: {
+          Segmented: {
+            itemColor: "#1d1d1b",
+          },
+        },
+      }}
+    >
+      <div className="grid-cols-12 grid gap-2 *:rounded-md *:p-3">
+        <div className="flex flex-col min-h-[60vh] col-span-4 gap-3 bg-white">
+          <h3 className="h3">Messages</h3>
+          <Segmented
+            onChange={(value: string | number) => setcurrent_page(value)}
+            block
+            options={[
+              {
+                label: "conversations",
+                value: "Conversations",
+                icon: <FontAwesomeIcon icon={faEnvelope} />,
+              },
+              {
+                label: "groups",
+                value: "Groups",
+                icon: <FontAwesomeIcon icon={faUserGroup} />,
+              },
+            ]}
+            className="w-full"
+          />
+          {current_page === "Conversations" &&
+            conversations.map((conv, index) => {
+              return (
+                <Conversation_pallete
+                  conv={conv}
+                  index={index}
+                  setcurrent_conversation={setcurrent_conversation}
+                  key={conv.conversation_id + index + 1}
+                />
+              );
+            })}
+        </div>
+
+        {current_conversation && (
+          <Current_conversation
+            key={current_conversation}
+            my_id={my_id}
+            conversation_id={current_conversation}
+          />
+        )}
+      </div>
+    </ConfigProvider>
   );
 }
 

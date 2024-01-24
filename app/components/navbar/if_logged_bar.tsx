@@ -88,9 +88,12 @@ function If_logged_bar({ profile, notifications }: Props) {
         />
       </Link>
       <Notifications_dropdown notifications_source={notifications} />
-      <button className="flex items-center gap-2 text-dark me-6">
+      <Link
+        href={"/home/messages"}
+        className="flex items-center gap-2 text-dark me-6"
+      >
         <FontAwesomeIcon icon={faEnvelope} />
-      </button>
+      </Link>
       <Modal
         title="Sign Out"
         centered
