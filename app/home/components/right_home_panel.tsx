@@ -5,7 +5,7 @@ function Right_home_panel() {
   return (
     <div
       className={
-        "flex items-center justify-center col-span-4 md:col-span-2 bg-blue-500 "
+        "flex items-center justify-center col-span-4 md:col-span-2 bg-purple-400 "
       }
     >
       <p>third</p>
