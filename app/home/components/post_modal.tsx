@@ -129,7 +129,7 @@ function Post_modal({
       footer={null}
     >
       <div className="grid grid-cols-12 overflow-hidden min-h-[400px] gap-2 ">
-        <div className="relative col-span-12 md:col-span-6 max-h-[50vh] md:h-[85vh] overflow-hidden bg-gray-100 rounded-md">
+        <div className="relative col-span-12 md:col-span-6 max-h-[50vh] md:max-h-none md:h-[85vh] overflow-hidden bg-gray-100 rounded-md">
           {post.media_url && (
             <div className="w-full h-full">
               <Carousel

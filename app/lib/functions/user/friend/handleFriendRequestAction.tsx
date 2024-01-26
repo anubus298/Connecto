@@ -2,8 +2,14 @@
 import { cookies } from "next/headers";
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/utils/supabase/supabase";
-async function acceptFriendRequestAction(friendship_id?: number) {
+async function handleFriendRequestAction(
+  status: "accepted" | "rejected",
+  friendship_id?: number
+) {
   if (!friendship_id) {
+    return 0;
+  }
+  if (!"accepted rejected".includes(status)) {
     return 0;
   }
   const supabase = createServerActionClient<Database>({ cookies });
@@ -15,13 +21,10 @@ async function acceptFriendRequestAction(friendship_id?: number) {
       .from("friends")
       .update({
         action_user_id: user.id,
-        status: "accepted",
+        status: status,
       })
       .eq("friendship_id", friendship_id);
-    if (error) {
-      throw new Error(error.message);
-    }
   }
 }
 
-export default acceptFriendRequestAction;
+export default handleFriendRequestAction;

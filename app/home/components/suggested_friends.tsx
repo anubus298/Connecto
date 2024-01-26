@@ -55,15 +55,17 @@ function Suggested_friends({ friends }: Props) {
             />
           );
         })}
-        <div className="flex justify-end">
-          <Button
-            size="small"
-            type="dashed"
-            onClick={() => setis_modal_open(true)}
-          >
-            See all
-          </Button>
-        </div>
+        {friends.length > 4 && (
+          <div className="flex justify-end">
+            <Button
+              size="small"
+              type="dashed"
+              onClick={() => setis_modal_open(true)}
+            >
+              See all
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

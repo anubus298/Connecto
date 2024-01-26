@@ -23,6 +23,21 @@ interface Props {
 function Main_messages({ conversations: conversations_source, my_id }: Props) {
   const supabase = createClientComponentClient<Database>();
   useEffect(() => {
+    supabase
+      .channel("room_01")
+      .on("presence", { event: "sync" }, () => {
+        const newState = supabase.channel("room_01").presenceState();
+        console.log("sync", newState);
+      })
+      .on("presence", { event: "join" }, ({ key, newPresences }) => {
+        console.log("join", key, newPresences);
+      })
+      .on("presence", { event: "leave" }, ({ key, leftPresences }) => {
+        console.log("leave", key, leftPresences);
+      })
+      .subscribe();
+  }, []);
+  useEffect(() => {
     const channel = supabase
       .channel("conversations")
       .on(

@@ -31,7 +31,7 @@ function If_logged_bar({ profile, notifications }: Props) {
   const isMediumScreen = useMediaQuery({ query: "(max-width: 768px)" });
   const [is_deleting_post_pending, setis_deleting_post_pending] =
     useState(false);
-  function SubmitButton() {
+  function LogOutButton() {
     return (
       <button className="flex items-center gap-2 text-dark">
         <FontAwesomeIcon icon={faRightFromBracket} />
@@ -46,17 +46,7 @@ function If_logged_bar({ profile, notifications }: Props) {
   };
   const items: MenuProps["items"] = [
     {
-      key: "1",
-      label: (
-        <div className="flex items-center gap-2 text-dark">
-          <FontAwesomeIcon icon={faUser} />
-          <p>Profile</p>
-        </div>
-      ),
-    },
-
-    {
-      key: "3",
+      key: "settings",
       label: (
         <div className="flex items-center gap-2 text-dark">
           <FontAwesomeIcon icon={faGear} />
@@ -66,7 +56,7 @@ function If_logged_bar({ profile, notifications }: Props) {
     },
     {
       key: "4",
-      label: <SubmitButton />,
+      label: <LogOutButton />,
     },
   ];
   return (

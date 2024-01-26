@@ -2,8 +2,14 @@
 import setNotificationAction from "@/app/lib/functions/user/notifications/setNotification";
 import { Avatar } from "antd";
 import Image from "next/image";
-import Link from "next/link";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import Link, { LinkProps } from "next/link";
+import {
+  Dispatch,
+  MouseEvent,
+  MouseEventHandler,
+  SetStateAction,
+  useEffect,
+} from "react";
 import { Notification } from "./primary_navbar";
 interface Props {
   notification: Notification;
@@ -17,6 +23,54 @@ function Notification_card({
   notifications,
   index,
 }: Props) {
+  async function readNotification() {
+    await setNotificationAction("read", notification.notification_id);
+    const test = [...notifications];
+    test[index].is_read = true;
+    setNotifications(test);
+  }
+  function decide_notifications_text(notification: Notification) {
+    if (notification.type == "friend request") {
+      return (
+        <Link
+          onClick={async () => await readNotification()}
+          href={`/home/profile?id=${notification.sender_id}`}
+          className={"text-dark h-full w-full p-1 "}
+        >
+          <span className="overflow-hidden font-medium max-w-3">
+            {notification.from.username}{" "}
+          </span>
+          sent you a friend request.
+        </Link>
+      );
+    } else if (notification.type == "share") {
+      return (
+        <Link
+          onClick={async () => await readNotification()}
+          href={`/home/post?id=${notification.content_post_id}`}
+          className={"text-dark h-full w-full p-1 "}
+        >
+          <span className="overflow-hidden font-medium max-w-3">
+            {notification.from.username}{" "}
+          </span>
+          shared your post
+        </Link>
+      );
+    } else if (notification.type == "friend request accepted") {
+      return (
+        <Link
+          onClick={async () => await readNotification()}
+          href={`/home/post?id=${notification.content_post_id}`}
+          className={"text-dark h-full w-full p-1 "}
+        >
+          <span className="overflow-hidden font-medium max-w-3">
+            {notification.from.username}{" "}
+          </span>
+          accepted your friend request
+        </Link>
+      );
+    }
+  }
   useEffect(() => {
     async function SeeNotification() {
       await setNotificationAction("seen", notification.notification_id);
@@ -54,33 +108,6 @@ function Notification_card({
       </div>
     </div>
   );
-}
-function decide_notifications_text(notification: Notification) {
-  if (notification.type == "friend request") {
-    return (
-      <Link
-        href={`/home/profile?id=${notification.sender_id}`}
-        className={"text-dark h-full w-full p-1 "}
-      >
-        <span className="overflow-hidden font-medium max-w-3">
-          {notification.from.username}{" "}
-        </span>
-        sent you a friend request.
-      </Link>
-    );
-  } else if (notification.type == "share") {
-    return (
-      <Link
-        href={`/home/post?id=${notification.content_post_id}`}
-        className={"text-dark h-full w-full p-1 "}
-      >
-        <span className="overflow-hidden font-medium max-w-3">
-          {notification.from.username}{" "}
-        </span>
-        shared your post
-      </Link>
-    );
-  }
 }
 
 export default Notification_card;

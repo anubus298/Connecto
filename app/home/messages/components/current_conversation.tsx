@@ -16,7 +16,14 @@ import Avatar from "antd/es/avatar/avatar";
 import EmojiPicker from "emoji-picker-react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  KeyboardEventHandler,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Profile } from "../../home_main";
 import { Message } from "./conversation.pallete";
 import His_message_pallete from "./his_message_pallete";
@@ -33,6 +40,7 @@ function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
     "insert" | "update" | "insert_start"
   >("insert");
   const [drawer_open, setDrawer_open] = useState(false);
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
   const conversation_messagesRef = useRef<HTMLDivElement>(null);
   const [emoji_picker_open, setEmoji_picker_open] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -44,6 +52,7 @@ function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
   function SubmitButton() {
     return (
       <button
+        ref={submitButtonRef}
         className="w-[10%] bg-primary text-white rounded-r-md"
         onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
           e.preventDefault();
@@ -61,7 +70,7 @@ function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
     const handleScroll = () => {
       if (
         conversation_messagesRef.current?.scrollTop &&
-        conversation_messagesRef.current?.scrollTop < 10
+        conversation_messagesRef.current?.scrollTop < -400
       ) {
         setFromTo((prevFromTo) => prevFromTo + 15);
       }
@@ -123,7 +132,7 @@ function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
         });
     }
     if (fromTo == 0) {
-      setMessages_status("insert");
+      setMessages_status("insert_start");
     }
     if (!did_reach_end) {
       setMessages_status("insert_start");
@@ -132,12 +141,10 @@ function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
   }, [conversation_id, fromTo]);
   //making and scroll to bottom pop sound whenever a user sent a message
   useEffect(() => {
-    if (conversation_messagesRef.current) {
+    if (conversation_messagesRef.current && messages_status === "insert") {
+      audioRef.current?.play();
       conversation_messagesRef.current.scrollTop =
         conversation_messagesRef.current!.scrollHeight;
-      if (messages_status === "insert") {
-        audioRef.current?.play();
-      }
     }
   }, [messages, conversation_id]);
   useEffect(() => {
@@ -281,6 +288,12 @@ function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
               type={"text"}
               placeholder="chat"
               value={content}
+              onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  submitButtonRef.current?.click();
+                }
+              }}
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 setContent(e.target.value)
               }
@@ -288,7 +301,7 @@ function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
             />
             {emoji_picker_open && (
               <div className="absolute bottom-0 bg-white rounded-md right-full">
-                <EmojiPicker                  
+                <EmojiPicker
                   searchDisabled={true}
                   skinTonesDisabled
                   lazyLoadEmojis

@@ -39,12 +39,7 @@ function Main_signIn({ signIn, message, error }: Props) {
     <>
       {!isMobileScreen && (
         <div className="flex items-center justify-center col-start-1 col-end-7 p-4 mt-10">
-          <Image
-            height={500}
-            width={500}
-            src="/svg/boombox.svg"
-            alt="boombox Logo"
-          />
+          <Image height={500} width={500} src="/hollow.jpg" alt="hillos" />
         </div>
       )}
       <div className="flex flex-col items-center justify-center col-span-12 gap-5 p-4 mt-10 md:col-start-7 md:col-end-12">
