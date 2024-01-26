@@ -15,6 +15,7 @@ import signOutAction from "@/app/lib/functions/auth/signOut";
 import { useState } from "react";
 import { Notification } from "./primary_navbar";
 import Notifications_dropdown from "./notifications_dropdown";
+import { useMediaQuery } from "react-responsive";
 
 interface Props {
   profile?: {
@@ -27,6 +28,7 @@ interface Props {
 function If_logged_bar({ profile, notifications }: Props) {
   const router = useRouter();
   const [isDeleteModalOpen, setisDeleteModalOpen] = useState(false);
+  const isMediumScreen = useMediaQuery({ query: "(max-width: 768px)" });
   const [is_deleting_post_pending, setis_deleting_post_pending] =
     useState(false);
   function SubmitButton() {
@@ -69,7 +71,7 @@ function If_logged_bar({ profile, notifications }: Props) {
   ];
   return (
     <div className="flex items-center gap-2">
-      {profile?.username && (
+      {profile?.username && !isMediumScreen && (
         <Link href={"/home/profile"} className="font-semibold ">
           {profile.username}
         </Link>

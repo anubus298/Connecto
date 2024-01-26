@@ -18,7 +18,12 @@ interface Props {
     user_id: Profile;
   };
   index: number;
-  setcurrent_conversation: Dispatch<SetStateAction<string | null>>;
+  setcurrent_conversation: Dispatch<
+    SetStateAction<{
+      id: string;
+      user_profile: Profile;
+    } | null>
+  >;
 }
 export type Message = NonNullable<Tables<"messages"> & { profiles: Profile }>;
 
@@ -75,7 +80,14 @@ function Conversation_pallete({ conv, index, setcurrent_conversation }: Props) {
       }}
     >
       <div className="relative flex items-center gap-3 px-1 py-2 border-2 border-gray-100 rounded-md hover:border-gray-200">
-        <button onClick={() => setcurrent_conversation(conv.conversation_id)}>
+        <button
+          onClick={() =>
+            setcurrent_conversation({
+              id: conv.conversation_id,
+              user_profile: conv.user_id,
+            })
+          }
+        >
           <Avatar
             className=""
             size={"large"}
@@ -92,7 +104,12 @@ function Conversation_pallete({ conv, index, setcurrent_conversation }: Props) {
         </button>
         <button
           className="flex flex-col items-start justify-center"
-          onClick={() => setcurrent_conversation(conv.conversation_id)}
+          onClick={() =>
+            setcurrent_conversation({
+              id: conv.conversation_id,
+              user_profile: conv.user_id,
+            })
+          }
         >
           <p className="font-medium">{conv.user_id.username}</p>
           {latest_message && (

@@ -68,9 +68,10 @@ function Main_messages({ conversations: conversations_source, my_id }: Props) {
   const [current_page, setcurrent_page] = useState<string | number>(
     "Conversations"
   );
-  const [current_conversation, setcurrent_conversation] = useState<
-    string | null
-  >(null);
+  const [current_conversation, setcurrent_conversation] = useState<{
+    id: string;
+    user_profile: Profile;
+  } | null>(null);
   return (
     <ConfigProvider
       theme={{
@@ -82,7 +83,7 @@ function Main_messages({ conversations: conversations_source, my_id }: Props) {
       }}
     >
       <div className="grid-cols-12 grid gap-2 *:rounded-md *:p-3">
-        <div className="flex flex-col min-h-[60vh] col-span-4 gap-3 bg-white">
+        <div className="flex flex-col min-h-[60vh] col-span-12 md:col-span-4 gap-3 bg-white">
           <h3 className="h3">Messages</h3>
           <Segmented
             onChange={(value: string | number) => setcurrent_page(value)}
@@ -116,10 +117,16 @@ function Main_messages({ conversations: conversations_source, my_id }: Props) {
 
         {current_conversation && (
           <Current_conversation
-            key={current_conversation}
+            key={current_conversation.id}
+            user_profile={current_conversation.user_profile}
             my_id={my_id}
-            conversation_id={current_conversation}
+            conversation_id={current_conversation.id}
           />
+        )}
+        {!current_conversation && (
+          <div className="flex items-center justify-center col-span-8 bg-white">
+            <h3 className="text-2xl h3">Start a conversation</h3>
+          </div>
         )}
       </div>
     </ConfigProvider>

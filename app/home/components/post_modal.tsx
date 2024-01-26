@@ -8,7 +8,15 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AddCommentAction from "@/app/lib/functions/user/post/addComment";
 import { Database } from "@/utils/supabase/supabase";
-import { Avatar, Button, Carousel, Dropdown, MenuProps, Modal } from "antd";
+import {
+  Avatar,
+  Button,
+  Carousel,
+  ConfigProvider,
+  Dropdown,
+  MenuProps,
+  Modal,
+} from "antd";
 import Image from "next/image";
 import React, {
   Dispatch,
@@ -24,6 +32,7 @@ import Comment from "./comment";
 import Suspense_comments from "./suspense/suspense_comments";
 import Link from "next/link";
 import { CarouselRef } from "antd/es/carousel";
+import { useMediaQuery } from "react-responsive";
 
 interface Props {
   post: Database["public"]["Tables"]["posts"]["Row"] & {
@@ -61,6 +70,7 @@ function Post_modal({
       ?.slice(post.media_url.lastIndexOf("/") + 1, post.media_url.length ?? 0)
       .split(",").length ?? 1;
   const [isModalPostContentCut, setisModalPostContentCut] = useState(true);
+  const isMediumScreen = useMediaQuery({ query: "(max-width: 768px)" });
   const [doneFetching, setDoneFetching] = useState(false);
   const [should_refresh, setShould_refresh] = useState(false);
   const [ModalpostContent, setModalPostContent] = useState<string | undefined>(
@@ -96,7 +106,7 @@ function Post_modal({
       <Button
         type="primary"
         loading={pending}
-        className="w-2/12 h-full p-2 rounded-l-none rounded-r-sm"
+        className="w-2/12 h-full p-1 text-xs rounded-l-none rounded-r-sm md:p-2 md:text-base"
         onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
           e.preventDefault();
           e.currentTarget.form?.requestSubmit();
@@ -111,7 +121,7 @@ function Post_modal({
 
   return (
     <Modal
-      width={"60vw"}
+      width={isMediumScreen ? "100vw" : "60vw"}
       open={isPostModalOpen}
       centered
       onCancel={() => setIsPostModalOpen(false)}
@@ -119,7 +129,7 @@ function Post_modal({
       footer={null}
     >
       <div className="grid grid-cols-12 overflow-hidden min-h-[400px] gap-2 ">
-        <div className="relative col-span-6 h-[85vh] overflow-hidden bg-gray-100 rounded-md">
+        <div className="relative col-span-12 md:col-span-6 max-h-[50vh] md:h-[85vh] overflow-hidden bg-gray-100 rounded-md">
           {post.media_url && (
             <div className="w-full h-full">
               <Carousel
@@ -137,7 +147,7 @@ function Post_modal({
                   .map((img_src, index) => {
                     return (
                       <div
-                        className="flex items-center justify-center w-full h-[85vh]"
+                        className="flex items-center justify-center w-full md:h-[85vh]"
                         key={img_src + index * 11}
                       >
                         <Image
@@ -170,9 +180,9 @@ function Post_modal({
             </div>
           )}
         </div>
-        <div className="grid grid-cols-12 col-span-6 h-[85vh]">
+        <div className="grid grid-cols-12 col-span-12 md:col-span-6 md:h-[85vh]">
           {/* the post */}
-          <div className="grid col-span-12 grid-cols-12 gap-x-[15px] gap-y-2 content-start ">
+          <div className="grid content-start grid-cols-12 col-span-12 gap-x-4 gap-y-2 ">
             {post.profiles.avatar_url && (
               <>
                 <Link
@@ -287,7 +297,7 @@ function Post_modal({
                 name="content"
                 type={"text"}
                 placeholder="Add a Comment"
-                className="w-10/12 p-2 bg-gray-200 focus-visible:outline-none"
+                className="w-10/12 p-1 bg-gray-200 md:p-2 focus-visible:outline-none"
               />
               <SubmitButton />
             </form>

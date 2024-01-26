@@ -34,6 +34,7 @@ interface Props {
   show_share?: boolean;
   show_buttons?: boolean;
   my_profile: NonNullable<Tables<"profiles">>;
+  additional_key?: string;
 }
 function Post({
   post,
@@ -41,6 +42,7 @@ function Post({
   my_profile,
   show_share = true,
   show_buttons = true,
+  additional_key,
 }: Props) {
   const CarouselRef = useRef<CarouselRef>(null);
   const baseUrl: string | undefined = post?.media_url?.slice(
@@ -124,7 +126,10 @@ function Post({
     setFormattedDate(getPrettyDate(post.created_at));
   }, []);
   return (
-    <div className="flex flex-col gap-6 p-3 bg-white rounded-md">
+    <div
+      className="flex flex-col gap-6 p-3 bg-white rounded-md"
+      key={additional_key ?? undefined}
+    >
       {/* delete post modal */}
       <Modal
         title="Delete post"
@@ -262,6 +267,7 @@ function Post({
         <div className="w-full border-2 border-gray-200 rounded-md">
           <Post
             user_id={user_id}
+            additional_key={"addditionqéé866" + post.post.id}
             show_share={false}
             post={post.post}
             my_profile={my_profile}

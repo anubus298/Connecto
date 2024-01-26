@@ -25,10 +25,8 @@ function Post_something({ avatar }: Props) {
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       setPending(true);
-
       const formData = new FormData();
       formData.append("content", content);
-
       selectedFiles.forEach((fileObj, index) => {
         formData.append(`file${index}`, fileObj.file);
       });

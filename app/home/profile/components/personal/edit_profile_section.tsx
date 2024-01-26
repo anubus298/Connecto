@@ -9,7 +9,7 @@ function Edit_profile_section() {
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 768px)" });
   return !isTabletOrMobile ? (
     <div className="flex items-end justify-start gap-2 size-full">
-      <Button type="primary">
+      <Button type="text">
         <FontAwesomeIcon icon={faGear} />
       </Button>
     </div>

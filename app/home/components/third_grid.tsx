@@ -18,7 +18,7 @@ function Third_grid({ friends }: Props) {
             style={{ width: Third_gridRef.current?.offsetWidth }}
           >
             <Suggested_friends friends={friends} />
-            <div className="w-full p-3 bg-white rounded-md h-max">dd</div>
+            <div className="w-full p-3 bg-white rounded-md h-max"></div>
           </div>
         </div>
       )}
