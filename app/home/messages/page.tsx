@@ -4,6 +4,7 @@ import {
   SupabaseClient,
 } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import { Friend } from "../profile/components/other/other_profile";
 export const revalidate = 0;
 import Main_messages from "./components/main_messages";
 async function Page() {
@@ -15,11 +16,20 @@ async function Page() {
     data: { user },
   } = await supabase.auth.getUser();
   const conversations = await getConversations(supabase, user!.id);
-  //@ts-ignore
-  return <Main_messages my_id={user?.id} conversations={conversations} />;
+  const friends = await getFriends(supabase, user!.id);
+  return (
+    <Main_messages
+      //@ts-ignore
+      my_id={user?.id}
+      //@ts-ignore
+      conversations={conversations}
+      //@ts-ignore
+      friends={friends}
+    />
+  );
 }
 
-async function getConversations(
+export async function getConversations(
   supabase: SupabaseClient<Database, "public", Database["public"]>,
   user_id: string
 ) {
@@ -51,5 +61,40 @@ async function getConversations(
   });
 
   return result;
+}
+export async function getFriends(
+  supabase: SupabaseClient<Database, "public", Database["public"]>,
+  user_id: string
+) {
+  let { data: friendsRaw, error: friends_error } = await supabase
+    .from("friends")
+    .select(
+      "user_id_1,user_id_2,user_1:friends_user_id_1_fkey(id,username,avatar_url),user_2:friends_user_id_2_fkey(id,username,avatar_url)"
+    )
+    .or(`user_id_1.eq.${user_id},user_id_2.eq.${user_id}`)
+    .eq("status", "accepted")
+    .limit(9)
+    .order("action_timestamp", { ascending: false });
+  const friends = friendsRaw?.map((friend) => {
+    if (friend.user_id_1 === user_id) {
+      const test = Object.fromEntries(
+        Object.entries(friend).filter(([key]) => key !== "user_id_1")
+      );
+      test.friend = test.user_2;
+      delete test["user_2"];
+      delete test["user_1"];
+      return test;
+    } else if (friend.user_id_2 === user_id) {
+      const test = Object.fromEntries(
+        Object.entries(friend).filter(([key]) => key !== "user_id_2")
+      );
+      test.friend = test.user_1;
+      delete test["user_1"];
+      delete test["user_2"];
+
+      return test;
+    }
+  });
+  return friends;
 }
 export default Page;

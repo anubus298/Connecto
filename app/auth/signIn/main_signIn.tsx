@@ -9,6 +9,7 @@ import { Button } from "antd";
 import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
 import Image from "next/image";
+
 interface Props {
   signIn: any;
   message?: string;
@@ -39,11 +40,12 @@ function Main_signIn({ signIn, message, error }: Props) {
     <>
       {!isMobileScreen && (
         <div className="flex items-center justify-center col-start-1 col-end-7 p-4 mt-10">
-          <Image height={500} width={500} src="/hollow.jpg" alt="hillos" />
+          <Image height={500} width={500} src="/svg/boombox.svg" alt="cat" />
         </div>
       )}
       <div className="flex flex-col items-center justify-center col-span-12 gap-5 p-4 mt-10 md:col-start-7 md:col-end-12">
         <h1 className="text-center h1 text-dark">Connect</h1>
+
         <form
           className="flex flex-col justify-center flex-1 gap-2 animate-in"
           action={signIn}

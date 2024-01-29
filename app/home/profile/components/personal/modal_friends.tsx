@@ -4,7 +4,7 @@ import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ConfigProvider, Modal } from "antd";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Friends } from "../other/other_profile";
+import { Friend } from "../other/other_profile";
 
 import Friend_pallete from "./friend_pallete";
 
@@ -22,7 +22,7 @@ function Friends_modal({
   const [doneFetching, setDoneFetching] = useState(false);
   const [should_refresh, setShould_refresh] = useState(false);
   const [friends, setFriends] = useState<
-    (Friends & { friendship_id: string })[]
+    (Friend & { friendship_id: string })[]
   >([]);
 
   useEffect(() => {

@@ -11,19 +11,19 @@ import { Avatar, Dropdown, MenuProps, Modal } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Friends } from "../other/other_profile";
+import { Friend } from "../other/other_profile";
 
 interface Props {
-  friend: Friends & { friendship_id: number };
+  friend: Friend & { friendship_id: number };
   index: number;
   setFriends: React.Dispatch<
     React.SetStateAction<
-      (Friends & {
+      (Friend & {
         friendship_id: number;
       })[]
     >
   >;
-  friends: (Friends & { friendship_id: number })[];
+  friends: (Friend & { friendship_id: number })[];
 }
 function Friend_pallete({ friend, index, friends, setFriends }: Props) {
   const [isUnfriendModalOpen, setIsUnfriendModalOpen] = useState(false);

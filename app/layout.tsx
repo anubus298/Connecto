@@ -36,6 +36,12 @@ export default function RootLayout({ children }: Props) {
               token: {
                 fontFamily: "var(--spaceGrotesk)",
                 colorPrimary: "#ac47f5",
+                colorInfo: "#ac47f5",
+                borderRadius: 5,
+                wireframe: true,
+
+                colorTextBase: "#1d1d1b",
+                colorWarning: "#faad14",
               },
               components: {
                 Menu: {

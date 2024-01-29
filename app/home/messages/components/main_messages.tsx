@@ -1,15 +1,13 @@
 "use client";
-
-import { createClient } from "@/utils/supabase/client";
 import { Database, Tables } from "@/utils/supabase/supabase";
 import { faEnvelope, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
-
 import { ConfigProvider, Segmented } from "antd";
 import { useEffect, useState } from "react";
 import { Profile } from "../../home_main";
+import { Friend } from "../../profile/components/other/other_profile";
 import Conversation_pallete from "./conversation.pallete";
 import Current_conversation from "./current_conversation";
 
@@ -19,24 +17,10 @@ interface Props {
     user_id: Profile;
   }[];
   my_id: string;
+  friends: Friend[];
 }
 function Main_messages({ conversations: conversations_source, my_id }: Props) {
   const supabase = createClientComponentClient<Database>();
-  useEffect(() => {
-    supabase
-      .channel("room_01")
-      .on("presence", { event: "sync" }, () => {
-        const newState = supabase.channel("room_01").presenceState();
-        console.log("sync", newState);
-      })
-      .on("presence", { event: "join" }, ({ key, newPresences }) => {
-        console.log("join", key, newPresences);
-      })
-      .on("presence", { event: "leave" }, ({ key, leftPresences }) => {
-        console.log("leave", key, leftPresences);
-      })
-      .subscribe();
-  }, []);
   useEffect(() => {
     const channel = supabase
       .channel("conversations")

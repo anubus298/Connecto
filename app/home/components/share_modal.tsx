@@ -10,7 +10,7 @@ import { useFormStatus } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
 import Post from "./post";
-import { Profile } from "../home_main";
+
 import { Tables } from "@/utils/supabase/supabase";
 
 interface Props {
@@ -84,7 +84,7 @@ function Share_modal({
         <div className="relative col-span-12 min-h-[50vh] overflow-hidden rounded-md">
           <div className="">
             <div className="w-full">
-              {my_profile.avatar_url && (
+              {my_profile && my_profile.avatar_url && (
                 <div className="flex items-center gap-2 mb-6">
                   <Link className="col-span-1 text-dark" href={"/home/profile"}>
                     <Avatar

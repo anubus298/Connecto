@@ -126,7 +126,7 @@ function Post({
     setFormattedDate(getPrettyDate(post.created_at));
   }, []);
   return (
-    <div
+    <article
       className="flex flex-col gap-6 p-3 bg-white rounded-md"
       key={additional_key ?? undefined}
     >
@@ -352,7 +352,7 @@ function Post({
             )}
         </div>
       )}
-    </div>
+    </article>
   );
 }
 export function decide_poster_action(post_type: string) {

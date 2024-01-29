@@ -60,7 +60,7 @@ function Notification_card({
       return (
         <Link
           onClick={async () => await readNotification()}
-          href={`/home/post?id=${notification.content_post_id}`}
+          href={`/home/profile?id=${notification.sender_id}`}
           className={"text-dark h-full w-full p-1 "}
         >
           <span className="overflow-hidden font-medium max-w-3">

@@ -8,7 +8,7 @@ import Other_bio from "./other_bio";
 import Other_buttons from "./other_buttons";
 import Other_cover from "./other_cover";
 
-export type Friends = {
+export type Friend = {
   friend: {
     id: Tables<"profiles">["id"];
     avatar_url: Tables<"profiles">["avatar_url"];
@@ -19,7 +19,7 @@ interface Props {
   profile: NonNullable<Tables<"profiles">>;
   my_profile: NonNullable<Tables<"profiles">>;
   self_id: string | undefined;
-  friends: Friends[] | null;
+  friends: Friend[] | null;
   posts: Post[];
   friendship: {
     id?: number;

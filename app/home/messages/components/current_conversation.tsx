@@ -20,6 +20,7 @@ import {
   ChangeEvent,
   KeyboardEvent,
   KeyboardEventHandler,
+  Suspense,
   useEffect,
   useRef,
   useState,

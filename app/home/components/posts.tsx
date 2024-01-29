@@ -21,7 +21,7 @@ function Posts({ posts, user_id, my_profile }: Props) {
             <Post
               my_profile={my_profile}
               post={post}
-              key={index + post.id + 6548 + 56432 + 1}
+              key={String(index + 6548 + 56432 + 1) + post.id}
               user_id={user_id}
             />
           );

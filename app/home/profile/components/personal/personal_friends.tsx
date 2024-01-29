@@ -5,12 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useMediaQuery } from "react-responsive";
-import { Friends } from "../other/other_profile";
+import { Friend } from "../other/other_profile";
 
 import Friends_modal from "./modal_friends";
 
 interface Props {
-  friends: Friends[] | null;
+  friends: Friend[] | null;
   user_id: string | null;
   count: number;
 }

@@ -18,11 +18,17 @@ async function blockUserAction(user_2_id: string) {
       .filter("user_id_2", "in", `("${user.id}","${user_2_id}")`)
       .limit(1)
       .single();
+    if (error) {
+      throw new Error(error.message);
+    }
     if (target?.friendship_id) {
       const { data, error } = await supabase
         .from("friends")
         .update({ status: "blocked", action_user_id: user.id })
         .eq("friendship_id", target.friendship_id);
+      if (error) {
+        throw new Error(error.message);
+      }
     } else {
       const { data, error } = await supabase.from("friends").insert([
         {
@@ -32,6 +38,9 @@ async function blockUserAction(user_2_id: string) {
           user_id_2: user_2_id,
         },
       ]);
+      if (error) {
+        throw new Error(error.message);
+      }
     }
   }
 }
