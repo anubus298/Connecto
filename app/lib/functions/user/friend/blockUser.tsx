@@ -2,7 +2,7 @@
 import { cookies } from "next/headers";
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/utils/supabase/supabase";
-async function blockUserAction(user_2_id: string) {
+async function blockUserAction(user_2_id?: string) {
   if (!user_2_id) {
     return 0;
   }
@@ -18,9 +18,7 @@ async function blockUserAction(user_2_id: string) {
       .filter("user_id_2", "in", `("${user.id}","${user_2_id}")`)
       .limit(1)
       .single();
-    if (error) {
-      throw new Error(error.message);
-    }
+
     if (target?.friendship_id) {
       const { data, error } = await supabase
         .from("friends")
@@ -32,10 +30,10 @@ async function blockUserAction(user_2_id: string) {
     } else {
       const { data, error } = await supabase.from("friends").insert([
         {
-          action_user_id: user.id,
-          status: "blocked",
           user_id_1: user.id,
           user_id_2: user_2_id,
+          action_user_id: user.id,
+          status: "blocked",
         },
       ]);
       if (error) {
@@ -43,6 +41,7 @@ async function blockUserAction(user_2_id: string) {
       }
     }
   }
+  return 1;
 }
 
 export default blockUserAction;

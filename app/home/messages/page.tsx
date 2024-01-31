@@ -31,7 +31,7 @@ async function Page() {
 
 export async function getConversations(
   supabase: SupabaseClient<Database, "public", Database["public"]>,
-  user_id: string
+  user_id?: string
 ) {
   const { data: conversations, error } = await supabase
     .from("conversations")
@@ -39,6 +39,7 @@ export async function getConversations(
       "conversation_id,user_1:user_id_1(avatar_url,username,id),user_2:user_id_2(avatar_url,username,id)"
     )
     .or(`user_id_1.eq.${user_id},user_id_2.eq.${user_id}`)
+    .eq("status", "active")
     .limit(30)
     .returns<NonNullable<Tables<"conversations">[]>>();
 
@@ -64,7 +65,7 @@ export async function getConversations(
 }
 export async function getFriends(
   supabase: SupabaseClient<Database, "public", Database["public"]>,
-  user_id: string
+  user_id?: string
 ) {
   let { data: friendsRaw, error: friends_error } = await supabase
     .from("friends")

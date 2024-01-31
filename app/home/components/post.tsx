@@ -174,6 +174,7 @@ function Post({
       )}
       {/* post modal */}
       <Post_modal
+        setIsAssetsModalOpen={setIsAssetsModalOpen}
         setcomments_count={setcomments_count}
         comments_count={comments_count}
         post={post}

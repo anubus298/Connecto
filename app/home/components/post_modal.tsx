@@ -8,15 +8,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AddCommentAction from "@/app/lib/functions/user/post/addComment";
 import { Database } from "@/utils/supabase/supabase";
-import {
-  Avatar,
-  Button,
-  Carousel,
-  ConfigProvider,
-  Dropdown,
-  MenuProps,
-  Modal,
-} from "antd";
+import { Avatar, Button, Carousel, Dropdown, MenuProps, Modal } from "antd";
 import Image from "next/image";
 import React, {
   Dispatch,
@@ -51,6 +43,7 @@ interface Props {
   isPostModalOpen: boolean;
   setcomments_count: Dispatch<SetStateAction<number>>;
   comments_count: number;
+  setIsAssetsModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 function Post_modal({
   post,
@@ -60,6 +53,7 @@ function Post_modal({
   setIsPostModalOpen,
   comments_count,
   setcomments_count,
+  setIsAssetsModalOpen,
 }: Props) {
   const baseUrl: string | undefined = post?.media_url?.slice(
     0,
@@ -72,7 +66,7 @@ function Post_modal({
   const [isModalPostContentCut, setisModalPostContentCut] = useState(true);
   const isMediumScreen = useMediaQuery({ query: "(max-width: 768px)" });
   const [doneFetching, setDoneFetching] = useState(false);
-  const [should_refresh, setShould_refresh] = useState(false);
+
   const [ModalpostContent, setModalPostContent] = useState<string | undefined>(
     post.content?.slice(0, 50)
   );
@@ -150,13 +144,36 @@ function Post_modal({
                         className="flex items-center justify-center w-full md:h-[85vh]"
                         key={img_src + index * 11}
                       >
-                        <Image
-                          src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
-                          key={img_src + index}
-                          height={300}
-                          alt={`post asset number ${index + 1}`}
-                          width={350}
-                        />
+                        {img_src.split(".")[1] === "mp4" ? (
+                          <video
+                            controls
+                            controlsList="nodownload"
+                            style={{
+                              width: 600,
+                              height: 300,
+                              display: "block",
+                            }}
+                          >
+                            <source
+                              src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
+                              type="video/mp4"
+                            />
+                          </video>
+                        ) : (
+                          <Image
+                            src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
+                            height={300}
+                            onClick={() => {
+                              setIsAssetsModalOpen(true);
+                              CarouselRef.current?.goTo(index, false);
+                            }}
+                            className="h-auto cursor-pointer"
+                            style={{ objectFit: "cover" }}
+                            width={350}
+                            // alt={"post asset number " + Number(index + 1)}
+                            alt={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
+                          />
+                        )}
                       </div>
                     );
                   })}
@@ -177,6 +194,11 @@ function Post_modal({
                   </button>
                 </>
               )}
+            </div>
+          )}
+          {!post.media_url && (
+            <div className="flex items-center justify-center w-full h-full">
+              <h6 className="text-center">No media</h6>
             </div>
           )}
         </div>

@@ -99,6 +99,13 @@ const ageGreaterThan18Schema = z.string().refine(
   }
 );
 
+const safeString = z
+  .string()
+  .refine((value) => /^[a-zA-Z0-9\s\-,.#]+$/.test(value), {
+    message:
+      "Invalid characters detected. Only letters, numbers, spaces, and common symbols are allowed.",
+  });
+
 export { passwordSchema };
 export { ageGreaterThan18Schema };
 export { genderSchema };
@@ -109,3 +116,4 @@ export { emailSchema };
 export { NameSchema };
 export { ratingSchema };
 export { HexSchema };
+export { safeString };

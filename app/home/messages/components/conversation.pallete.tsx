@@ -12,6 +12,7 @@ import SkeletonInput from "antd/es/skeleton/Input";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Profile } from "../../home_main";
+import BlockUserModal from "./blockModal";
 interface Props {
   conv: {
     conversation_id: string;
@@ -29,6 +30,7 @@ export type Message = NonNullable<Tables<"messages"> & { profiles: Profile }>;
 
 function Conversation_pallete({ conv, index, setcurrent_conversation }: Props) {
   const [latest_message, setLatest_message] = useState<Message[] | null>(null);
+  const [isBlockUserModalOpen, setIsBlockUserModalOpen] = useState(false);
   const [dom_loaded, setDom_loaded] = useState(false);
   const items: MenuProps["items"] = [
     {
@@ -57,6 +59,7 @@ function Conversation_pallete({ conv, index, setcurrent_conversation }: Props) {
           <p>Block</p>
         </div>
       ),
+      onClick: () => setIsBlockUserModalOpen(true),
     },
   ];
   useEffect(() => {
@@ -121,6 +124,11 @@ function Conversation_pallete({ conv, index, setcurrent_conversation }: Props) {
             <SkeletonInput active size="small" className="text-sm" />
           )}
         </button>
+        <BlockUserModal
+          isBlockUserModalOpen={isBlockUserModalOpen}
+          user_profile={conv.user_id}
+          setIsBlockUserModalOpen={setIsBlockUserModalOpen}
+        />
         {dom_loaded && (
           <Dropdown
             menu={{ items }}

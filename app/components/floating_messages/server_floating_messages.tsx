@@ -12,8 +12,8 @@ async function Server_floating_messages() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const conversations = await getConversations(supabase, user!.id);
-  const friends = await getFriends(supabase, user!.id);
+  const conversations = await getConversations(supabase, user?.id);
+  const friends = await getFriends(supabase, user?.id);
   return (
     <Main_floating_messages
       //@ts-ignore

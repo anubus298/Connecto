@@ -38,7 +38,7 @@ export const addPostAction = async (formData: FormData) => {
         throw new Error(postError.message);
       }
 
-      if (assets.length > 0) {
+      if (assets) {
         for (let i = 0; i < assets.length; i++) {
           const asset = assets[i];
           const { data: fileData, error: fileError } = await supabase.storage
@@ -66,7 +66,7 @@ export const addPostAction = async (formData: FormData) => {
       }
     }
   } catch (error: any) {
-    return error.message;
+    throw new Error(error.message);
   }
 
   revalidatePath("/home");

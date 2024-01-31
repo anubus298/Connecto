@@ -1,4 +1,5 @@
 "use client";
+import blockUserAction from "@/app/lib/functions/user/friend/blockUser";
 import SendMessageAction from "@/app/lib/functions/user/message/sendMessage";
 import { Database, Tables } from "@/utils/supabase/supabase";
 import {
@@ -11,21 +12,15 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
-import { Button, ConfigProvider, Drawer } from "antd";
+import { Button, ConfigProvider, Drawer, Modal } from "antd";
 import Avatar from "antd/es/avatar/avatar";
 import EmojiPicker from "emoji-picker-react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ChangeEvent,
-  KeyboardEvent,
-  KeyboardEventHandler,
-  Suspense,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useRouter } from "next/navigation";
+import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import { Profile } from "../../home_main";
+import BlockUserModal from "./blockModal";
 import { Message } from "./conversation.pallete";
 import His_message_pallete from "./his_message_pallete";
 import My_message_pallete from "./my_message_pallete";
@@ -36,6 +31,8 @@ interface Props {
   user_profile: Profile;
 }
 function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
+  const [isBlockUserModalOpen, setIsBlockUserModalOpen] = useState(false);
+
   const BindSendMessageAction = SendMessageAction.bind(null, conversation_id);
   const [messages_status, setMessages_status] = useState<
     "insert" | "update" | "insert_start"
@@ -208,7 +205,17 @@ function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
                   >
                     Report
                   </Button>
-                  <Button danger type="primary" size="small">
+                  <BlockUserModal
+                    isBlockUserModalOpen={isBlockUserModalOpen}
+                    user_profile={user_profile}
+                    setIsBlockUserModalOpen={setIsBlockUserModalOpen}
+                  />
+                  <Button
+                    danger
+                    type="primary"
+                    size="small"
+                    onClick={() => setIsBlockUserModalOpen(true)}
+                  >
                     Block user
                   </Button>
                 </div>

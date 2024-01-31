@@ -94,18 +94,21 @@ export interface Database {
         Row: {
           conversation_id: string
           created_at: string
+          status: Database["public"]["Enums"]["conversation_status"]
           user_id_1: string
           user_id_2: string
         }
         Insert: {
           conversation_id?: string
           created_at?: string
+          status?: Database["public"]["Enums"]["conversation_status"]
           user_id_1: string
           user_id_2: string
         }
         Update: {
           conversation_id?: string
           created_at?: string
+          status?: Database["public"]["Enums"]["conversation_status"]
           user_id_1?: string
           user_id_2?: string
         }
@@ -526,6 +529,7 @@ export interface Database {
       }
     }
     Enums: {
+      conversation_status: "active" | "blocked"
       friend_type: "pending" | "accepted" | "rejected" | "blocked"
     }
     CompositeTypes: {
