@@ -13,7 +13,7 @@ interface Props {
   message?: string;
 }
 function Main_finishAccount({ action, message }: Props) {
-  const fileInputRed = useRef<HTMLInputElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedFile, setselectedFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -53,14 +53,17 @@ function Main_finishAccount({ action, message }: Props) {
   return (
     <div className="grid w-full grid-cols-12 col-span-12">
       <div className="flex flex-col items-center col-start-5 col-end-9 gap-6 my-auto">
-        <h1 className="text-center h1">Adjust Your Profile</h1>
+        <h1 className="text-center h1">finish Your Profile</h1>
+        <h6 className="text-sm text-center h6">
+          You can't change username afterword
+        </h6>
         <div className="size-[200px] bg-white flex justify-center items-center rounded-lg relative overflow-hidden  ">
           {imagePreview && (
             <Image height={200} width={200} alt="" src={imagePreview} />
           )}
           {!imagePreview && (
             <FontAwesomeIcon
-              onClick={() => fileInputRed.current?.click()}
+              onClick={() => fileInputRef.current?.click()}
               icon={faPlus}
               size="2x"
               className="cursor-pointer text-dark"
@@ -69,7 +72,7 @@ function Main_finishAccount({ action, message }: Props) {
           {imagePreview && (
             <button
               className="absolute bottom-0 right-0 flex items-center justify-center w-8 h-8 p-1 transition bg-white rounded-tl-lg cursor-pointer bg-opacity-70 hover:bg-opacity-80"
-              onClick={() => fileInputRed.current?.click()}
+              onClick={() => fileInputRef.current?.click()}
             >
               <FontAwesomeIcon icon={faPen} />
             </button>
@@ -82,7 +85,7 @@ function Main_finishAccount({ action, message }: Props) {
             type={"file"}
             name={"avatarFile"}
             className="hidden"
-            ref={fileInputRed}
+            ref={fileInputRef}
           />
           <input
             required

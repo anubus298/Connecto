@@ -1,15 +1,18 @@
 "use client";
-
+//prettier-ignore
+//@ts-ignore
+import { useFormState } from "react-dom";
 import { updateAddressAction } from "@/app/lib/functions/user/profile/updateAddress";
 import { updateBirthdayAction } from "@/app/lib/functions/user/profile/updateBirthday";
 import { updateFullNameAction } from "@/app/lib/functions/user/profile/updatefullName";
 import { updatePhoneNumberAction } from "@/app/lib/functions/user/profile/updatePhoneNumber";
+import { updateProfileAction } from "@/app/lib/functions/user/profile/updateProfile";
 import { Tables } from "@/utils/supabase/supabase";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Avatar, Button, ConfigProvider, Modal } from "antd";
 import Image from "next/image";
-import { MouseEvent, useState } from "react";
+import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react";
 
 interface Props {
   my_profile: {
@@ -20,10 +23,59 @@ interface Props {
 }
 function Main_profile_settings({ my_profile, personal_info }: Props) {
   const [isProfilePhotoModalOpen, setisProfilePhotoModalOpen] = useState(false);
+  const [current_profile_url, setcurrent_profile_url] = useState(
+    my_profile?.avatar_url
+  );
+  const [is_profile_edit, setis_profile_edit] = useState(false);
+  const [profileState, profileFormAction] = useFormState(updateProfileAction, {
+    message: "",
+    path: "",
+  });
+  useEffect(() => {
+    if (profileState.path) {
+      setcurrent_profile_url(profileState.path);
+      setis_profile_edit(false);
+    }
+  }, [profileState]);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [selectedFile, setselectedFile] = useState<File | null>(null);
   const [fullName_edit, setFullName_edit] = useState(false);
   const [address_edit, setAddress_edit] = useState(false);
   const [birthday_edit, setBirthday_edit] = useState(false);
   const [phoneNumber_edit, setPhoneNumber_edit] = useState(false);
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      setselectedFile(file);
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      // Clear the state if no file is selected
+      setselectedFile(null);
+      setImagePreview(null);
+    }
+  };
+  function SubmitButton() {
+    return (
+      <button
+        ref={submitButtonRef}
+        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+          e.preventDefault();
+          e.currentTarget.form?.requestSubmit();
+        }}
+        className="hidden"
+      >
+        Finish
+      </button>
+    );
+  }
   return (
     <ConfigProvider
       theme={{
@@ -41,6 +93,20 @@ function Main_profile_settings({ my_profile, personal_info }: Props) {
             <h6 className="text-gray-500">configure your profile settings</h6>
           </div>
           <div className="col-span-6 ms-4">
+            <form
+              action={profileFormAction}
+              className="flex flex-col justify-center gap-4"
+            >
+              <input
+                onChange={handleFileChange}
+                type={"file"}
+                name={"profileFile"}
+                className="hidden"
+                ref={fileInputRef}
+              />
+
+              <SubmitButton />
+            </form>
             <h3 className="mb-4 text-3xl font-semibold">your profile photo</h3>
             <div className="flex gap-8">
               <Modal
@@ -63,23 +129,50 @@ function Main_profile_settings({ my_profile, personal_info }: Props) {
                   </div>
                 </div>
               </Modal>
-              <button onClick={() => setisProfilePhotoModalOpen(true)}>
+              {!is_profile_edit && (
+                <button onClick={() => setisProfilePhotoModalOpen(true)}>
+                  <Avatar
+                    size={"large"}
+                    shape="square"
+                    src={
+                      <Image
+                        src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${current_profile_url}`}
+                        height={120}
+                        width={120}
+                        alt={"user avatar"}
+                      />
+                    }
+                  />
+                </button>
+              )}
+              {is_profile_edit && imagePreview && (
                 <Avatar
                   size={"large"}
                   shape="square"
                   src={
                     <Image
-                      src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${my_profile?.avatar_url}`}
+                      src={imagePreview}
                       height={120}
                       width={120}
                       alt={"user avatar"}
                     />
                   }
                 />
-              </button>
+              )}
               <div className="flex flex-col justify-evenly">
-                <Button block type="primary">
-                  Change Profile
+                <Button
+                  block
+                  type="primary"
+                  onClick={() => {
+                    if (!is_profile_edit) {
+                      fileInputRef.current?.click();
+                      setis_profile_edit(true);
+                    } else {
+                      submitButtonRef.current?.click();
+                    }
+                  }}
+                >
+                  {is_profile_edit ? "save" : "Change Profile"}
                 </Button>
                 <Button block danger icon={<FontAwesomeIcon icon={faTrash} />}>
                   Delete
@@ -89,6 +182,9 @@ function Main_profile_settings({ my_profile, personal_info }: Props) {
             <p className="mt-2 text-sm text-gray-400">
               The recommended size is 256x256 pixels.
             </p>
+            {profileState.message && (
+              <p className="text-sm text-red-600">{profileState.message}</p>
+            )}
           </div>
           <div className="relative col-span-6 p-3 rounded-md bg-gray-50 h-[180px] me-4 select-none">
             <div className="grid grid-cols-2 ">

@@ -3,37 +3,38 @@ import { Database } from "@/utils/supabase/supabase";
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 
-export const updateCoverAction = async (prevState: any, formData: FormData) => {
+export const updateProfileAction = async (
+  prevState: any,
+  formData: FormData
+) => {
   const supabase = createServerActionClient<Database>({ cookies });
-  const coverFile = formData.get("coverFile") as File;
-  if (coverFile.size > 6291456) {
+  const coverFile = formData.get("profileFile") as File;
+  if (coverFile.size > 4194304) {
     return {
-      message: "file max size : 6mb",
+      message: "file max size : 4mb",
     };
   }
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (user) {
-    const { data: oldCoverPath } = await supabase
+    const { data: oldAvatarPath } = await supabase
       .from("profiles")
-      .select("cover_url")
+      .select("avatar_url")
       .eq("id", user.id)
       .limit(1)
       .single();
-
     const { data: test, error: testError } = await supabase.storage
-      .from("covers")
+      .from("avatars")
       .list(`public/${user.id}`, {
         limit: 100,
         offset: 0,
       });
-    const coverVersion: number = test?.length ?? 0;
-
+    const profileVersion: number = test?.length ?? 0;
     const { data: fileData, error: fileError } = await supabase.storage
-      .from("covers")
+      .from("avatars")
       .upload(
-        `public/${user.id}/cover_v${coverVersion + 1}.${coverFile.name.split(".")[1]}`,
+        `public/${user.id}/profile_v${profileVersion + 1}.${coverFile.name.split(".")[1]}`,
         coverFile,
         {
           cacheControl: "3600",
@@ -47,7 +48,7 @@ export const updateCoverAction = async (prevState: any, formData: FormData) => {
     const { data, error } = await supabase
       .from("profiles")
       .update({
-        cover_url: fileData?.path,
+        avatar_url: fileData?.path,
       })
       .eq("id", user?.id);
     if (error) {

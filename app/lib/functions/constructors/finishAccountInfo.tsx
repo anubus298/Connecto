@@ -6,20 +6,28 @@ export const finishAccountAction = async (formData: FormData) => {
   const avatarFile = formData.get("avatarFile") as File;
   const username = formData.get("username") as string;
   const supabase = createServerActionClient({ cookies });
+  if (avatarFile.size > 4194304) {
+    return redirect(
+      "/constructors/finishAccount?message=Image size limit is 4mb"
+    );
+  }
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (user) {
     const { data: fileData, error: fileError } = await supabase.storage
       .from("avatars")
-      .upload(`public/${user.id.slice(0, 10) + "av"}.png`, avatarFile, {
-        cacheControl: "3600",
-        upsert: true,
-      });
+      .upload(
+        `public/${user.id}/profile_v1.${avatarFile.name.split(".")[1]}`,
+        avatarFile,
+        {
+          cacheControl: "3600",
+          upsert: true,
+        }
+      );
     if (fileError) {
       return redirect(
-        "/constructors/finishAccount?message=error accrued at file : " +
-          fileError.message
+        "/constructors/finishAccount?message=error accrued at file uploading ,try again: "
       );
     }
     const { data, error } = await supabase
@@ -31,7 +39,7 @@ export const finishAccountAction = async (formData: FormData) => {
       .eq("id", user?.id);
     if (error) {
       return redirect(
-        "/constructors/finishAccount?message=error accrued : " + error.message
+        "/constructors/finishAccount?message=error accrued : " + error.hint
       );
     }
   } else {
