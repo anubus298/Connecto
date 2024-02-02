@@ -2,9 +2,10 @@
 
 import { Profile } from "@/app/home/home_main";
 import { Friend } from "@/app/home/profile/components/other/other_profile";
-import { Avatar, ConfigProvider, Menu, MenuProps } from "antd";
-import Image from "next/image";
+import { ConfigProvider, Menu, MenuProps } from "antd";
+
 import { useState } from "react";
+import Avatar_comp from "../avatar_comp";
 
 interface Props {
   conversations: {
@@ -29,16 +30,11 @@ function Main_floating_messages({ my_id, conversations, friends }: Props) {
         {selected_conversation?.user_id.username}
       </h6>,
       "chatItem " + selected_conversation?.conversation_id,
-      <Avatar
-        shape="square"
-        src={
-          <Image
-            src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${selected_conversation?.user_id.avatar_url}`}
-            height={25}
-            width={25}
-            alt={selected_conversation?.user_id.username + " avatar"}
-          />
-        }
+      <Avatar_comp
+        src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${selected_conversation?.user_id.avatar_url}`}
+        height={25}
+        width={25}
+        alt={selected_conversation?.user_id.username + " avatar"}
       />
     ),
   ]);
@@ -56,17 +52,11 @@ function Main_floating_messages({ my_id, conversations, friends }: Props) {
               <p className="font-semibold">{conv.user_id.username}</p>
             </button>,
             "conversation " + conv.conversation_id,
-            <Avatar
-              size={"large"}
-              shape="square"
-              src={
-                <Image
-                  src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${conv.user_id.avatar_url}`}
-                  height={42}
-                  width={42}
-                  alt={conv.user_id.username + " avatar"}
-                />
-              }
+            <Avatar_comp
+              src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${conv.user_id.avatar_url}`}
+              height={42}
+              width={42}
+              alt={conv.user_id.username + " avatar"}
             />
           );
         })

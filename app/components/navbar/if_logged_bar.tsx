@@ -4,31 +4,35 @@ import {
   faEnvelope,
   faGear,
   faRightFromBracket,
-  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
-import { Avatar, Dropdown, MenuProps, Modal } from "antd";
+
+import { Dropdown, MenuProps, Modal } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import signOutAction from "@/app/lib/functions/auth/signOut";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Notification } from "./primary_navbar";
 import Notifications_dropdown from "./notifications_dropdown";
 import { useMediaQuery } from "react-responsive";
+import Avatar_comp from "../avatar_comp";
+import { Database, Tables } from "@/utils/supabase/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 
 interface Props {
   profile?: {
     avatar_url: string | null;
     username: string | null;
   };
-  notifications: Notification[];
+  notifications_source: Notification[];
 }
 
-function If_logged_bar({ profile, notifications }: Props) {
+function If_logged_bar({ profile, notifications_source }: Props) {
   const router = useRouter();
   const [isDeleteModalOpen, setisDeleteModalOpen] = useState(false);
   const isMediumScreen = useMediaQuery({ query: "(max-width: 768px)" });
+  const [notifications, setNotifications] = useState(notifications_source);
   const [is_deleting_post_pending, setis_deleting_post_pending] =
     useState(false);
   function LogOutButton() {
@@ -59,6 +63,43 @@ function If_logged_bar({ profile, notifications }: Props) {
       label: <LogOutButton />,
     },
   ];
+  const supabase = createClientComponentClient<Database>();
+  //initializing realtime listening
+  useEffect(() => {
+    const insertChannel = supabase
+      .channel("notification:" + profile?.username)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "notifications" },
+        async (
+          payload: RealtimePostgresInsertPayload<Tables<"notifications">>
+        ) => {
+          console.log(payload);
+          await handleNotificationInsertion(payload);
+        }
+      )
+      .subscribe();
+    async function handleNotificationInsertion(
+      payload: RealtimePostgresInsertPayload<Tables<"notifications">>
+    ) {
+      const res = await fetch(`/api/profile/get?id=${payload.new.sender_id}`, {
+        method: "GET",
+      });
+      const profile_data: {
+        data: { avatar_url: string; username: string; id: string };
+      } = await res.json();
+      setNotifications((prevNotifications) => [
+        {
+          ...payload.new,
+          from: profile_data.data,
+        },
+        ...prevNotifications,
+      ]);
+    }
+    return () => {
+      supabase.removeChannel(insertChannel);
+    };
+  }, []);
   return (
     <div className="flex items-center gap-2">
       {profile?.username && !isMediumScreen && (
@@ -67,16 +108,11 @@ function If_logged_bar({ profile, notifications }: Props) {
         </Link>
       )}
       <Link href={"/home/profile"} className="font-semibold ">
-        <Avatar
-          shape="square"
-          src={
-            <Image
-              src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${profile?.avatar_url}`}
-              height={30}
-              width={30}
-              alt={"user avatar"}
-            />
-          }
+        <Avatar_comp
+          src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${profile?.avatar_url}`}
+          height={30}
+          width={30}
+          alt={"user avatar"}
         />
       </Link>
       <Notifications_dropdown notifications_source={notifications} />

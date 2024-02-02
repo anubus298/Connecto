@@ -72,7 +72,7 @@ function Asset_modal({
                       height={400}
                       className="h-auto"
                       alt={`post asset number ${index + 1}`}
-                      width={900}
+                      width={600}
                     />
                   </div>
                 );

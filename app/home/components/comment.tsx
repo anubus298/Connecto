@@ -10,11 +10,11 @@ import decrementLikeOnCommentAction from "@/app/lib/functions/user/post/decremen
 import incrementLikeOnCommentAction from "@/app/lib/functions/user/post/incrementLikeOnComment";
 import { Database } from "@/utils/supabase/supabase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Avatar, Dropdown, MenuProps, Modal } from "antd";
-import Image from "next/image";
+import { Dropdown, MenuProps, Modal } from "antd";
 import { Dispatch, SetStateAction, useState } from "react";
 import deleteCommentAction from "@/app/lib/functions/user/post/deleteComment";
 import Link from "next/link";
+import Avatar_comp from "@/app/components/avatar_comp";
 
 interface Props {
   comment: Database["public"]["Tables"]["comments"]["Row"] & {
@@ -151,17 +151,12 @@ function Comment({
               : `/home/profile?id=${comment.user_id}`
           }
         >
-          <Avatar
+          <Avatar_comp
             className="col-span-1 "
-            shape="square"
-            src={
-              <Image
-                src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${comment.profiles.avatar_url}`}
-                height={30}
-                width={30}
-                alt={comment.profiles.username + " avatar"}
-              />
-            }
+            src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${comment.profiles.avatar_url}`}
+            height={30}
+            width={30}
+            alt={comment.profiles.username + " avatar"}
           />
         </Link>
       )}

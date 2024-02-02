@@ -22,12 +22,13 @@ function Suggested_friends({ friends }: Props) {
   return (
     <div className="flex flex-col w-full p-3 bg-white rounded-md">
       <Modal
+        title={<h3 className="h3">Suggested friends</h3>}
         open={is_modal_open}
         footer={null}
         className=""
         onCancel={() => setis_modal_open(false)}
       >
-        <div className="p-3 h-[60vh] overflow-y-auto hide-scrollbar">
+        <div className="p-3 h-[60vh] overflow-y-auto hide-scrollbar flex flex-col gap-3">
           {friends_state.map((friend, index) => {
             return (
               <Suggested_friend_for_modal

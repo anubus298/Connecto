@@ -96,6 +96,7 @@ function Main_messages({ conversations: conversations_source, my_id }: Props) {
               {
                 label: "groups",
                 value: "Groups",
+                disabled: true,
                 icon: <FontAwesomeIcon icon={faUserGroup} />,
               },
             ]}

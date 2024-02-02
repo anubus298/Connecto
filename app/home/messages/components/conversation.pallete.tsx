@@ -1,4 +1,5 @@
 "use client";
+import Avatar_comp from "@/app/components/avatar_comp";
 import { Tables } from "@/utils/supabase/supabase";
 import {
   faBan,
@@ -7,9 +8,8 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Avatar, ConfigProvider, Dropdown, MenuProps } from "antd";
+import { ConfigProvider, Dropdown, MenuProps } from "antd";
 import SkeletonInput from "antd/es/skeleton/Input";
-import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Profile } from "../../home_main";
 import BlockUserModal from "./blockModal";
@@ -91,18 +91,12 @@ function Conversation_pallete({ conv, index, setcurrent_conversation }: Props) {
             })
           }
         >
-          <Avatar
-            className=""
+          <Avatar_comp
             size={"large"}
-            shape="square"
-            src={
-              <Image
-                src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${conv.user_id.avatar_url}`}
-                height={42}
-                width={42}
-                alt={conv.user_id.username + " avatar"}
-              />
-            }
+            src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${conv.user_id.avatar_url}`}
+            height={42}
+            width={42}
+            alt={conv.user_id.username + " avatar"}
           />
         </button>
         <button

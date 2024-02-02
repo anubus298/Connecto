@@ -1,17 +1,18 @@
 "use client";
 
 import shareToProfileAction from "@/app/lib/functions/user/post/shareToProfile";
-import { Avatar, Button, Modal } from "antd";
+import { Button, Modal } from "antd";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
 //prettier-ignore
 //@ts-ignore
 import { useFormStatus } from "react-dom";
-import Image from "next/image";
+
 import Link from "next/link";
 import Post from "./post";
 
 import { Tables } from "@/utils/supabase/supabase";
+import Avatar_comp from "@/app/components/avatar_comp";
 
 interface Props {
   post: Post;
@@ -87,17 +88,11 @@ function Share_modal({
               {my_profile && my_profile.avatar_url && (
                 <div className="flex items-center gap-2 mb-6">
                   <Link className="col-span-1 text-dark" href={"/home/profile"}>
-                    <Avatar
-                      className=""
-                      shape="square"
-                      src={
-                        <Image
-                          src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${my_profile.avatar_url}`}
-                          height={30}
-                          width={30}
-                          alt={my_profile.username + " avatar"}
-                        />
-                      }
+                    <Avatar_comp
+                      src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${my_profile.avatar_url}`}
+                      height={30}
+                      width={30}
+                      alt={my_profile.username + " avatar"}
                     />
                   </Link>
                   <div className="flex flex-col">

@@ -1,4 +1,5 @@
 "use client";
+import Avatar_comp from "@/app/components/avatar_comp";
 import sendFriendRequestAction from "@/app/lib/functions/user/friend/SendFriendRequest";
 import { Avatar, Button } from "antd";
 import Image from "next/image";
@@ -28,17 +29,12 @@ function Suggested_friend({
         href={`/home/profile?id=${friend.id}`}
         className="size-[40px] flex items-center justify-center"
       >
-        <Avatar
+        <Avatar_comp
           size={"large"}
-          shape="square"
-          src={
-            <Image
-              width={40}
-              height={40}
-              src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${friend.avatar_url}`}
-              alt={friend.id + " avatar"}
-            />
-          }
+          width={40}
+          height={40}
+          src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${friend.avatar_url}`}
+          alt={friend.id + " avatar"}
         />
       </Link>
       <Link

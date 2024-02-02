@@ -1,7 +1,7 @@
 "use client";
 
-import { Avatar, Button } from "antd";
-import Image from "next/image";
+import Avatar_comp from "@/app/components/avatar_comp";
+import { Button } from "antd";
 import Link from "next/link";
 import { useState } from "react";
 import { useMediaQuery } from "react-responsive";
@@ -21,7 +21,7 @@ function Personal_friends({ friends, user_id, count }: Props) {
     <div className="flex flex-col w-full p-3 bg-white rounded-md">
       <div className="flex items-center justify-between">
         <h3 className=" h3">Friends</h3>
-        <p className="text-lg font-medium">{count}</p>
+        {count !== 0 && <p className="text-lg font-medium">{count}</p>}
       </div>
       <div className="w-full h-[1px] bg-gray-200 mb-6"></div>
       {friends?.length != 0 && (
@@ -38,17 +38,12 @@ function Personal_friends({ friends, user_id, count }: Props) {
                     className="w-[90px] flex flex-col items-center bg-white rounded-t-md rounded-b-sm"
                     key={index * 122 + 123}
                   >
-                    <Avatar
-                      shape="square"
+                    <Avatar_comp
                       className="hover:brightness-110"
-                      src={
-                        <Image
-                          src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${friend.friend.avatar_url}`}
-                          height={90}
-                          width={90}
-                          alt={friend.friend.username + " avatar"}
-                        />
-                      }
+                      src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${friend.friend.avatar_url}`}
+                      height={90}
+                      width={90}
+                      alt={friend.friend.username + " avatar"}
                     />
                     <p className="max-w-full py-1 overflow-hidden text-sm font-medium text-center text-ellipsis whitespace-nowrap">
                       {friend.friend.username}
@@ -70,7 +65,7 @@ function Personal_friends({ friends, user_id, count }: Props) {
         </div>
       )}
       {friends?.length == 0 && (
-        <div className="flex justify-center items-center w-full p-3 bg-white rounded-md">
+        <div className="flex items-center justify-center w-full p-3 text-gray-500 bg-white rounded-md min-h-40">
           <h3 className="">Add Some Friends</h3>
         </div>
       )}

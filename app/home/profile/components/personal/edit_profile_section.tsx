@@ -3,7 +3,7 @@ import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { useMediaQuery } from "react-responsive";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button } from "antd";
+
 import Link from "next/link";
 
 function Edit_profile_section() {

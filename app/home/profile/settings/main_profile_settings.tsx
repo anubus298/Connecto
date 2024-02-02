@@ -10,9 +10,10 @@ import { updateProfileAction } from "@/app/lib/functions/user/profile/updateProf
 import { Tables } from "@/utils/supabase/supabase";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Avatar, Button, ConfigProvider, Modal } from "antd";
+import { Button, ConfigProvider, Modal } from "antd";
 import Image from "next/image";
 import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react";
+import Avatar_comp from "@/app/components/avatar_comp";
 
 interface Props {
   my_profile: {
@@ -131,32 +132,22 @@ function Main_profile_settings({ my_profile, personal_info }: Props) {
               </Modal>
               {!is_profile_edit && (
                 <button onClick={() => setisProfilePhotoModalOpen(true)}>
-                  <Avatar
+                  <Avatar_comp
                     size={"large"}
-                    shape="square"
-                    src={
-                      <Image
-                        src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${current_profile_url}`}
-                        height={120}
-                        width={120}
-                        alt={"user avatar"}
-                      />
-                    }
+                    src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${current_profile_url}`}
+                    height={120}
+                    width={120}
+                    alt={"user avatar"}
                   />
                 </button>
               )}
               {is_profile_edit && imagePreview && (
-                <Avatar
+                <Avatar_comp
                   size={"large"}
-                  shape="square"
-                  src={
-                    <Image
-                      src={imagePreview}
-                      height={120}
-                      width={120}
-                      alt={"user avatar"}
-                    />
-                  }
+                  src={imagePreview}
+                  height={120}
+                  width={120}
+                  alt={"user avatar"}
                 />
               )}
               <div className="flex flex-col justify-evenly">

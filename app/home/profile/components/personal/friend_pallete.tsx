@@ -1,4 +1,5 @@
 "use client";
+import Avatar_comp from "@/app/components/avatar_comp";
 import unfriendAction from "@/app/lib/functions/user/friend/unfriend";
 import {
   faBan,
@@ -71,18 +72,13 @@ function Friend_pallete({ friend, index, friends, setFriends }: Props) {
           key={index * 122 + 6879}
         >
           <Link href={`/home/profile?id=${friend.friend.id}`}>
-            <Avatar
-              shape="square"
+            <Avatar_comp
               size={"default"}
               className="hover:brightness-110"
-              src={
-                <Image
-                  src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${friend.friend.avatar_url}`}
-                  height={70}
-                  width={70}
-                  alt={friend.friend.username + " avatar"}
-                />
-              }
+              src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${friend.friend.avatar_url}`}
+              height={70}
+              width={70}
+              alt={friend.friend.username + " avatar"}
             />
           </Link>
 

@@ -1,10 +1,9 @@
 "use client";
 
+import Avatar_comp from "@/app/components/avatar_comp";
 import { Database } from "@/utils/supabase/supabase";
-import { Avatar, Button } from "antd";
 
 import Image from "next/image";
-import { useState } from "react";
 
 interface Props {
   profile: Database["public"]["Tables"]["profiles"]["Row"];
@@ -25,18 +24,13 @@ function Other_cover({ profile }: Props) {
       )}
 
       <button className="absolute z-20 flex flex-col items-center -translate-x-1/2 -bottom-8 left-1/2">
-        <Avatar
+        <Avatar_comp
           className="border-2 border-white"
-          shape="square"
           size={"large"}
-          src={
-            <Image
-              src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${profile.avatar_url}`}
-              height={150}
-              width={150}
-              alt={profile.username + " avatar"}
-            />
-          }
+          src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${profile.avatar_url}`}
+          height={150}
+          width={150}
+          alt={profile.username + " avatar"}
         />
       </button>
     </div>

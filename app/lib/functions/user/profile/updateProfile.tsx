@@ -1,5 +1,6 @@
 "use server";
 import { Database } from "@/utils/supabase/supabase";
+import { revalidatePath } from "next/cache";
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 
@@ -60,4 +61,5 @@ export const updateProfileAction = async (
       path: fileData.path,
     };
   }
+  revalidatePath("/home/profile");
 };

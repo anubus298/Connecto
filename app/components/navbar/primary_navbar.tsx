@@ -28,7 +28,7 @@ function Primary_navbar({ profile, notifications }: Props) {
         </Link>
       </div>
       {profile && (
-        <If_logged_bar profile={profile} notifications={notifications} />
+        <If_logged_bar profile={profile} notifications_source={notifications} />
       )}
     </nav>
   );

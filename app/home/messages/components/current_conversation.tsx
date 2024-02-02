@@ -1,5 +1,5 @@
 "use client";
-import blockUserAction from "@/app/lib/functions/user/friend/blockUser";
+import Avatar_comp from "@/app/components/avatar_comp";
 import SendMessageAction from "@/app/lib/functions/user/message/sendMessage";
 import { Database, Tables } from "@/utils/supabase/supabase";
 import {
@@ -12,12 +12,9 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
-import { Button, ConfigProvider, Drawer, Modal } from "antd";
-import Avatar from "antd/es/avatar/avatar";
+import { Button, ConfigProvider, Drawer } from "antd";
 import EmojiPicker from "emoji-picker-react";
-import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import { Profile } from "../../home_main";
 import BlockUserModal from "./blockModal";
@@ -85,7 +82,7 @@ function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
   //initializing realtime listening
   useEffect(() => {
     const insertChannel = supabase
-      .channel("messages")
+      .channel(conversation_id + ":" + my_id)
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "messages" },
@@ -178,18 +175,12 @@ function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
           <div className="flex items-center justify-center w-full h-full">
             <div className="flex flex-col items-center gap-6">
               <div className="flex flex-col items-center">
-                <Avatar
-                  className=""
+                <Avatar_comp
                   size={"large"}
-                  shape="square"
-                  src={
-                    <Image
-                      src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${user_profile.avatar_url}`}
-                      height={80}
-                      width={80}
-                      alt={user_profile.username + " avatar"}
-                    />
-                  }
+                  src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${user_profile.avatar_url}`}
+                  height={80}
+                  width={80}
+                  alt={user_profile.username + " avatar"}
                 />
                 <p className="text-lg font-semibold">{user_profile.username}</p>
               </div>
@@ -231,17 +222,11 @@ function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
         ></audio>
         <div className="flex items-center justify-between w-full gap-5 p-3 white pe-5">
           <div className="flex items-center w-full gap-5 ">
-            <Avatar
-              className=""
-              shape="square"
-              src={
-                <Image
-                  src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${user_profile.avatar_url}`}
-                  height={50}
-                  width={50}
-                  alt={user_profile.username + " avatar"}
-                />
-              }
+            <Avatar_comp
+              src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${user_profile.avatar_url}`}
+              height={50}
+              width={50}
+              alt={user_profile.username + " avatar"}
             />
             <p className="text-lg font-semibold">{user_profile.username}</p>
           </div>

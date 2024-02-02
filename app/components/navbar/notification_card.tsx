@@ -10,6 +10,7 @@ import {
   SetStateAction,
   useEffect,
 } from "react";
+import Avatar_comp from "../avatar_comp";
 import { Notification } from "./primary_navbar";
 interface Props {
   notification: Notification;
@@ -91,17 +92,11 @@ function Notification_card({
           className="col-span-1 size-[30px]"
           href={`/home/profile?id=${notification.from.id}`}
         >
-          <Avatar
-            className=""
-            shape="square"
-            src={
-              <Image
-                src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${notification.from.avatar_url}`}
-                height={30}
-                width={30}
-                alt={notification.from.username + " avatar"}
-              />
-            }
+          <Avatar_comp
+            src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${notification.from.avatar_url}`}
+            height={30}
+            width={30}
+            alt={notification.from.username + " avatar"}
           />
         </Link>
         {decide_notifications_text(notification)}

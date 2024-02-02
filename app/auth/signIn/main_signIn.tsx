@@ -9,6 +9,8 @@ import { Button } from "antd";
 import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
 import Image from "next/image";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 interface Props {
   signIn: any;
@@ -16,6 +18,7 @@ interface Props {
   error?: string;
 }
 function Main_signIn({ signIn, message, error }: Props) {
+  const supabase = createClientComponentClient();
   function SubmitButton() {
     const { pending } = useFormStatus();
     return (
@@ -33,6 +36,15 @@ function Main_signIn({ signIn, message, error }: Props) {
       </Button>
     );
   }
+  async function handleOauthClick(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: "https://connecto-nine.vercel.app/auth/callback",
+      },
+    });
+  }
   const isMobileScreen = useMediaQuery({
     query: "(max-width: 640px)",
   });
@@ -40,7 +52,12 @@ function Main_signIn({ signIn, message, error }: Props) {
     <>
       {!isMobileScreen && (
         <div className="flex items-center justify-center col-start-1 col-end-7 p-4 mt-10">
-          <Image height={500} width={500} src="/svg/boombox.svg" alt="cat" />
+          <Image
+            height={500}
+            width={500}
+            src="https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/server/boombox.svg"
+            alt="cat"
+          />
         </div>
       )}
       <div className="flex flex-col items-center justify-center col-span-12 gap-5 p-4 mt-10 md:col-start-7 md:col-end-12">
@@ -70,6 +87,16 @@ function Main_signIn({ signIn, message, error }: Props) {
             required
           />
           <SubmitButton />
+          <h6 className="font-semibold text-center">or</h6>
+          <Button
+            className="flex items-center justify-center gap-2"
+            onClick={async (e: React.MouseEvent<HTMLButtonElement>) =>
+              await handleOauthClick(e)
+            }
+          >
+            <FontAwesomeIcon icon={faGoogle} />
+            Google
+          </Button>
           <Link
             href={"/auth/signUp"}
             className="flex items-center justify-end w-full gap-1 text-dark"

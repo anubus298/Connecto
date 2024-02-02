@@ -10,6 +10,7 @@ import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { updateProfileAction } from "@/app/lib/functions/user/profile/updateProfile";
+import Avatar_comp from "@/app/components/avatar_comp";
 interface Props {
   profile: Database["public"]["Tables"]["profiles"]["Row"];
 }
@@ -161,7 +162,7 @@ function Personal_cover({ profile }: Props) {
             alt=""
           />
         )}
-        <form className="" action={coverFormAction}>
+        <form action={coverFormAction}>
           <input
             onChange={handleCoverFileChange}
             type={"file"}
@@ -176,7 +177,7 @@ function Personal_cover({ profile }: Props) {
             />
           )}
         </form>
-        <form className="" action={profileFormAction}>
+        <form action={profileFormAction}>
           <input
             onChange={handleProfileFileChange}
             type={"file"}
@@ -220,34 +221,23 @@ function Personal_cover({ profile }: Props) {
               ></Button>
             )}
             {is_profile_edit && profileImagePreview && (
-              <Avatar
+              <Avatar_comp
                 className="border-2 border-white"
-                shape="square"
                 size={"large"}
-                src={
-                  <Image
-                    height={150}
-                    width={150}
-                    alt={profile.username + " avatar"}
-                    src={profileImagePreview}
-                  />
-                }
+                height={150}
+                width={150}
+                alt={profile.username + " avatar"}
+                src={profileImagePreview}
               />
             )}
             {!is_profile_edit && current_profile_url && (
-              <Avatar
-                className="border-2 border-white"
-                shape="square"
+              <Avatar_comp
+                className="border-2 border-white cursor-pointer"
                 size={"large"}
-                src={
-                  <Image
-                    src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${current_profile_url}`}
-                    className="cursor-pointer"
-                    height={150}
-                    width={150}
-                    alt={profile.username + " avatar"}
-                  />
-                }
+                src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${current_profile_url}`}
+                height={150}
+                width={150}
+                alt={profile.username + " avatar"}
               />
             )}
           </div>

@@ -27,7 +27,7 @@ function Main_signUp({ signUp, message, error }: Props) {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: "http://localhost:3000/auth/callback",
+        redirectTo: "https://connecto-nine.vercel.app/auth/callback",
       },
     });
   }
@@ -54,10 +54,10 @@ function Main_signUp({ signUp, message, error }: Props) {
       {!isMobileScreen && (
         <div className="flex items-center justify-center col-start-1 col-end-7 p-4 mt-10">
           <Image
-            src={"/svg/boombox.svg"}
-            alt="boombox cat"
             height={500}
             width={500}
+            src="https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/server/boombox.svg"
+            alt="cat"
           />
         </div>
       )}
@@ -97,6 +97,7 @@ function Main_signUp({ signUp, message, error }: Props) {
             required
           />
           <SubmitButton />
+          <h6 className="font-semibold text-center">or</h6>
           <Button
             className="flex items-center justify-center gap-2"
             onClick={async (e: React.MouseEvent<HTMLButtonElement>) =>

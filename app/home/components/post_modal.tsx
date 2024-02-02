@@ -25,6 +25,7 @@ import Suspense_comments from "./suspense/suspense_comments";
 import Link from "next/link";
 import { CarouselRef } from "antd/es/carousel";
 import { useMediaQuery } from "react-responsive";
+import Avatar_comp from "@/app/components/avatar_comp";
 
 interface Props {
   post: Database["public"]["Tables"]["posts"]["Row"] & {
@@ -215,16 +216,11 @@ function Post_modal({
                   }
                   className="self-start col-span-1 justify-self-start"
                 >
-                  <Avatar
-                    shape="square"
-                    src={
-                      <Image
-                        src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${post.profiles.avatar_url}`}
-                        height={30}
-                        width={30}
-                        alt={post.profiles.username + " avatar"}
-                      />
-                    }
+                  <Avatar_comp
+                    src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${post.profiles.avatar_url}`}
+                    height={30}
+                    width={30}
+                    alt={post.profiles.username + " avatar"}
                   />
                 </Link>
                 <div className="flex flex-col justify-between col-span-10 x">

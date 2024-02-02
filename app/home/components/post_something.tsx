@@ -6,6 +6,7 @@ import Image from "next/image";
 import React, { ChangeEvent, useRef, useState } from "react";
 import { addPostAction } from "@/app/lib/functions/user/post/addPost";
 import Link from "next/link";
+import Avatar_comp from "@/app/components/avatar_comp";
 interface Props {
   avatar: string | null | undefined;
 }
@@ -86,7 +87,7 @@ function Post_something({ avatar }: Props) {
       }}
     >
       <div className="flex flex-col w-full gap-1 p-2 mb-4 bg-white rounded-md">
-        <h4 className="font-semibold">Post Something</h4>
+        <h4 className="font-semibold select-none">Post Something</h4>
         <hr />
         <form action={addPostAction} className="flex flex-col items-end gap-2">
           <div className="flex w-full">
@@ -95,16 +96,11 @@ function Post_something({ avatar }: Props) {
               className="rounded-full size-[40px] overflow-hidden flex justify-center items-center"
             >
               {avatar && (
-                <Avatar
-                  shape="square"
-                  src={
-                    <Image
-                      src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${avatar}`}
-                      height={30}
-                      width={30}
-                      alt={"user avatar"}
-                    />
-                  }
+                <Avatar_comp
+                  src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${avatar}`}
+                  height={30}
+                  width={30}
+                  alt={"user avatar"}
                 />
               )}
             </Link>

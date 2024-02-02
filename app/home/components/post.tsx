@@ -27,6 +27,7 @@ import { Post } from "../home_main";
 import Asset_modal from "./asset_modal";
 import Share_modal from "./share_modal";
 import { Tables } from "@/utils/supabase/supabase";
+import Avatar_comp from "@/app/components/avatar_comp";
 
 interface Props {
   post: Post;
@@ -196,17 +197,11 @@ function Post({
                     : `/home/profile?id=${post.user_id}`
                 }
               >
-                <Avatar
-                  className=""
-                  shape="square"
-                  src={
-                    <Image
-                      src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${post.profiles.avatar_url}`}
-                      height={30}
-                      width={30}
-                      alt={post.profiles.username + " avatar"}
-                    />
-                  }
+                <Avatar_comp
+                  src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${post.profiles.avatar_url}`}
+                  height={30}
+                  width={30}
+                  alt={post.profiles.username + " avatar"}
                 />
               </Link>
               <div className="flex flex-col">
@@ -243,7 +238,7 @@ function Post({
         )}
       </div>
       {postContent && (
-        <p>
+        <p className="whitespace-pre-line">
           {postContent}
           {(post.content?.length as number) > 150 && (
             <span
@@ -359,6 +354,8 @@ function Post({
 export function decide_poster_action(post_type: string) {
   if (post_type === "shared") {
     return "shared a post";
+  } else if (post_type === "profile") {
+    return "updated his profile";
   } else {
     return "posted";
   }

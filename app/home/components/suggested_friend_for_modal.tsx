@@ -1,7 +1,7 @@
 "use client";
+import Avatar_comp from "@/app/components/avatar_comp";
 import sendFriendRequestAction from "@/app/lib/functions/user/friend/SendFriendRequest";
-import { Avatar, Button, ConfigProvider } from "antd";
-import Image from "next/image";
+import { Button, ConfigProvider } from "antd";
 import Link from "next/link";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Profile } from "../home_main";
@@ -24,29 +24,19 @@ function Suggested_friend_for_modal({
   const [is_pending, setis_pending] = useState(false);
   return (
     <ConfigProvider theme={{ components: { Avatar: { containerSizeLG: 60 } } }}>
-      <div className="flex items-center justify-between w-full gap-2 border-b-2 ">
+      <div className="flex items-center justify-between w-full gap-3">
         <Link
           href={`/home/profile?id=${friend.id}`}
-          className="size-[60px] flex items-center justify-center"
+          className="flex items-center justify-center gap-3 text-lg font-medium text-dark"
         >
-          <Avatar
+          <Avatar_comp
             size={"large"}
-            shape="square"
-            src={
-              <Image
-                width={60}
-                height={60}
-                src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${friend.avatar_url}`}
-                alt={friend.id + " avatar"}
-              />
-            }
+            width={60}
+            height={60}
+            src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${friend.avatar_url}`}
+            alt={friend.id + " avatar"}
           />
-        </Link>
-        <Link
-          href={`/home/profile?id=${friend.id}`}
-          className="w-1/4 text-lg font-medium text-start text-dark"
-        >
-          {friend.username}
+          <p>{friend.username}</p>
         </Link>
 
         <Button
