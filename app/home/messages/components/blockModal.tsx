@@ -30,6 +30,8 @@ function BlockUserModal({
       onOk={async () => {
         setis_deleting_post_pending(true);
         await blockUserAction(user_profile.id);
+        setIsBlockUserModalOpen(false);
+        setis_deleting_post_pending(false);
         router.refresh();
       }}
       onCancel={() => setIsBlockUserModalOpen(false)}

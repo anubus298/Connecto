@@ -11,6 +11,7 @@ import Left_home_panel from "./components/left_home_panel";
 import Right_home_panel from "./components/right_home_panel";
 import Third_grid from "./components/third_grid";
 import Home_main from "./home_main";
+import { getFriends } from "./messages/page";
 
 async function Page() {
   const cookiesStore = cookies();
@@ -24,6 +25,7 @@ async function Page() {
   );
   const posts = await getPosts(supabase, user?.id);
   const profile = await getMyProfile(supabase, user?.id);
+  const friends = await getFriends(supabase, user?.id);
   return (
     <div className="grid grid-cols-12 gap-1">
       <Left_home_panel />
@@ -36,7 +38,12 @@ async function Page() {
       />
       {/*@ts-ignore*/}
       <Third_grid friends={suggested_friends} />
-      <Right_home_panel />
+      <Right_home_panel
+        //@ts-ignore
+        friends={friends?.map((friend) => {
+          return { ...friend, lastOnline: null };
+        })}
+      />
     </div>
   );
 }

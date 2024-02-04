@@ -1,3 +1,4 @@
+import { Friend } from "@/app/home/profile/components/other/other_profile";
 import { Database } from "@/utils/supabase/supabase";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,8 +14,10 @@ interface Props {
     username: string | null;
   } | null;
   notifications: Notification[];
+  my_id?: string;
+  friends: Friend[];
 }
-function Primary_navbar({ profile, notifications }: Props) {
+function Primary_navbar({ profile, notifications, my_id, friends }: Props) {
   return (
     <nav className="flex items-center justify-between col-span-12 px-8 py-3 bg-white border-b-2 select-none text-dark h-fit ">
       <div className="">
@@ -28,7 +31,12 @@ function Primary_navbar({ profile, notifications }: Props) {
         </Link>
       </div>
       {profile && (
-        <If_logged_bar profile={profile} notifications_source={notifications} />
+        <If_logged_bar
+          profile={profile}
+          notifications_source={notifications}
+          friends={friends}
+          my_id={my_id}
+        />
       )}
     </nav>
   );

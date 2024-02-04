@@ -14,10 +14,12 @@ interface Props {
   setIsAssetsModalOpen: Dispatch<SetStateAction<boolean>>;
   CarouselRef: RefObject<CarouselRef>;
   assets_count: number;
+  initialSlide: number;
 }
 function Asset_modal({
   isAssetsModalOpen,
   setIsAssetsModalOpen,
+  initialSlide,
   CarouselRef,
   post,
   assets_count,
@@ -50,6 +52,7 @@ function Asset_modal({
         <div className="w-full h-full">
           <Carousel
             infinite={false}
+            initialSlide={initialSlide}
             className="w-full h-full"
             ref={CarouselRef}
             dots={false}
@@ -63,17 +66,19 @@ function Asset_modal({
               .map((img_src, index) => {
                 return (
                   <div
-                    className="flex items-center justify-center h-[90dvh] w-full"
+                    className="flex items-center justify-center h-[90dvh] w-full relative"
                     key={img_src + 6000 + index * 20}
                   >
-                    <Image
-                      src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
-                      key={img_src + index}
-                      height={400}
-                      className="h-auto"
-                      alt={`post asset number ${index + 1}`}
-                      width={600}
-                    />
+                    {
+                      <Image
+                        src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
+                        key={img_src + index}
+                        className=""
+                        style={{ objectFit: "contain" }}
+                        fill
+                        alt={`post asset number ${index + 1}`}
+                      />
+                    }
                   </div>
                 );
               })}

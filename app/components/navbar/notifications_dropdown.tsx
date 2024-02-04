@@ -61,7 +61,7 @@ function Notifications_dropdown({ notifications_source }: Props) {
         menu={{ items }}
         trigger={["click"]}
         placement={"bottomRight"}
-        className="max-h[90vh] overflow-y-auto"
+        className=""
       >
         <Badge
           className="cursor-pointer"

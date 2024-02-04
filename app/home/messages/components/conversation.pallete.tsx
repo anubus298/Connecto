@@ -1,5 +1,6 @@
 "use client";
 import Avatar_comp from "@/app/components/avatar_comp";
+import { globalContext } from "@/app/lib/globalProvider";
 import { Tables } from "@/utils/supabase/supabase";
 import {
   faBan,
@@ -10,8 +11,15 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ConfigProvider, Dropdown, MenuProps } from "antd";
 import SkeletonInput from "antd/es/skeleton/Input";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { Profile } from "../../home_main";
+import { Friend } from "../../profile/components/other/other_profile";
 import BlockUserModal from "./blockModal";
 interface Props {
   conv: {
@@ -25,11 +33,18 @@ interface Props {
       user_profile: Profile;
     } | null>
   >;
+  friends: Friend[];
 }
 export type Message = NonNullable<Tables<"messages"> & { profiles: Profile }>;
 
-function Conversation_pallete({ conv, index, setcurrent_conversation }: Props) {
+function Conversation_pallete({
+  conv,
+  index,
+  setcurrent_conversation,
+  friends,
+}: Props) {
   const [latest_message, setLatest_message] = useState<Message[] | null>(null);
+
   const [isBlockUserModalOpen, setIsBlockUserModalOpen] = useState(false);
   const [dom_loaded, setDom_loaded] = useState(false);
   const items: MenuProps["items"] = [

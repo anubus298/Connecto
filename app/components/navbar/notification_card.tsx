@@ -1,15 +1,8 @@
 "use client";
+import { getPrettyDate } from "@/app/home/components/post";
 import setNotificationAction from "@/app/lib/functions/user/notifications/setNotification";
-import { Avatar } from "antd";
-import Image from "next/image";
-import Link, { LinkProps } from "next/link";
-import {
-  Dispatch,
-  MouseEvent,
-  MouseEventHandler,
-  SetStateAction,
-  useEffect,
-} from "react";
+import Link from "next/link";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import Avatar_comp from "../avatar_comp";
 import { Notification } from "./primary_navbar";
 interface Props {
@@ -84,7 +77,8 @@ function Notification_card({
   return (
     <div
       className={
-        "flex p-2 w-80 h-16 " + (!notification.is_read && "bg-gray-50")
+        "flex p-2 w-80 h-20 relative " +
+        (!notification.is_read && "bg-gray-50 ")
       }
     >
       <div className="flex items-start w-full gap-2">
@@ -99,6 +93,9 @@ function Notification_card({
             alt={notification.from.username + " avatar"}
           />
         </Link>
+        <p className="absolute bottom-0 text-xs text-gray-700 left-1">
+          {getPrettyDate(notification.created_at)}
+        </p>
         {decide_notifications_text(notification)}
       </div>
     </div>

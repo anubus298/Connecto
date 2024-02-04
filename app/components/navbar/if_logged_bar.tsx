@@ -11,7 +11,7 @@ import { Dropdown, MenuProps, Modal } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import signOutAction from "@/app/lib/functions/auth/signOut";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Notification } from "./primary_navbar";
 import Notifications_dropdown from "./notifications_dropdown";
 import { useMediaQuery } from "react-responsive";
@@ -19,6 +19,8 @@ import Avatar_comp from "../avatar_comp";
 import { Database, Tables } from "@/utils/supabase/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
+import { Friend } from "@/app/home/profile/components/other/other_profile";
+import { FriendContext, globalContext } from "@/app/lib/globalProvider";
 
 interface Props {
   profile?: {
@@ -26,10 +28,20 @@ interface Props {
     username: string | null;
   };
   notifications_source: Notification[];
+  my_id?: string;
+  friends: Friend[];
 }
 
-function If_logged_bar({ profile, notifications_source }: Props) {
+function If_logged_bar({
+  profile,
+  notifications_source,
+  my_id,
+  friends,
+}: Props) {
+  const { onlineUsers, setOnlineUsers } = useContext(globalContext);
   const router = useRouter();
+  const [Friends, setFriends] = useState(friends);
+  const [onlineFriends, setOnlineFriends] = useState<Friend[]>();
   const [isDeleteModalOpen, setisDeleteModalOpen] = useState(false);
   const isMediumScreen = useMediaQuery({ query: "(max-width: 768px)" });
   const [notifications, setNotifications] = useState(notifications_source);
@@ -74,7 +86,6 @@ function If_logged_bar({ profile, notifications_source }: Props) {
         async (
           payload: RealtimePostgresInsertPayload<Tables<"notifications">>
         ) => {
-          console.log(payload);
           await handleNotificationInsertion(payload);
         }
       )
@@ -100,6 +111,47 @@ function If_logged_bar({ profile, notifications_source }: Props) {
       supabase.removeChannel(insertChannel);
     };
   }, []);
+  //initializing presence
+
+  useEffect(() => {
+    const roomOne = supabase.channel("Hall");
+    const getData = async () => {
+      const userStatus = {
+        user: my_id,
+        online_at: new Date().toISOString(),
+      };
+
+      roomOne
+        .on("presence", { event: "sync" }, () => {
+          const uniqueUser: Set<FriendContext> = new Set();
+          for (const id in roomOne.presenceState()) {
+            //@ts-ignore
+            let user_id = roomOne.presenceState()[id][0].user;
+            //@ts-ignore
+            let latestSeen = roomOne.presenceState()[id][0].online_at;
+            const index = Friends.findIndex(
+              (friend) => friend.friend.id === user_id
+            );
+            if (index !== -1) {
+              uniqueUser.add({ ...Friends[index], lastOnline: latestSeen });
+            }
+          }
+          setOnlineUsers &&
+            setOnlineUsers(Array.from(uniqueUser) as FriendContext[]);
+        })
+        .subscribe(async (status) => {
+          if (status === "SUBSCRIBED") {
+            await roomOne.track(userStatus);
+          }
+        });
+    };
+
+    getData();
+
+    return () => {
+      supabase.removeChannel(roomOne);
+    };
+  }, [friends]);
   return (
     <div className="flex items-center gap-2">
       {profile?.username && !isMediumScreen && (

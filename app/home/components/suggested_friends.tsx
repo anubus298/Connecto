@@ -20,7 +20,7 @@ function Suggested_friends({ friends }: Props) {
     })
   );
   return (
-    <div className="flex flex-col w-full p-3 bg-white rounded-md">
+    <div className="flex flex-col w-full p-3 bg-white rounded-md h-1/2">
       <Modal
         title={<h3 className="h3">Suggested friends</h3>}
         open={is_modal_open}
@@ -28,7 +28,7 @@ function Suggested_friends({ friends }: Props) {
         className=""
         onCancel={() => setis_modal_open(false)}
       >
-        <div className="p-3 h-[60vh] overflow-y-auto hide-scrollbar flex flex-col gap-3">
+        <div className="flex flex-col gap-3 p-3 overflow-y-auto hide-scrollbar h-1/2">
           {friends_state.map((friend, index) => {
             return (
               <Suggested_friend_for_modal
@@ -44,7 +44,7 @@ function Suggested_friends({ friends }: Props) {
       </Modal>
       <h3 className="text-lg font-semibold">Suggested Friends</h3>
       <div className="bg-gray-100 h-[1px] w-full mb-4 mt-2"></div>
-      <div className="flex flex-col w-full gap-2">
+      <div className="flex flex-col w-full gap-2 ">
         {friends_state.slice(0, 4).map((friend, index) => {
           return (
             <Suggested_friend
@@ -56,6 +56,11 @@ function Suggested_friends({ friends }: Props) {
             />
           );
         })}
+        {friends_state.length === 0 && (
+          <div className="flex items-center justify-center w-full h-24 ">
+            <h6 className="text-xs text-gray-400 ">No suggestions</h6>
+          </div>
+        )}
         {friends.length > 4 && (
           <div className="flex justify-end">
             <Button

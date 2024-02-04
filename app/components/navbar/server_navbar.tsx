@@ -1,3 +1,4 @@
+import { getFriends } from "@/app/home/messages/page";
 import { Database } from "@/utils/supabase/supabase";
 import {
   createServerComponentClient,
@@ -19,9 +20,16 @@ async function Server_Navbar() {
   } = await supabase.auth.getUser();
   const profile = await getProfile(supabase, user?.id as string);
   const notifications = await getNotifications(supabase, user?.id as string);
+  const friends = await getFriends(supabase, user?.id);
   return (
     <Suspense fallback={<Suspense_Primary_navbar />}>
-      <Primary_navbar profile={profile} notifications={notifications} />
+      <Primary_navbar
+        profile={profile}
+        //@ts-ignore
+        friends={friends}
+        notifications={notifications}
+        my_id={user?.id}
+      />
     </Suspense>
   );
 }

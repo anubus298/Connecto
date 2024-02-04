@@ -12,6 +12,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 import "./globals.css";
 import ConfigProvider from "antd/es/config-provider";
+import GlobalProvider from "./lib/globalProvider";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -50,9 +51,11 @@ export default function RootLayout({ children }: Props) {
               },
             }}
           >
-            <main className="grid min-h-[80dvh] grid-cols-12 gap-1 bg-gray-100">
-              {children}
-            </main>
+            <GlobalProvider>
+              <main className="grid min-h-[80dvh] grid-cols-12 gap-1 bg-gray-100">
+                {children}
+              </main>
+            </GlobalProvider>
           </ConfigProvider>
         </AntdRegistry>
       </body>

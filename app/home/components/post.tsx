@@ -1,9 +1,7 @@
 "use client";
-
 import incrementLikeAction from "@/app/lib/functions/user/post/incrementlike";
-import { Avatar, Dropdown, MenuProps, Modal } from "antd";
+import { Dropdown, MenuProps, Modal } from "antd";
 import decrementLikeAction from "@/app/lib/functions/user/post/decrementlike";
-
 import {
   faHeart,
   faComment,
@@ -107,6 +105,7 @@ function Post({
     ];
   }
   const [likes_count, setlikes_count] = useState<number>(post.likes_count ?? 0);
+  const [initialSlide, setinitialSlide] = useState(0);
   const [comments_count, setcomments_count] = useState<number>(
     post.comments_count ?? 0
   );
@@ -166,6 +165,7 @@ function Post({
       {/* assets post modal */}
       {post.media_url && (
         <Asset_modal
+          initialSlide={initialSlide}
           CarouselRef={CarouselRef}
           assets_count={assets_count}
           post={post}
@@ -270,15 +270,16 @@ function Post({
           />
         </div>
       )}
-      {post.media_url && (
-        <div className="flex items-center justify-center w-full overflow-hidden max-h-[600px]">
+      {post.media_url && assets_count >= 4 ? (
+        <div className=" w-full overflow-hidden max-h-[600px] grid grid-cols-2 grid-rows-2 gap-1">
           {post.media_url
             .slice(post.media_url.lastIndexOf("/") + 1, post.media_url.length)
             .split(",")
+            .slice(0, 4)
             .map((img_src, index) => {
               return (
                 <div
-                  className="max-h-[600px] overflow-hidden"
+                  className="min-h-[200px] overflow-hidden col-span-1 relative"
                   key={img_src + 1 + index * 9}
                 >
                   {img_src.split(".")[1] === "mp4" ? (
@@ -286,8 +287,8 @@ function Post({
                       controls
                       controlsList="nodownload"
                       style={{
-                        width: 600 / assets_count,
-                        height: 300,
+                        width: "100%",
+                        height: "100%",
                         display: "block",
                       }}
                     >
@@ -299,22 +300,165 @@ function Post({
                   ) : (
                     <Image
                       src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
-                      height={300}
                       onClick={() => {
                         setIsAssetsModalOpen(true);
+                        setinitialSlide(index);
                         CarouselRef.current?.goTo(index, false);
                       }}
-                      className="h-auto cursor-pointer"
+                      className="cursor-pointer"
                       style={{ objectFit: "cover" }}
-                      width={600 / assets_count}
-                      // alt={"post asset number " + Number(index + 1)}
-                      alt={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
+                      fill
+                      alt={"post media number " + index}
                     />
                   )}
                 </div>
               );
             })}
         </div>
+      ) : post.media_url && assets_count == 3 ? (
+        <div className=" w-full overflow-hidden max-h-[600px] grid grid-cols-2 grid-rows-2 gap-1">
+          {post.media_url
+            .slice(post.media_url.lastIndexOf("/") + 1, post.media_url.length)
+            .split(",")
+            .map((img_src, index) => {
+              return (
+                <div
+                  className={
+                    " overflow-hidden relative " +
+                    (index === 0
+                      ? " row-start-1 row-end-3 col-start-1 col-end-2 min-h-[200px]"
+                      : index === 1
+                        ? "row-start-1 row-end-2 col-start-2 col-end-3 min-h-[200px]"
+                        : "row-start-2 row-end-3 col-start-2 col-end-3 min-h-[200px]")
+                  }
+                  key={img_src + 1 + index * 9}
+                >
+                  {img_src.split(".")[1] === "mp4" ? (
+                    <video
+                      controls
+                      controlsList="nodownload"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        display: "block",
+                      }}
+                    >
+                      <source
+                        src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
+                        type="video/mp4"
+                      />
+                    </video>
+                  ) : (
+                    <Image
+                      src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
+                      fill
+                      onClick={() => {
+                        setIsAssetsModalOpen(true);
+                        setinitialSlide(index);
+                        CarouselRef.current?.goTo(index, false);
+                      }}
+                      className="cursor-pointer "
+                      style={{ objectFit: "cover" }}
+                      alt={"post media number " + index}
+                    />
+                  )}
+                </div>
+              );
+            })}
+        </div>
+      ) : post.media_url && assets_count == 2 ? (
+        <div className=" w-full overflow-hidden max-h-[600px] grid grid-cols-2 gap-1 ">
+          {post.media_url
+            .slice(post.media_url.lastIndexOf("/") + 1, post.media_url.length)
+            .split(",")
+            .map((img_src, index) => {
+              return (
+                <div
+                  className={
+                    "max-h-[600px] overflow-hidden col-span-1 relative "
+                  }
+                  key={img_src + 1 + index * 9}
+                >
+                  {img_src.split(".")[1] === "mp4" ? (
+                    <video
+                      controls
+                      controlsList="nodownload"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        display: "block",
+                      }}
+                    >
+                      <source
+                        src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
+                        type="video/mp4"
+                      />
+                    </video>
+                  ) : (
+                    <Image
+                      src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
+                      fill
+                      onClick={() => {
+                        setIsAssetsModalOpen(true);
+                        setinitialSlide(index);
+                        CarouselRef.current?.goTo(index, false);
+                      }}
+                      className="cursor-pointer "
+                      style={{ objectFit: "cover" }}
+                      alt={"post media number " + index}
+                    />
+                  )}
+                </div>
+              );
+            })}
+        </div>
+      ) : (
+        post.media_url && (
+          <div className="w-full overflow-hidden max-h-[600px] grid grid-cols-1 ">
+            {post.media_url
+              .slice(post.media_url.lastIndexOf("/") + 1, post.media_url.length)
+              .split(",")
+              .map((img_src, index) => {
+                return (
+                  <div
+                    className={
+                      "max-h-[600px] overflow-hidden col-span-1 relative "
+                    }
+                    key={img_src + 1 + index * 9}
+                  >
+                    {img_src.split(".")[1] === "mp4" ? (
+                      <video
+                        controls
+                        controlsList="nodownload"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          display: "block",
+                        }}
+                      >
+                        <source
+                          src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
+                          type="video/mp4"
+                        />
+                      </video>
+                    ) : (
+                      <Image
+                        src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
+                        fill
+                        onClick={() => {
+                          CarouselRef.current?.goTo(index, false);
+                          setIsAssetsModalOpen(true);
+                        }}
+                        className="cursor-pointer "
+                        style={{ objectFit: "cover" }}
+                        alt={"post media number " + index}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+          </div>
+        )
       )}
       {show_buttons && (
         <div className="flex w-full gap-2">

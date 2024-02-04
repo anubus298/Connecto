@@ -44,7 +44,7 @@ export const addPostAction = async (formData: FormData) => {
           const { data: fileData, error: fileError } = await supabase.storage
             .from("posts")
             .upload(
-              `public/${user.id}/${post_data[0].id}/${i + 1}.${asset.name.split(".")[1]}`,
+              `public/${user.id}/${post_data[0].id}/${i + 1}.${asset.name.slice(asset.name.lastIndexOf(".") + 1)}`,
               asset,
               {
                 cacheControl: "3600",
@@ -59,8 +59,7 @@ export const addPostAction = async (formData: FormData) => {
         await supabase
           .from("posts")
           .update({
-            id: post_data[0].id,
-            media_url: `posts/public/${user.id}/${post_data[0].id}/${assets.map((asset, index) => `${index + 1}.${asset.name.split(".")[1]}`).join(",")}`,
+            media_url: `posts/public/${user.id}/${post_data[0].id}/${assets.map((asset, index) => `${index + 1}.${asset.name.slice(asset.name.lastIndexOf(".") + 1)}`).join(",")}`,
           })
           .eq("id", post_data[0].id);
       }

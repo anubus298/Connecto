@@ -1,15 +1,19 @@
 "use client";
 import { Database, Tables } from "@/utils/supabase/supabase";
+import { FriendContext, globalContext } from "@/app/lib/globalProvider";
+
 import { faEnvelope, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
-import { ConfigProvider, Segmented } from "antd";
-import { useEffect, useState } from "react";
+import { Badge, ConfigProvider, Segmented } from "antd";
+import { useContext, useEffect, useState } from "react";
 import { Profile } from "../../home_main";
 import { Friend } from "../../profile/components/other/other_profile";
 import Conversation_pallete from "./conversation.pallete";
 import Current_conversation from "./current_conversation";
+import Avatar_comp from "@/app/components/avatar_comp";
+import initialiseConversationAction from "@/app/lib/functions/user/message/initialiseConversation";
 
 interface Props {
   conversations: {
@@ -19,7 +23,11 @@ interface Props {
   my_id: string;
   friends: Friend[];
 }
-function Main_messages({ conversations: conversations_source, my_id }: Props) {
+function Main_messages({
+  conversations: conversations_source,
+  my_id,
+  friends: friends_source,
+}: Props) {
   const supabase = createClientComponentClient<Database>();
   useEffect(() => {
     const channel = supabase
@@ -63,7 +71,27 @@ function Main_messages({ conversations: conversations_source, my_id }: Props) {
       supabase.removeChannel(channel);
     };
   }, [supabase]);
+
   const [conversations, setConversations] = useState(conversations_source);
+  const { onlineUsers, setOnlineUsers } = useContext(globalContext);
+  const [friends, setFriends] = useState(
+    friends_source.filter(
+      (friend) =>
+        onlineUsers?.findIndex(
+          (onlineFriend) => onlineFriend.friend.id === friend.friend.id
+        ) === -1
+    )
+  );
+  useEffect(() => {
+    setFriends(
+      friends_source.filter(
+        (friend) =>
+          onlineUsers?.findIndex(
+            (onlineFriend) => onlineFriend.friend.id === friend.friend.id
+          ) === -1
+      )
+    );
+  }, [onlineUsers]);
   const [current_page, setcurrent_page] = useState<string | number>(
     "Conversations"
   );
@@ -71,6 +99,17 @@ function Main_messages({ conversations: conversations_source, my_id }: Props) {
     id: string;
     user_profile: Profile;
   } | null>(null);
+  async function handleConversationsInitializing(user: Friend) {
+    const new_conversations_id = await initialiseConversationAction(
+      user.friend.id
+    );
+    new_conversations_id &&
+      setcurrent_conversation({
+        id: new_conversations_id,
+        //@ts-ignore
+        user_profile: user.friend,
+      });
+  }
   return (
     <ConfigProvider
       theme={{
@@ -102,10 +141,71 @@ function Main_messages({ conversations: conversations_source, my_id }: Props) {
             ]}
             className="w-full"
           />
+          {current_page === "Conversations" && (
+            <div className="flex w-full px-1 pt-2 overflow-x-auto rounded-md hide-scrollbar bg-gray-50">
+              {onlineUsers?.map((user) => {
+                return (
+                  <button
+                    onClick={async () =>
+                      await handleConversationsInitializing(user)
+                    }
+                    className="flex flex-col items-center w-20"
+                    key={"onlinePallete:" + user.friend.id}
+                  >
+                    <div className="h-[30px] w-full flex justify-center">
+                      <Badge
+                        dot
+                        status="success"
+                        className="border-[1px] rounded-md border-[#52c41a]"
+                      >
+                        <Avatar_comp
+                          height={30}
+                          width={30}
+                          alt={user.friend.username + " avatar"}
+                          src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${user.friend.avatar_url}`}
+                        />
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-center w-20 h-7">
+                      <h6 className="overflow-hidden text-xs font-medium text-ellipsis whitespace-nowrap">
+                        {user.friend.username}
+                      </h6>
+                    </div>
+                  </button>
+                );
+              })}
+              {friends?.map((user) => {
+                return (
+                  <button
+                    onClick={async () =>
+                      await handleConversationsInitializing(user)
+                    }
+                    className="flex flex-col items-center w-20"
+                    key={"friendPallete:" + user.friend.id}
+                  >
+                    <div className="h-[30px] w-full flex justify-center">
+                      <Avatar_comp
+                        height={30}
+                        width={30}
+                        alt={user.friend.username + " avatar"}
+                        src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${user.friend.avatar_url}`}
+                      />
+                    </div>
+                    <div className="flex items-center justify-center w-20 h-7">
+                      <h6 className="overflow-hidden text-xs font-medium text-ellipsis whitespace-nowrap">
+                        {user.friend.username}
+                      </h6>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
           {current_page === "Conversations" &&
             conversations.map((conv, index) => {
               return (
                 <Conversation_pallete
+                  friends={friends}
                   conv={conv}
                   index={index}
                   setcurrent_conversation={setcurrent_conversation}
@@ -125,7 +225,7 @@ function Main_messages({ conversations: conversations_source, my_id }: Props) {
         )}
         {!current_conversation && (
           <div className="flex items-center justify-center col-span-8 bg-white">
-            <h3 className="text-2xl h3">Start a conversation</h3>
+            <h3 className="text-2xl font-medium">Start a conversation</h3>
           </div>
         )}
       </div>
