@@ -11,7 +11,21 @@ async function deletePostAction(id: number) {
     data: { user },
   } = await supabase.auth.getUser();
   if (user) {
-    const { data, error } = await supabase.from("posts").delete().eq("id", id);
+    const { data: list, error } = await supabase.storage
+      .from("posts")
+      .list(`public/${user.id}/${id}`);
+    if (list) {
+      const filesToRemove = list.map(
+        (x) => `public/${user.id}/${id}/${x.name}`
+      );
+      const { data, error } = await supabase.storage
+        .from("posts")
+        .remove(filesToRemove);
+      const { data: post_delete, error: error_delete } = await supabase
+        .from("posts")
+        .delete()
+        .eq("id", id);
+    }
     revalidatePath("/home");
   }
 }

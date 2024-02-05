@@ -16,7 +16,7 @@ function Third_grid({ friends }: Props) {
       {!isTabletOrMobile && (
         <div className="relative md:col-span-2" ref={Third_gridRef}>
           <div
-            className="sticky top-0 flex flex-col items-center justify-start h-screen gap-1"
+            className="sticky top-0 flex flex-col items-center justify-start h-screen gap-2"
             style={{ width: Third_gridRef.current?.offsetWidth }}
           >
             <Suggested_friends friends={friends} />

@@ -123,7 +123,8 @@ function Post_something({ avatar }: Props) {
               placeholder="What's in your mind"
               className="w-full p-1 resize-none focus-visible:outline-none"
             />
-
+          </div>
+          <div className="flex items-center gap-2">
             <button
               disabled={pending}
               onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
@@ -134,11 +135,11 @@ function Post_something({ avatar }: Props) {
               <FontAwesomeIcon
                 icon={faImage}
                 className="text-gray-400"
-                size="lg"
+                size="2x"
               />
             </button>
+            <SubmitButton selectedFiles={selectedFiles} />
           </div>
-          <SubmitButton selectedFiles={selectedFiles} />
         </form>
 
         {selectedFiles && (

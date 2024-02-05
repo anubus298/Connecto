@@ -22,10 +22,15 @@ interface Props {
   }[];
   my_id: string;
   friends: Friend[];
+  my_profile: {
+    avatar_url: any;
+    username: any;
+  } | null;
 }
 function Main_messages({
   conversations: conversations_source,
   my_id,
+  my_profile,
   friends: friends_source,
 }: Props) {
   const supabase = createClientComponentClient<Database>();
@@ -217,6 +222,7 @@ function Main_messages({
 
         {current_conversation && (
           <Current_conversation
+            my_profile={my_profile}
             key={current_conversation.id}
             user_profile={current_conversation.user_profile}
             my_id={my_id}

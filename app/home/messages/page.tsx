@@ -7,6 +7,7 @@ import { cookies } from "next/headers";
 import { Friend } from "../profile/components/other/other_profile";
 export const revalidate = 0;
 import Main_messages from "./components/main_messages";
+import { getMyProfile } from "../page";
 async function Page() {
   const cookiesStore = cookies();
   const supabase = createServerComponentClient<Database>({
@@ -17,10 +18,12 @@ async function Page() {
   } = await supabase.auth.getUser();
   const conversations = await getConversations(supabase, user!.id);
   const friends = await getFriends(supabase, user!.id);
+  const my_profile = await getMyProfile(supabase, user!.id);
   return (
     <Main_messages
       //@ts-ignore
       my_id={user?.id}
+      my_profile={my_profile}
       //@ts-ignore
       conversations={conversations}
       //@ts-ignore
@@ -92,7 +95,6 @@ export async function getFriends(
       test.friend = test.user_1;
       delete test["user_1"];
       delete test["user_2"];
-
       return test;
     }
   });

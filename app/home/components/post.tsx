@@ -367,7 +367,7 @@ function Post({
             })}
         </div>
       ) : post.media_url && assets_count == 2 ? (
-        <div className=" w-full overflow-hidden max-h-[600px] grid grid-cols-2 gap-1 ">
+        <div className=" w-full overflow-hidden max-h-[600px] grid grid-cols-2 gap-1">
           {post.media_url
             .slice(post.media_url.lastIndexOf("/") + 1, post.media_url.length)
             .split(",")
@@ -414,16 +414,14 @@ function Post({
         </div>
       ) : (
         post.media_url && (
-          <div className="w-full overflow-hidden max-h-[600px] grid grid-cols-1 ">
+          <div className="w-full overflow-hidden max-h-[600px] grid grid-cols-1">
             {post.media_url
               .slice(post.media_url.lastIndexOf("/") + 1, post.media_url.length)
               .split(",")
               .map((img_src, index) => {
                 return (
                   <div
-                    className={
-                      "max-h-[600px] overflow-hidden col-span-1 relative "
-                    }
+                    className={"min-h-[200px] overflow-hidden col-span-1 "}
                     key={img_src + 1 + index * 9}
                   >
                     {img_src.split(".")[1] === "mp4" ? (
@@ -444,13 +442,13 @@ function Post({
                     ) : (
                       <Image
                         src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
-                        fill
+                        height={600}
+                        width={600}
                         onClick={() => {
                           CarouselRef.current?.goTo(index, false);
                           setIsAssetsModalOpen(true);
                         }}
-                        className="cursor-pointer "
-                        style={{ objectFit: "cover" }}
+                        className="cursor-pointer"
                         alt={"post media number " + index}
                       />
                     )}

@@ -15,7 +15,15 @@ import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { Button, ConfigProvider, Drawer } from "antd";
 import EmojiPicker from "emoji-picker-react";
 import Link from "next/link";
-import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  //@ts-ignore
+  useOptimistic,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Profile } from "../../home_main";
 import BlockUserModal from "./blockModal";
 import { Message } from "./conversation.pallete";
@@ -26,8 +34,17 @@ interface Props {
   conversation_id: string;
   my_id: string;
   user_profile: Profile;
+  my_profile: {
+    avatar_url: any;
+    username: any;
+  } | null;
 }
-function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
+function Current_conversation({
+  conversation_id,
+  my_id,
+  user_profile,
+  my_profile,
+}: Props) {
   const [isBlockUserModalOpen, setIsBlockUserModalOpen] = useState(false);
 
   const BindSendMessageAction = SendMessageAction.bind(null, conversation_id);
@@ -38,9 +55,11 @@ function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const conversation_messagesRef = useRef<HTMLDivElement>(null);
   const [emoji_picker_open, setEmoji_picker_open] = useState(false);
+
   const audioRef = useRef<HTMLAudioElement>(null);
   const [content, setContent] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
+  const [optimisticMessages, setOptimisticMessages] = useOptimistic(messages);
   const [fromTo, setFromTo] = useState(0);
   const [did_reach_end, setDid_reach_end] = useState(false);
   const supabase = createClientComponentClient<Database>();
@@ -52,6 +71,17 @@ function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
         onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
           e.preventDefault();
           e.currentTarget.form?.requestSubmit();
+          setOptimisticMessages((prevMessages: any) => [
+            {
+              profiles: { ...my_profile, id: my_id },
+              content: content,
+              sender_id: my_id,
+              conversation_id: "sending",
+              message_id: "sending",
+              created_at: new Date(),
+            },
+            ...prevMessages,
+          ]);
           setContent("");
           e.currentTarget.form?.reset();
         }}
@@ -69,7 +99,6 @@ function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
       ) {
         setFromTo((prevFromTo) => prevFromTo + 15);
       }
-      console.log(conversation_messagesRef.current?.scrollTop);
     };
     conversation_messagesRef.current?.addEventListener("scroll", handleScroll);
     return () => {
@@ -118,7 +147,7 @@ function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
       )
         .then((res) => res.json())
         .then((data) => {
-          if (data.data.length !== 0) {
+          if (data.data.length != 0) {
             setMessages_status("insert_start");
             setMessages((prevMessages) => [...prevMessages, ...data.data]);
           } else {
@@ -244,7 +273,8 @@ function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
           className="flex w-full px-1 py-3 overflow-y-scroll bg-gray-50 rounded-md h-[400px] scroll-smooth flex-col-reverse"
           ref={conversation_messagesRef}
         >
-          {messages.map((message, index) => {
+          {/*@ts-ignore*/}
+          {optimisticMessages.map((message, index) => {
             if (message.sender_id === my_id) {
               return (
                 <My_message_pallete
@@ -302,13 +332,6 @@ function Current_conversation({ conversation_id, my_id, user_profile }: Props) {
                     setContent((contentPrev) => contentPrev + emoji.emoji)
                   }
                 />
-                <Button
-                  block
-                  type="text"
-                  onClick={() => setEmoji_picker_open(false)}
-                >
-                  Close
-                </Button>
               </div>
             )}
             <SubmitButton />

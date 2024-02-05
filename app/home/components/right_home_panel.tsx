@@ -34,7 +34,7 @@ function Right_home_panel({ friends: friends_source }: Props) {
   return !isTabletOrMobile ? (
     <div className="relative md:col-span-2" ref={Right_home_panelRef}>
       <div
-        className="sticky top-0 flex flex-col justify-start h-screen gap-2 p-2 bg-white "
+        className="sticky top-0 flex flex-col justify-start h-screen gap-2 p-2 bg-white rounded-md"
         style={{ width: Right_home_panelRef.current?.offsetWidth }}
       >
         <div className="mb-2 ">

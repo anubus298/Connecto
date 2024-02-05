@@ -20,16 +20,15 @@ interface Props {
 function Primary_navbar({ profile, notifications, my_id, friends }: Props) {
   return (
     <nav className="flex items-center justify-between col-span-12 px-8 py-3 bg-white border-b-2 select-none text-dark h-fit ">
-      <div className="">
-        <Link href={"/"}>
-          <Image
-            height={50}
-            width={50}
-            src="/svg/logo_only_yellow_dark_stroke.svg"
-            alt="Connecto Logo"
-          />
-        </Link>
-      </div>
+      <Link href={"/"} className="flex items-center gap-1">
+        <Image
+          height={30}
+          width={30}
+          src="/svg/ofclogo.svg"
+          alt="Connecto Logo"
+        />
+        <h3 className="text-xl font-black text-dark">Connecto</h3>
+      </Link>
       {profile && (
         <If_logged_bar
           profile={profile}

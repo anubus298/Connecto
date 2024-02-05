@@ -76,8 +76,8 @@ function Friend_pallete({ friend, index, friends, setFriends }: Props) {
               size={"default"}
               className="hover:brightness-110"
               src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${friend.friend.avatar_url}`}
-              height={70}
-              width={70}
+              height={88}
+              width={88}
               alt={friend.friend.username + " avatar"}
             />
           </Link>

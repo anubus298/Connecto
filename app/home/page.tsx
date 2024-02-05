@@ -27,7 +27,7 @@ async function Page() {
   const profile = await getMyProfile(supabase, user?.id);
   const friends = await getFriends(supabase, user?.id);
   return (
-    <div className="grid grid-cols-12 gap-1">
+    <div className="grid grid-cols-12 gap-2">
       <Left_home_panel />
       <Home_main
         posts={posts}
@@ -95,7 +95,7 @@ async function getPosts(
   );
   return posts_data;
 }
-async function getMyProfile(
+export async function getMyProfile(
   supabase: SupabaseClient<any, "public", any>,
   user_id?: string
 ) {
