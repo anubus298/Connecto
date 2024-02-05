@@ -207,7 +207,7 @@ async function getMyProfileData(
     .single();
   return profile;
 }
-export async function getPostMedia(
+async function getPostMedia(
   supabase: SupabaseClient<Database, "public", Database["public"]>,
   user_id: string | undefined,
   limit: number
