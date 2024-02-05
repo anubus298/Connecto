@@ -74,7 +74,7 @@ function Friend_pallete({ friend, index, friends, setFriends }: Props) {
           <Link href={`/home/profile?id=${friend.friend.id}`}>
             <Avatar_comp
               size={"default"}
-              className="hover:brightness-110"
+              className="transition hover:brightness-75"
               src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${friend.friend.avatar_url}`}
               height={88}
               width={88}

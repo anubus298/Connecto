@@ -1,7 +1,7 @@
 "use client";
 import { faImage, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Avatar, Button, ConfigProvider } from "antd";
+import { Button, ConfigProvider } from "antd";
 import Image from "next/image";
 import React, { ChangeEvent, useRef, useState } from "react";
 import { addPostAction } from "@/app/lib/functions/user/post/addPost";
@@ -134,7 +134,7 @@ function Post_something({ avatar }: Props) {
             >
               <FontAwesomeIcon
                 icon={faImage}
-                className="text-gray-400"
+                className="text-gray-400 transition hover:text-primary"
                 size="2x"
               />
             </button>
@@ -150,7 +150,7 @@ function Post_something({ avatar }: Props) {
                 key={index * 21 + 1000}
               >
                 {fileObj.file.type.startsWith("image/") ? (
-                  <img
+                  <Image
                     className="h-auto"
                     width={95}
                     height={95}

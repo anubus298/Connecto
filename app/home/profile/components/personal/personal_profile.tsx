@@ -16,6 +16,11 @@ type Friends = {
     username: Database["public"]["Tables"]["profiles"]["Row"]["username"];
   };
 };
+export type MediaUrl = {
+  id: number;
+  medias: string[];
+  baseUrl: string;
+};
 interface Props {
   profile: Database["public"]["Tables"]["profiles"]["Row"];
   self_id: string | undefined;
@@ -23,6 +28,7 @@ interface Props {
   personal_info: Database["public"]["Tables"]["personal_info"]["Row"];
   friends: Friends[] | null;
   posts: Post[];
+  mediaUrl: MediaUrl[] | null;
 }
 
 function Personal_profile({
@@ -30,6 +36,7 @@ function Personal_profile({
   friends,
   posts,
   personal_info,
+  mediaUrl,
   self_id,
 }: Props) {
   return (
@@ -55,7 +62,7 @@ function Personal_profile({
           </div>
           <div className="flex flex-col content-center col-span-4 gap-2 "></div>
         </div>
-        <Assets />
+        <Assets mediaUrl={mediaUrl} />
         <div className="col-span-12 md:col-span-4">
           <Post_something avatar={profile.avatar_url} />
           <Posts
@@ -64,13 +71,11 @@ function Personal_profile({
             my_profile={profile}
           />
         </div>
-        <div className="col-span-12 md:col-span-4">
-          <Personal_friends
-            user_id={profile.id}
-            friends={friends}
-            count={profile.friends_count}
-          />
-        </div>
+        <Personal_friends
+          user_id={profile.id}
+          friends={friends}
+          count={profile.friends_count}
+        />
       </div>
     </ConfigProvider>
   );

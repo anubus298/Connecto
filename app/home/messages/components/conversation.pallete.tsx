@@ -9,7 +9,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ConfigProvider, Dropdown, MenuProps } from "antd";
+import { Badge, ConfigProvider, Dropdown, MenuProps } from "antd";
 import SkeletonInput from "antd/es/skeleton/Input";
 import {
   Dispatch,
@@ -77,6 +77,19 @@ function Conversation_pallete({
       onClick: () => setIsBlockUserModalOpen(true),
     },
   ];
+  const { onlineUsers, setOnlineUsers } = useContext(globalContext);
+  const [is_online, setis_online] = useState(
+    onlineUsers?.findIndex(
+      (onlineUser) => onlineUser.friend.id === conv.user_id.id
+    )! == -1
+  );
+  useEffect(() => {
+    setis_online(
+      onlineUsers?.findIndex(
+        (onlineUser) => onlineUser.friend.id === conv.user_id.id
+      )! !== -1
+    );
+  }, [onlineUsers]);
   useEffect(() => {
     function getLatestMessage() {
       fetch(
@@ -106,13 +119,15 @@ function Conversation_pallete({
             })
           }
         >
-          <Avatar_comp
-            size={"large"}
-            src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${conv.user_id.avatar_url}`}
-            height={42}
-            width={42}
-            alt={conv.user_id.username + " avatar"}
-          />
+          <Badge dot={is_online} status={"success"}>
+            <Avatar_comp
+              size={"large"}
+              src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${conv.user_id.avatar_url}`}
+              height={42}
+              width={42}
+              alt={conv.user_id.username + " avatar"}
+            />
+          </Badge>
         </button>
         <button
           className="flex flex-col items-start justify-center"

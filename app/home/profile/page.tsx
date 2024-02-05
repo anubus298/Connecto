@@ -17,8 +17,10 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
     data: { user },
   } = await supabase.auth.getUser();
   const my_profile = await getMyProfileData(supabase, user?.id);
+
   if (!searchParams.id) {
     const posts = await getUserPosts(supabase, user?.id);
+    const postMedia = await getPostMedia(supabase, user?.id, 10);
     const { profile, friends, personal_info } = await getMyProfile(
       supabase,
       user?.id
@@ -30,8 +32,10 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
           posts={posts}
           profile={profile}
           self_id={user?.id}
+          mediaUrl={postMedia}
           //@ts-ignore
           friends={friends}
+          //@ts-ignore
           personal_info={personal_info}
         />
       )
@@ -41,11 +45,13 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
       searchParams.id as string,
       supabase
     );
+    const postMedia = await getPostMedia(supabase, searchParams.id, 10);
     const posts: any = await getUserPosts(supabase, searchParams.id);
     return (
       otherProfile && (
         <Other_profile
           posts={posts}
+          mediaUrl={postMedia}
           //@ts-ignore
           friendship={{
             id: otherProfile.is_friend?.friendship_id,
@@ -69,7 +75,7 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
 }
 
 async function getMyProfile(
-  supabase: SupabaseClient<any, "public", any>,
+  supabase: SupabaseClient<Database, "public", Database["public"]>,
   user_id?: string
 ) {
   const { data: profile, error: profile_error } = await supabase
@@ -141,7 +147,7 @@ async function getOtherProfile(
 }
 
 async function getUserPosts(
-  supabase: SupabaseClient<any, "public", any>,
+  supabase: SupabaseClient<Database, "public", Database["public"]>,
   user_id: string | undefined
 ) {
   if (!user_id) return null;
@@ -190,7 +196,7 @@ async function getUserPosts(
   return posts_data;
 }
 async function getMyProfileData(
-  supabase: SupabaseClient<any, "public", any>,
+  supabase: SupabaseClient<Database, "public", Database["public"]>,
   user_id: string | undefined
 ) {
   const { data: profile, error: profile_error } = await supabase
@@ -200,5 +206,35 @@ async function getMyProfileData(
     .limit(1)
     .single();
   return profile;
+}
+export async function getPostMedia(
+  supabase: SupabaseClient<Database, "public", Database["public"]>,
+  user_id: string | undefined,
+  limit: number
+) {
+  if (user_id) {
+    const { data } = await supabase.rpc("getmedia_url", {
+      t_user_id: user_id,
+      limit_count: limit,
+    });
+    if (data) {
+      const result = data
+        .map((postMedia) => {
+          return {
+            id: postMedia.id,
+            medias: postMedia.urls
+              .slice(postMedia.urls.lastIndexOf("/") + 1)
+              .split(",")
+              .filter((asset) => asset.split(".")[1] !== "mp4"),
+            baseUrl: postMedia.urls.slice(
+              0,
+              postMedia.urls.lastIndexOf("/") + 1
+            ),
+          };
+        })
+        .filter((x) => x.medias.length !== 0);
+      return result;
+    } else return null;
+  } else return null;
 }
 export default Page;

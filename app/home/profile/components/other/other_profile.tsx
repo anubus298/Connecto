@@ -7,6 +7,7 @@ import Personal_friends from "../personal/personal_friends";
 import Other_bio from "./other_bio";
 import Other_buttons from "./other_buttons";
 import Other_cover from "./other_cover";
+import { MediaUrl } from "../personal/personal_profile";
 
 export type Friend = {
   friend: {
@@ -26,12 +27,14 @@ interface Props {
     status: "added" | "sent" | "none";
     is_my_action: boolean;
   };
+  mediaUrl: MediaUrl[] | null;
 }
 function Other_profile({
   profile,
   friends,
   posts,
   my_profile,
+  mediaUrl,
   self_id,
   friendship,
 }: Props) {
@@ -57,7 +60,7 @@ function Other_profile({
           </div>
           <div className="flex flex-col content-center col-span-4 gap-2 "></div>
         </div>
-        <Assets />
+        <Assets mediaUrl={mediaUrl} />
         <div className="col-span-12 md:col-span-4">
           <Other_buttons profile_id={profile.id} friendship={friendship} />
           <Posts

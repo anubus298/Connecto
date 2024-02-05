@@ -94,21 +94,21 @@ export interface Database {
         Row: {
           conversation_id: string
           created_at: string
-          status: Database["public"]["Enums"]["conversation_status"]
+          status: Database["public"]["Enums"]["conversation_status"] | null
           user_id_1: string
           user_id_2: string
         }
         Insert: {
           conversation_id?: string
           created_at?: string
-          status?: Database["public"]["Enums"]["conversation_status"]
+          status?: Database["public"]["Enums"]["conversation_status"] | null
           user_id_1: string
           user_id_2: string
         }
         Update: {
           conversation_id?: string
           created_at?: string
-          status?: Database["public"]["Enums"]["conversation_status"]
+          status?: Database["public"]["Enums"]["conversation_status"] | null
           user_id_1?: string
           user_id_2?: string
         }
@@ -471,33 +471,18 @@ export interface Database {
         }
         Returns: Record<string, unknown>
       }
-      delete_files_in_folder: {
-        Args: {
-          bucket_name: string
-          folder_path: string
-        }
-        Returns: Record<string, unknown>
-      }
       delete_post: {
         Args: {
           avatar_url: string
         }
         Returns: Record<string, unknown>
       }
-      delete_posts_assets:
-        | {
-            Args: {
-              bucket: string
-              url: string
-            }
-            Returns: Record<string, unknown>
-          }
-        | {
-            Args: {
-              url: string
-            }
-            Returns: Record<string, unknown>
-          }
+      delete_posts_assets: {
+        Args: {
+          url: string
+        }
+        Returns: Record<string, unknown>
+      }
       delete_storage_object:
         | {
             Args: {
@@ -525,6 +510,16 @@ export interface Database {
           bio: string
           cover_url: string
           friends_count: number
+        }[]
+      }
+      getmedia_url: {
+        Args: {
+          t_user_id: string
+          limit_count: number
+        }
+        Returns: {
+          urls: string
+          id: number
         }[]
       }
     }

@@ -12,7 +12,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
-import { Button, ConfigProvider, Drawer } from "antd";
+import { Badge, Button, ConfigProvider, Drawer } from "antd";
 import EmojiPicker from "emoji-picker-react";
 import Link from "next/link";
 import {
@@ -23,12 +23,14 @@ import {
   useEffect,
   useRef,
   useState,
+  useContext,
 } from "react";
 import { Profile } from "../../home_main";
 import BlockUserModal from "./blockModal";
 import { Message } from "./conversation.pallete";
 import His_message_pallete from "./his_message_pallete";
 import My_message_pallete from "./my_message_pallete";
+import { globalContext } from "@/app/lib/globalProvider";
 
 interface Props {
   conversation_id: string;
@@ -177,6 +179,21 @@ function Current_conversation({
         conversation_messagesRef.current!.scrollHeight;
     }
   }, [conversation_id]);
+  //for green online dot showing
+  const { onlineUsers, setOnlineUsers } = useContext(globalContext);
+  const [is_online, setis_online] = useState(
+    onlineUsers?.findIndex(
+      (onlineUser) => onlineUser.friend.id === user_profile.id
+    )! == -1
+  );
+  useEffect(() => {
+    setis_online(
+      onlineUsers?.findIndex(
+        (onlineUser) => onlineUser.friend.id === user_profile.id
+      )! !== -1
+    );
+  }, [onlineUsers]);
+
   return (
     <ConfigProvider
       theme={{
@@ -204,13 +221,19 @@ function Current_conversation({
           <div className="flex items-center justify-center w-full h-full">
             <div className="flex flex-col items-center gap-6">
               <div className="flex flex-col items-center">
-                <Avatar_comp
-                  size={"large"}
-                  src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${user_profile.avatar_url}`}
-                  height={80}
-                  width={80}
-                  alt={user_profile.username + " avatar"}
-                />
+                <ConfigProvider
+                  theme={{ components: { Badge: { dotSize: 12 } } }}
+                >
+                  <Badge dot={is_online} status={"success"}>
+                    <Avatar_comp
+                      size={"large"}
+                      src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${user_profile.avatar_url}`}
+                      height={80}
+                      width={80}
+                      alt={user_profile.username + " avatar"}
+                    />
+                  </Badge>
+                </ConfigProvider>
                 <p className="text-lg font-semibold">{user_profile.username}</p>
               </div>
               <div className="flex flex-col items-center gap-2">
@@ -251,12 +274,14 @@ function Current_conversation({
         ></audio>
         <div className="flex items-center justify-between w-full gap-5 p-3 white pe-5">
           <div className="flex items-center w-full gap-5 ">
-            <Avatar_comp
-              src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${user_profile.avatar_url}`}
-              height={50}
-              width={50}
-              alt={user_profile.username + " avatar"}
-            />
+            <Badge dot={is_online} status={"success"}>
+              <Avatar_comp
+                src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${user_profile.avatar_url}`}
+                height={50}
+                width={50}
+                alt={user_profile.username + " avatar"}
+              />
+            </Badge>
             <p className="text-lg font-semibold">{user_profile.username}</p>
           </div>
           <button>
