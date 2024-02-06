@@ -4,6 +4,7 @@ import Posts from "./components/posts";
 import Post_something from "./components/post_something";
 import Suspense_posts from "./components/suspense/suspense_posts";
 import Suspense_postSomething from "./components/suspense/suspense_postsomething";
+import BlankLogo from "../components/blankLogo";
 export type Post = Database["public"]["Tables"]["posts"]["Row"] & {
   profiles: {
     avatar_url: string | null;
@@ -13,6 +14,7 @@ export type Post = Database["public"]["Tables"]["posts"]["Row"] & {
   post?: Post;
   is_liked: boolean;
   is_self: boolean;
+  is_saved: boolean;
 };
 export type Profile = {
   avatar_url: string;
@@ -27,14 +29,14 @@ interface Props {
 }
 function Home_main({ profile, posts, user_id }: Props) {
   return (
-    <div className="flex flex-col justify-center col-span-12 mx-2 sm:col-span-8 md:col-span-6 sm:mx-0">
+    <main className="flex flex-col justify-center col-span-12 mx-2 sm:col-span-8 md:col-span-6 sm:mx-0">
       <Suspense fallback={<Suspense_postSomething />}>
         <Post_something avatar={profile?.avatar_url} />
       </Suspense>
       <Suspense fallback={<Suspense_posts />}>
         <Posts posts={posts} user_id={user_id} my_profile={profile} />
       </Suspense>
-    </div>
+    </main>
   );
 }
 

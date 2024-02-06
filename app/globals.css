@@ -59,3 +59,18 @@ img {
 .hide-scrollbar {
   scrollbar-width: none;
 }
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+    animation-timing-function: ease-in-out;
+  }
+  100% {
+    transform: rotate(360deg);
+    animation-timing-function: ease-in-out;
+  }
+}
+
+.spin {
+  animation: spin 1.5s infinite;
+}

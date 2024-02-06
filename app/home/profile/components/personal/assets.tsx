@@ -21,7 +21,7 @@ function Assets({ mediaUrl }: Props) {
         <div className="flex items-center justify-between">
           <h3 className=" h3">Images</h3>
         </div>
-        <div className="w-full h-[1px] bg-yellow-500 mb-6 mt-[.5px]"></div>
+        <div className="w-full h-[1px] bg-yellow-200 mb-6 mt-[1px]"></div>
         <div className="grid grid-cols-3 grid-rows-3 gap-1">
           {mediaUrl &&
             mediaUrl.map((media) => {
@@ -31,7 +31,7 @@ function Assets({ mediaUrl }: Props) {
                   return (
                     <Link
                       href={"/home/post?id=" + media.id}
-                      className="relative col-span-1 h-[120px] hover:brightness-75 transition"
+                      className="relative col-span-1 h-[120px] hover:brightness-75 transition rounded-md overflow-hidden"
                       key={`mediaofpost${media.id}number${innerIndex}`}
                     >
                       <Image

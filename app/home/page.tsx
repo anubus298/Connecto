@@ -2,7 +2,6 @@ import { Database } from "@/utils/supabase/supabase";
 import {
   createServerComponentClient,
   SupabaseClient,
-  User,
 } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 
@@ -15,7 +14,9 @@ import { getFriends } from "./messages/page";
 
 async function Page() {
   const cookiesStore = cookies();
-  const supabase = createServerComponentClient({ cookies: () => cookiesStore });
+  const supabase = createServerComponentClient<Database>({
+    cookies: () => cookiesStore,
+  });
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -48,52 +49,124 @@ async function Page() {
   );
 }
 
-async function getPosts(
+export async function getPosts(
   supabase: SupabaseClient<any, "public", any>,
-  user_id?: string
+  user_id?: string,
+  target?: string,
+  order?: { column: string; status: boolean },
+  limit?: number
 ) {
-  let { data: posts, error: posts_error } = await supabase
-    .from("posts")
-    .select(
-      "*,profiles(avatar_url,id,username),post:share_source(*,profiles(avatar_url,id,username))"
+  if (target) {
+    let { data: posts, error: posts_error } = await supabase
+      .from("posts")
+      .select(
+        "*,profiles!posts_user_id_fkey(avatar_url,id,username),post:share_source(*,profiles!posts_user_id_fkey(avatar_url,id,username))"
+      )
+      .eq("user_id", target)
+      .order(order?.column ?? "created_at", { ascending: order?.status })
+      .limit(limit ?? 15);
+
+    const posts_data = await Promise.all(
+      (posts || []).map(async (post) => {
+        let { data: like_related_to_post, error: like_related_to_post_error } =
+          await supabase
+            .from("likes")
+            .select()
+            .eq("user_id", user_id)
+            .eq("post_id", post.id)
+            .limit(1);
+        let { data: save_related_to_post, error: save_related_to_post_error } =
+          await supabase
+            .from("bookmarks")
+            .select()
+            .eq("user_id", user_id)
+            .eq("post_id", post.id)
+            .limit(1);
+        //for shared post
+        if (post.post) {
+          const test = { ...post.post };
+          const newPost = Object.fromEntries(
+            Object.entries(post).filter((key) => key[0] !== "post")
+          );
+          const { data: sub_post, error: sub_error } = await supabase
+            .from("likes")
+            .select()
+            .eq("user_id", user_id)
+            .eq("post_id", post.post.id);
+          return {
+            ...newPost,
+            post: {
+              ...test,
+              is_liked: sub_post?.length === 1,
+            },
+            is_liked: like_related_to_post?.length === 1,
+            is_saved: save_related_to_post?.length === 1,
+          };
+        } else {
+          return {
+            ...post,
+            is_liked: like_related_to_post?.length === 1,
+            is_saved: save_related_to_post?.length === 1,
+          };
+        }
+      })
     );
-  const posts_data = await Promise.all(
-    (posts || []).map(async (post) => {
-      let { data: like_related_to_post, error: like_related_to_post_error } =
-        await supabase
-          .from("likes")
-          .select()
-          .eq("user_id", user_id)
-          .eq("post_id", post.id)
-          .limit(15);
-      //for shared post
-      if (post.post) {
-        const test = { ...post.post };
-        const newPost = Object.fromEntries(
-          Object.entries(post).filter((key) => key[0] !== "post")
-        );
-        const { data: sub_post, error: sub_error } = await supabase
-          .from("likes")
-          .select()
-          .eq("user_id", user_id)
-          .eq("post_id", post.post.id);
-        return {
-          ...newPost,
-          post: {
-            ...test,
-            is_liked: sub_post?.length === 1,
-          },
-          is_liked: like_related_to_post?.length === 1,
-        };
-      } else {
-        return {
-          ...post,
-          is_liked: like_related_to_post?.length === 1,
-        };
-      }
-    })
-  );
-  return posts_data;
+    return posts_data;
+  } else {
+    let { data: posts, error: posts_error } = await supabase
+      .from("posts")
+      .select(
+        "*,profiles!posts_user_id_fkey(avatar_url,id,username),post:share_source(*,profiles!posts_user_id_fkey(avatar_url,id,username))"
+      )
+      .limit(limit ?? 15);
+
+    const posts_data = await Promise.all(
+      (posts || []).map(async (post) => {
+        let { data: like_related_to_post, error: like_related_to_post_error } =
+          await supabase
+            .from("likes")
+            .select()
+            .eq("user_id", user_id)
+            .eq("post_id", post.id)
+            .limit(1);
+        let { data: save_related_to_post, error: save_related_to_post_error } =
+          await supabase
+            .from("bookmarks")
+            .select()
+            .eq("user_id", user_id)
+            .eq("post_id", post.id)
+            .limit(1);
+        //for shared post
+        if (post.post) {
+          const test = { ...post.post };
+          const newPost = Object.fromEntries(
+            Object.entries(post).filter((key) => key[0] !== "post")
+          );
+          const { data: sub_post, error: sub_error } = await supabase
+            .from("likes")
+            .select()
+            .eq("user_id", user_id)
+            .eq("post_id", post.post.id);
+          return {
+            ...newPost,
+            post: {
+              ...test,
+              is_liked: sub_post?.length === 1,
+            },
+            is_liked: like_related_to_post?.length === 1,
+            is_saved: save_related_to_post?.length === 1,
+          };
+        } else {
+          return {
+            ...post,
+            is_liked: like_related_to_post?.length === 1,
+            is_saved: save_related_to_post?.length === 1,
+          };
+        }
+      })
+    );
+    return posts_data;
+  }
 }
 export async function getMyProfile(
   supabase: SupabaseClient<any, "public", any>,

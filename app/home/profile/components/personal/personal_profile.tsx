@@ -66,6 +66,7 @@ function Personal_profile({
         <div className="col-span-12 md:col-span-4">
           <Post_something avatar={profile.avatar_url} />
           <Posts
+            show_small={true}
             posts={posts}
             user_id={self_id as string}
             my_profile={profile}

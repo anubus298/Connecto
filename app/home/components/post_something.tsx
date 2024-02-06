@@ -143,7 +143,7 @@ function Post_something({ avatar }: Props) {
         </form>
 
         {selectedFiles && (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {selectedFiles.map((fileObj, index) => (
               <div
                 className="relative size-[100px] overflow-hidden bg-gray-50 flex justify-center items-center"

@@ -7,6 +7,7 @@ import {
 import { cookies } from "next/headers";
 import Other_profile from "./components/other/other_profile";
 import Personal_profile from "./components/personal/personal_profile";
+import { getPosts } from "../page";
 export const revalidate = 0;
 async function Page({ searchParams }: { searchParams: { id?: string } }) {
   const cookiesStore = cookies();
@@ -19,7 +20,10 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
   const my_profile = await getMyProfileData(supabase, user?.id);
 
   if (!searchParams.id) {
-    const posts = await getUserPosts(supabase, user?.id);
+    const posts = await getPosts(supabase, user?.id, user?.id, {
+      column: "created_at",
+      status: false,
+    });
     const postMedia = await getPostMedia(supabase, user?.id, 10);
     const { profile, friends, personal_info } = await getMyProfile(
       supabase,
@@ -46,7 +50,10 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
       supabase
     );
     const postMedia = await getPostMedia(supabase, searchParams.id, 10);
-    const posts: any = await getUserPosts(supabase, searchParams.id);
+    const posts: any = await getPosts(supabase, user?.id, searchParams.id, {
+      column: "created_at",
+      status: false,
+    });
     return (
       otherProfile && (
         <Other_profile
@@ -146,55 +153,6 @@ async function getOtherProfile(
   return { profile: profile, is_friend: friendship };
 }
 
-async function getUserPosts(
-  supabase: SupabaseClient<Database, "public", Database["public"]>,
-  user_id: string | undefined
-) {
-  if (!user_id) return null;
-  const { data: posts, error: error } = await supabase
-    .from("posts")
-    .select(
-      "*,profiles(*),post:share_source(*,profiles(avatar_url,id,username))"
-    )
-    .eq("user_id", user_id)
-    .order("created_at", { ascending: false });
-  const posts_data = await Promise.all(
-    (posts || []).map(async (post) => {
-      let { data: like_related_to_post, error: like_related_to_post_error } =
-        await supabase
-          .from("likes")
-          .select()
-          .eq("user_id", user_id)
-          .eq("post_id", post.id);
-      //for shared post
-      if (post.post) {
-        const test = { ...post.post };
-        const newPost = Object.fromEntries(
-          Object.entries(post).filter((key) => key[0] !== "post")
-        );
-        const { data: sub_post, error: sub_error } = await supabase
-          .from("likes")
-          .select()
-          .eq("user_id", user_id) // @ts-ignore
-          .eq("post_id", post.post.id);
-        return {
-          ...newPost,
-          post: {
-            ...test,
-            is_liked: sub_post?.length === 1,
-          },
-          is_liked: like_related_to_post?.length === 1,
-        };
-      } else {
-        return {
-          ...post,
-          is_liked: like_related_to_post?.length === 1,
-        };
-      }
-    })
-  );
-  return posts_data;
-}
 async function getMyProfileData(
   supabase: SupabaseClient<Database, "public", Database["public"]>,
   user_id: string | undefined

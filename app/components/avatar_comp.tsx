@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar } from "antd";
+import { Avatar, ConfigProvider } from "antd";
 import Image from "next/image";
 interface Props {
   src: string;
@@ -36,24 +36,36 @@ function Avatar_comp({
   className,
 }: Props) {
   return (
-    <Avatar
-      className={className}
-      size={size}
-      shape="square"
-      src={
-        <Image
-          placeholder={
-            height < 40 && width < 40
-              ? undefined
-              : `data:image/svg+xml;base64,${toBase64(shimmer(width, height))}`
-          }
-          src={src}
-          height={height}
-          width={width}
-          alt={alt}
-        />
-      }
-    />
+    <ConfigProvider
+      theme={{
+        components: {
+          Avatar: {
+            containerSize: height,
+            containerSizeSM: height,
+            containerSizeLG: height,
+          },
+        },
+      }}
+    >
+      <Avatar
+        className={className}
+        size={size}
+        shape="square"
+        src={
+          <Image
+            placeholder={
+              height < 40 && width < 40
+                ? undefined
+                : `data:image/svg+xml;base64,${toBase64(shimmer(width, height))}`
+            }
+            src={src}
+            height={height}
+            width={width}
+            alt={alt}
+          />
+        }
+      />
+    </ConfigProvider>
   );
 }
 

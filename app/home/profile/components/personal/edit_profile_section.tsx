@@ -8,14 +8,12 @@ import Link from "next/link";
 
 function Edit_profile_section() {
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 768px)" });
-  return !isTabletOrMobile ? (
+  return (
     <div className="flex items-end justify-start gap-2 size-full">
       <Link href={"/home/profile/settings"} type="text">
         <FontAwesomeIcon icon={faGear} />
       </Link>
     </div>
-  ) : (
-    <></>
   );
 }
 

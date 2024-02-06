@@ -88,12 +88,12 @@ function Main_profile_settings({ my_profile, personal_info }: Props) {
       }}
     >
       <div className="grid h-full grid-cols-12 ">
-        <div className="grid grid-cols-12 col-start-3 col-end-11 gap-12 p-3 bg-white rounded-md">
+        <div className="grid grid-cols-12 col-start-1 col-end-13 gap-12 p-3 bg-white rounded-md md:col-start-3 md:col-end-11">
           <div className="col-span-12">
             <h1 className="h1">My profile</h1>
             <h6 className="text-gray-500">configure your profile settings</h6>
           </div>
-          <div className="col-span-6 ms-4">
+          <div className="col-span-12 md:col-span-6 ms-4">
             <form
               action={profileFormAction}
               className="flex flex-col justify-center gap-4"
@@ -177,9 +177,9 @@ function Main_profile_settings({ my_profile, personal_info }: Props) {
               <p className="text-sm text-red-600">{profileState.message}</p>
             )}
           </div>
-          <div className="relative col-span-6 p-3 rounded-md bg-gray-50 h-[180px] me-4 select-none">
+          <div className="relative col-span-12 md:col-span-6 p-3 rounded-md bg-gray-50 ms:h-[180px] me-4 select-none">
             <div className="grid grid-cols-2 ">
-              <div className="col-span-1">
+              <div className="col-span-2 md:col-span-1">
                 <h6 className="text-lg font-semibold">build confidence</h6>
                 <p className="text-sm text-gray-700">
                   Your profile photo will be displayed in email search results,
@@ -187,7 +187,7 @@ function Main_profile_settings({ my_profile, personal_info }: Props) {
                   identified email address.
                 </p>
               </div>
-              <div className="absolute right-0 col-span-1 -top-10">
+              <div className="right-0 col-span-2 md:col-span-1 md:absolute -top-10">
                 <Image
                   className=""
                   src={"/svg/ecology-2-6.svg"}

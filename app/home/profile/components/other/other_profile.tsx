@@ -64,6 +64,7 @@ function Other_profile({
         <div className="col-span-12 md:col-span-4">
           <Other_buttons profile_id={profile.id} friendship={friendship} />
           <Posts
+            show_small={true}
             posts={posts}
             user_id={self_id as string}
             my_profile={my_profile}

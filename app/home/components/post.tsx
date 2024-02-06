@@ -6,7 +6,9 @@ import {
   faHeart,
   faComment,
   faShareFromSquare,
+  faBookmark,
 } from "@fortawesome/free-regular-svg-icons";
+import { faBookmark as faBookmarkSolid } from "@fortawesome/free-solid-svg-icons";
 import {
   faFlag,
   faHeart as faHeartSolid,
@@ -26,14 +28,21 @@ import Asset_modal from "./asset_modal";
 import Share_modal from "./share_modal";
 import { Tables } from "@/utils/supabase/supabase";
 import Avatar_comp from "@/app/components/avatar_comp";
+import bookmarkPostAction from "@/app/lib/functions/user/post/bookmarkPost";
+import unbookmarkPostAction from "@/app/lib/functions/user/post/unbookmarkPost";
+import { useMediaQuery } from "react-responsive";
+import { useRouter } from "next/navigation";
 
 interface Props {
   post: Post;
   user_id: string;
   show_share?: boolean;
   show_buttons?: boolean;
+  show_save?: boolean;
   my_profile: NonNullable<Tables<"profiles">>;
   additional_key?: string;
+  show_small?: boolean;
+  is_in_page?: boolean;
 }
 function Post({
   post,
@@ -41,7 +50,10 @@ function Post({
   my_profile,
   show_share = true,
   show_buttons = true,
+  show_save = true,
   additional_key,
+  show_small = false,
+  is_in_page = false,
 }: Props) {
   const CarouselRef = useRef<CarouselRef>(null);
   const baseUrl: string | undefined = post?.media_url?.slice(
@@ -53,7 +65,9 @@ function Post({
       ?.slice(post.media_url.lastIndexOf("/") + 1, post.media_url.length ?? 0)
       .split(",").length ?? 1;
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+  const postRef = useRef<HTMLDivElement>(null);
   const [isAssetsModalOpen, setIsAssetsModalOpen] = useState(false);
+  const router = useRouter();
   const [is_deleting_post_pending, setis_deleting_post_pending] =
     useState(false);
   const date = new Date(post.created_at);
@@ -110,6 +124,7 @@ function Post({
     post.comments_count ?? 0
   );
   const [is_liked, setis_liked] = useState(post.is_liked);
+  const [is_saved, setis_saved] = useState(post.is_saved);
   const [shareCount, setShareCount] = useState(post.shares_count ?? 0);
   async function handle_like_click() {
     if (is_liked) {
@@ -122,11 +137,23 @@ function Post({
       await incrementLikeAction(post.id);
     }
   }
+  async function handle_save_click() {
+    if (is_saved) {
+      setis_saved(false);
+      await unbookmarkPostAction(post.id);
+    } else {
+      setis_saved(true);
+      await bookmarkPostAction(post.id);
+    }
+  }
+  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 768px)" });
+
   useEffect(() => {
     setFormattedDate(getPrettyDate(post.created_at));
   }, []);
   return (
     <article
+      ref={postRef}
       className="flex flex-col gap-6 p-3 bg-white rounded-md"
       key={additional_key ?? undefined}
     >
@@ -174,16 +201,18 @@ function Post({
         />
       )}
       {/* post modal */}
-      <Post_modal
-        setIsAssetsModalOpen={setIsAssetsModalOpen}
-        setcomments_count={setcomments_count}
-        comments_count={comments_count}
-        post={post}
-        dropDownItems={items}
-        handleDropDownClick={handleDropDownClick}
-        isPostModalOpen={isPostModalOpen}
-        setIsPostModalOpen={setIsPostModalOpen}
-      />
+      {!is_in_page && (
+        <Post_modal
+          setIsAssetsModalOpen={setIsAssetsModalOpen}
+          setcomments_count={setcomments_count}
+          comments_count={comments_count}
+          post={post}
+          dropDownItems={items}
+          handleDropDownClick={handleDropDownClick}
+          isPostModalOpen={isPostModalOpen}
+          setIsPostModalOpen={setIsPostModalOpen}
+        />
+      )}
       {/*real post*/}
       <div className="flex items-center justify-between">
         <div className="">
@@ -220,21 +249,36 @@ function Post({
                     </span>
                   }
                 </Link>
-                <p className="text-xs text-gray-400">{formattedDate}</p>
+                <time
+                  dateTime={post.created_at}
+                  className="text-xs text-gray-400"
+                >
+                  {formattedDate}
+                </time>
               </div>
             </div>
           )}
         </div>
         {show_buttons && (
-          <Dropdown
-            menu={{ items, onClick: handleDropDownClick }}
-            trigger={["click"]}
-            placement="bottomRight"
-          >
-            <button>
-              <FontAwesomeIcon icon={faEllipsisV} />
-            </button>
-          </Dropdown>
+          <div className="flex gap-4">
+            {(show_small || isTabletOrMobile) && show_save && (
+              <button onClick={handle_save_click}>
+                <FontAwesomeIcon
+                  icon={is_saved ? faBookmarkSolid : faBookmark}
+                  className={is_saved ? "text-primary" : ""}
+                />
+              </button>
+            )}
+            <Dropdown
+              menu={{ items, onClick: handleDropDownClick }}
+              trigger={["click"]}
+              placement="bottomRight"
+            >
+              <button>
+                <FontAwesomeIcon icon={faEllipsisV} />
+              </button>
+            </Dropdown>
+          </div>
         )}
       </div>
       {postContent && (
@@ -265,6 +309,7 @@ function Post({
             user_id={user_id}
             additional_key={"addditionqéé866" + post.post.id}
             show_share={false}
+            show_save={false}
             post={post.post}
             my_profile={my_profile}
           />
@@ -310,6 +355,11 @@ function Post({
                       fill
                       alt={"post media number " + index}
                     />
+                  )}
+                  {index === 3 && assets_count - 4 > 0 && (
+                    <h6 className="absolute p-1 text-sm font-medium bg-white rounded-md cursor-pointer bottom-2 right-2 text-dark">
+                      {assets_count - 4 + " more"}
+                    </h6>
                   )}
                 </div>
               );
@@ -414,14 +464,21 @@ function Post({
         </div>
       ) : (
         post.media_url && (
-          <div className="w-full overflow-hidden max-h-[600px] grid grid-cols-1">
+          <div
+            className={
+              "w-full overflow-hidden grid grid-cols-1 " +
+              (!is_in_page && "max-h-[600px]")
+            }
+          >
             {post.media_url
               .slice(post.media_url.lastIndexOf("/") + 1, post.media_url.length)
               .split(",")
               .map((img_src, index) => {
                 return (
                   <div
-                    className={"min-h-[200px] overflow-hidden col-span-1 "}
+                    className={
+                      "overflow-hidden col-span-1 relative min-h-[200px]"
+                    }
                     key={img_src + 1 + index * 9}
                   >
                     {img_src.split(".")[1] === "mp4" ? (
@@ -442,13 +499,13 @@ function Post({
                     ) : (
                       <Image
                         src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/${baseUrl}${img_src}`}
-                        height={600}
-                        width={600}
+                        height={!is_in_page ? 600 : 800}
+                        width={!is_in_page ? 600 : 800}
                         onClick={() => {
                           CarouselRef.current?.goTo(index, false);
                           setIsAssetsModalOpen(true);
                         }}
-                        className="cursor-pointer"
+                        className={"cursor-pointer " + (is_in_page && "h-auto")}
                         alt={"post media number " + index}
                       />
                     )}
@@ -459,10 +516,10 @@ function Post({
         )
       )}
       {show_buttons && (
-        <div className="flex w-full gap-2">
+        <footer className="flex w-full gap-2">
           <button
             onClick={handle_like_click}
-            className="flex items-center gap-2 p-2 bg-gray-100 rounded-md"
+            className="flex items-center justify-center gap-2 p-2 bg-gray-100 rounded-md md:min-w-32"
           >
             <FontAwesomeIcon
               icon={is_liked ? faHeartSolid : faHeart}
@@ -471,8 +528,8 @@ function Post({
             <p className="text-sm">{likes_count} likes</p>
           </button>
           <button
-            onClick={() => setIsPostModalOpen(true)}
-            className="flex items-center gap-2 p-2 bg-gray-100 rounded-md"
+            onClick={() => !is_in_page && setIsPostModalOpen(true)}
+            className="flex items-center justify-center gap-2 p-2 bg-gray-100 rounded-md md:min-w-32"
           >
             <FontAwesomeIcon icon={faComment} />
             <p className="text-sm">{comments_count} Comments</p>
@@ -481,14 +538,26 @@ function Post({
             post.type === "default" &&
             show_share && (
               <button
-                className="flex items-center gap-2 p-2 bg-gray-100 rounded-md"
+                className="flex items-center justify-center gap-2 p-2 bg-gray-100 rounded-md md:min-w-32"
                 onClick={() => setIsShareModalOpen(true)}
               >
                 <FontAwesomeIcon icon={faShareFromSquare} />
                 <p className="text-sm">{post.shares_count} Shares</p>
               </button>
             )}
-        </div>
+          {!show_small && !isTabletOrMobile && show_save && (
+            <button
+              onClick={handle_save_click}
+              className="flex items-center justify-center gap-2 p-2 bg-gray-100 rounded-md md:min-w-32"
+            >
+              <FontAwesomeIcon
+                icon={is_saved ? faBookmarkSolid : faBookmark}
+                className={is_saved ? "text-primary" : ""}
+              />
+              <p className="text-sm">{is_saved ? "Saved" : "Save"}</p>
+            </button>
+          )}
+        </footer>
       )}
     </article>
   );

@@ -120,7 +120,6 @@ function Post_modal({
       open={isPostModalOpen}
       centered
       onCancel={() => setIsPostModalOpen(false)}
-      closeIcon={false}
       footer={null}
     >
       <div className="grid grid-cols-12 overflow-hidden min-h-[400px] gap-2 ">

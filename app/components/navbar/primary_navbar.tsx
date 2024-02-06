@@ -27,8 +27,9 @@ function Primary_navbar({ profile, notifications, my_id, friends }: Props) {
           src="/svg/ofclogo.svg"
           alt="Connecto Logo"
         />
-        <h3 className="text-xl font-black text-primary">
-          Co<span className="text-secondary">nn</span>ecto
+        <h3 className="text-xl font-black text-dark">
+          Co<span className="text-secondary">n</span>
+          <span className="text-primary">n</span>ecto
         </h3>
       </Link>
       {profile && (

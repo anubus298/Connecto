@@ -50,7 +50,7 @@ function Left_home_panel() {
     {
       icon: <FontAwesomeIcon icon={faBookmark} />,
       content: "Bookmarks",
-      href: "",
+      href: "/home/bookmarks",
     },
     {
       icon: <FontAwesomeIcon icon={faQuestionCircle} />,

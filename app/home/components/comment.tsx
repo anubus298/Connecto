@@ -160,7 +160,7 @@ function Comment({
           />
         </Link>
       )}
-      <div className="flex flex-col col-span-10 ">
+      <article className="flex flex-col col-span-10 ">
         <Link
           href={
             comment.is_self
@@ -183,7 +183,7 @@ function Comment({
             </button>
           </Dropdown>
         </div>
-      </div>
+      </article>
       <div className="flex flex-col col-span-1 me-2">
         <button
           onClick={handle_like_click}
