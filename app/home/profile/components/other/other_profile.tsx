@@ -65,6 +65,7 @@ function Other_profile({
           <Other_buttons profile_id={profile.id} friendship={friendship} />
           <Posts
             show_small={true}
+            target={profile.id}
             posts={posts}
             user_id={self_id as string}
             my_profile={my_profile}

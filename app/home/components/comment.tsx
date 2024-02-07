@@ -27,10 +27,10 @@ interface Props {
   index: number;
   comments: ({
     comment_id: number;
-    content: string | null;
+    content: string;
     created_at: string;
     likes_count: number;
-    post_id: number | null;
+    post_id: number;
     replies_count: number;
     user_id: string;
   } & {
@@ -42,10 +42,10 @@ interface Props {
     SetStateAction<
       ({
         comment_id: number;
-        content: string | null;
+        content: string;
         created_at: string;
         likes_count: number;
-        post_id: number | null;
+        post_id: number;
         replies_count: number;
         user_id: string;
       } & {

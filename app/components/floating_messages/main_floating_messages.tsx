@@ -17,29 +17,28 @@ interface Props {
 type MenuItem = Required<MenuProps>["items"][number];
 function Main_floating_messages({ my_id, conversations, friends }: Props) {
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const [selected_conversation, setselected_conversation] = useState<
+    | {
+        conversation_id: string;
+        user_id: Profile;
+      }
+    | undefined
+  >(undefined);
+  const [chatItems, setChatItems] = useState<MenuProps["items"]>([
+    getItem(
+      <h6 className="font-semibold">
+        {selected_conversation?.user_id.username}
+      </h6>,
+      "chatItem " + selected_conversation?.conversation_id,
+      <Avatar_comp
+        src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${selected_conversation?.user_id.avatar_url}`}
+        height={25}
+        width={25}
+        alt={selected_conversation?.user_id.username + " avatar"}
+      />
+    ),
+  ]);
   if (!isTabletOrMobile) {
-    const [selected_conversation, setselected_conversation] = useState<
-      | {
-          conversation_id: string;
-          user_id: Profile;
-        }
-      | undefined
-    >(undefined);
-    const [chatItems, setChatItems] = useState<MenuProps["items"]>([
-      getItem(
-        <h6 className="font-semibold">
-          {selected_conversation?.user_id.username}
-        </h6>,
-        "chatItem " + selected_conversation?.conversation_id,
-        <Avatar_comp
-          src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${selected_conversation?.user_id.avatar_url}`}
-          height={25}
-          width={25}
-          alt={selected_conversation?.user_id.username + " avatar"}
-        />
-      ),
-    ]);
-
     let items: MenuProps["items"] = [];
     if (conversations.length > 0) {
       items = [

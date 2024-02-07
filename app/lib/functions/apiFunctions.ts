@@ -1,3 +1,5 @@
+import { Profile } from "@/app/home/home_main";
+import { Database, Tables } from "@/utils/supabase/supabase";
 import { SupabaseClient } from "@supabase/supabase-js";
 export async function getPost(
   supabase: SupabaseClient<any, "public", any>,
@@ -58,4 +60,47 @@ export async function getPost(
     })
   );
   return posts_data;
+}
+export async function getComments(
+  supabase: SupabaseClient<Database, "public", Database["public"]>,
+  post_id: string,
+  order?: { key?: string; status?: boolean },
+  from?: number,
+  to?: number,
+  my_id?: string
+) {
+  if (my_id) {
+    const { data: comments, error } = await supabase
+      .from("comments")
+      .select("*,profiles(avatar_url,username,id)")
+      .eq("post_id", post_id)
+      .order(order?.key ?? "created_at", { ascending: order?.status ?? false })
+      .range(from ?? 0, to ?? 9);
+    const comments_data = await Promise.all(
+      (comments || []).map(async (comment) => {
+        try {
+          let {
+            data: like_related_to_post,
+            error: like_related_to_post_error,
+          } = await supabase
+            .from("comments_like")
+            .select()
+            .eq("user_id", my_id)
+            .eq("comment_id", comment.comment_id);
+          return {
+            ...comment,
+            is_liked: like_related_to_post?.length === 1,
+            is_self: comment.user_id === my_id,
+          };
+        } catch (error) {
+          return {
+            ...comment,
+            is_liked: false,
+            is_self: comment.user_id === my_id,
+          };
+        }
+      })
+    );
+    return comments_data;
+  } else return null;
 }

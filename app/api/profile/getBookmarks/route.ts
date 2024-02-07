@@ -1,14 +1,11 @@
+import { getBookmarks } from "@/app/lib/functions/getBookmarks";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { Database } from "@/utils/supabase/supabase";
-import { getComments } from "@/app/lib/functions/apiFunctions";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const id = searchParams.get("id") as string;
-  const orderKey = searchParams.get("orderKey") as string | undefined;
-  const state = searchParams.get("state") as string | undefined;
   const from = searchParams.get("from") as unknown as number | undefined;
   const to = searchParams.get("to") as unknown as number | undefined;
   const cookieStore = cookies();
@@ -24,17 +21,7 @@ export async function GET(request: NextRequest) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    const data = await getComments(
-      supabase,
-      id,
-      {
-        key: orderKey,
-        status: state === "1",
-      },
-      from,
-      to,
-      user?.id
-    );
+    const data = await getBookmarks(supabase, from ?? 0, to ?? 4, user?.id);
     return NextResponse.json({ data: data });
   } catch (error) {}
 }

@@ -41,7 +41,6 @@ function If_logged_bar({
   const { onlineUsers, setOnlineUsers } = useContext(globalContext);
   const router = useRouter();
   const [Friends, setFriends] = useState(friends);
-  const [onlineFriends, setOnlineFriends] = useState<Friend[]>();
   const [isDeleteModalOpen, setisDeleteModalOpen] = useState(false);
   const isMediumScreen = useMediaQuery({ query: "(max-width: 768px)" });
   const [notifications, setNotifications] = useState(notifications_source);
@@ -170,7 +169,7 @@ function If_logged_bar({
       <Notifications_dropdown notifications_source={notifications} />
       <Link
         href={"/home/messages"}
-        className="flex items-center gap-2 text-dark me-6"
+        className="flex items-center gap-2 text-lg text-dark me-6 md:text-base"
       >
         <FontAwesomeIcon icon={faEnvelope} />
       </Link>

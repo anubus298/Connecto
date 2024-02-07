@@ -68,6 +68,7 @@ function Personal_profile({
           <Posts
             show_small={true}
             posts={posts}
+            target={self_id}
             user_id={self_id as string}
             my_profile={profile}
           />

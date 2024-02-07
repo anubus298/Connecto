@@ -63,6 +63,32 @@ function Notification_card({
           accepted your friend request
         </Link>
       );
+    } else if (notification.type == "post like") {
+      return (
+        <Link
+          onClick={async () => await readNotification()}
+          href={`/home/post?id=${notification.content_post_id}`}
+          className={"text-dark h-full w-full p-1 "}
+        >
+          <span className="overflow-hidden font-medium max-w-3">
+            {notification.from.username}{" "}
+          </span>
+          liked your post
+        </Link>
+      );
+    } else if (notification.type == "post likes") {
+      return (
+        <Link
+          onClick={async () => await readNotification()}
+          href={`/home/post?id=${notification.content_post_id}`}
+          className={"text-dark h-full w-full p-1 "}
+        >
+          <span className="overflow-hidden font-medium max-w-3">
+            {notification.from.username}{" "}
+          </span>
+          and {notification.likes_count} others liked your post
+        </Link>
+      );
     }
   }
   useEffect(() => {

@@ -24,7 +24,7 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
       column: "created_at",
       status: false,
     });
-    const postMedia = await getPostMedia(supabase, user?.id, 10);
+    const postMedia = await getPostMedia(supabase, user?.id, 9);
     const { profile, friends, personal_info } = await getMyProfile(
       supabase,
       user?.id
@@ -49,7 +49,7 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
       searchParams.id as string,
       supabase
     );
-    const postMedia = await getPostMedia(supabase, searchParams.id, 10);
+    const postMedia = await getPostMedia(supabase, searchParams.id, 9);
     const posts: any = await getPosts(supabase, user?.id, searchParams.id, {
       column: "created_at",
       status: false,

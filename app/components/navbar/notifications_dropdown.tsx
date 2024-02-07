@@ -72,7 +72,7 @@ function Notifications_dropdown({ notifications_source }: Props) {
           }
         >
           <FontAwesomeIcon
-            className="flex items-center gap-2 text-dark"
+            className="flex items-center gap-2 text-dark md:text-base"
             icon={faBell}
           />
         </Badge>

@@ -38,7 +38,7 @@ export const addPostAction = async (formData: FormData) => {
         throw new Error(postError.message);
       }
 
-      if (assets) {
+      if (assets.length > 0) {
         for (let i = 0; i < assets.length; i++) {
           const asset = assets[i];
           const { data: fileData, error: fileError } = await supabase.storage

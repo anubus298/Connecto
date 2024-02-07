@@ -21,7 +21,7 @@ async function Page() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const bookmarks = await getBookmarks(supabase, 0, 10, user?.id);
+  const bookmarks = await getBookmarks(supabase, 0, 3, user?.id);
 
   return <Main_bookmarks bookmarks={bookmarks} my_id={user?.id} />;
 }

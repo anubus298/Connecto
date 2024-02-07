@@ -259,6 +259,7 @@ function Post({
             </div>
           )}
         </div>
+
         {show_buttons && (
           <div className="flex gap-4">
             {(show_small || isTabletOrMobile) && show_save && (

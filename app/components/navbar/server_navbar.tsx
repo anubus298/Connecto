@@ -53,7 +53,7 @@ async function getNotifications(
   const { data: notifications, error: notifications_error } = await supabase
     .from("notifications")
     .select("*,from:sender_id(avatar_url,username,id)")
-    .order("created_at", { ascending: false })
+    .order("updated_at", { ascending: false })
     .eq("recipient_user_id", user_id)
     .limit(7)
     .returns<any>();

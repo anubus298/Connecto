@@ -6,7 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       bookmarks: {
@@ -48,28 +48,28 @@ export interface Database {
       comments: {
         Row: {
           comment_id: number
-          content: string | null
+          content: string
           created_at: string
           likes_count: number
-          post_id: number | null
+          post_id: number
           replies_count: number
           user_id: string
         }
         Insert: {
           comment_id?: number
-          content?: string | null
+          content: string
           created_at?: string
           likes_count?: number
-          post_id?: number | null
+          post_id: number
           replies_count?: number
           user_id: string
         }
         Update: {
           comment_id?: number
-          content?: string | null
+          content?: string
           created_at?: string
           likes_count?: number
-          post_id?: number | null
+          post_id?: number
           replies_count?: number
           user_id?: string
         }
@@ -297,37 +297,46 @@ export interface Database {
       }
       notifications: {
         Row: {
+          comments_count: number
           content_comment_id: number | null
           content_post_id: number | null
           created_at: string
           is_read: boolean
           is_seen: boolean
+          likes_count: number
           notification_id: number
           recipient_user_id: string
           sender_id: string
           type: string
+          updated_at: string
         }
         Insert: {
+          comments_count?: number
           content_comment_id?: number | null
           content_post_id?: number | null
           created_at?: string
           is_read?: boolean
           is_seen?: boolean
+          likes_count?: number
           notification_id?: number
           recipient_user_id: string
           sender_id: string
           type: string
+          updated_at?: string
         }
         Update: {
+          comments_count?: number
           content_comment_id?: number | null
           content_post_id?: number | null
           created_at?: string
           is_read?: boolean
           is_seen?: boolean
+          likes_count?: number
           notification_id?: number
           recipient_user_id?: string
           sender_id?: string
           type?: string
+          updated_at?: string
         }
         Relationships: [
           {
