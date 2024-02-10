@@ -26,22 +26,25 @@ interface Props {
     conversation_id: string;
     user_id: Profile;
   };
-  index: number;
+
   setcurrent_conversation: Dispatch<
     SetStateAction<{
       id: string;
       user_profile: Profile;
     } | null>
   >;
-  friends: Friend[];
+
+  setcurrent_small_page: Dispatch<
+    SetStateAction<"first" | "second" | "either">
+  >;
 }
 export type Message = NonNullable<Tables<"messages"> & { profiles: Profile }>;
 
 function Conversation_pallete({
   conv,
-  index,
+
+  setcurrent_small_page,
   setcurrent_conversation,
-  friends,
 }: Props) {
   const [latest_message, setLatest_message] = useState<Message[] | null>(null);
 
@@ -49,7 +52,7 @@ function Conversation_pallete({
   const [dom_loaded, setDom_loaded] = useState(false);
   const items: MenuProps["items"] = [
     {
-      key: "1",
+      key: "delete",
       label: (
         <div className="flex items-center gap-2 text-dark">
           <FontAwesomeIcon icon={faTrash} />
@@ -58,7 +61,7 @@ function Conversation_pallete({
       ),
     },
     {
-      key: "2",
+      key: "report",
       label: (
         <div className="flex items-center gap-2 text-dark">
           <FontAwesomeIcon icon={faFlag} />
@@ -67,7 +70,7 @@ function Conversation_pallete({
       ),
     },
     {
-      key: "3",
+      key: "block",
       label: (
         <div className="flex items-center justify-start gap-2 text-red-600">
           <FontAwesomeIcon className="w-4 x" icon={faBan} />
@@ -112,12 +115,13 @@ function Conversation_pallete({
     >
       <div className="relative flex items-center gap-3 px-1 py-2 border-2 border-gray-100 rounded-md hover:border-gray-200">
         <button
-          onClick={() =>
+          onClick={() => {
             setcurrent_conversation({
               id: conv.conversation_id,
               user_profile: conv.user_id,
-            })
-          }
+            });
+            setcurrent_small_page("second");
+          }}
         >
           <Badge dot={is_online} status={"success"}>
             <Avatar_comp
@@ -131,12 +135,13 @@ function Conversation_pallete({
         </button>
         <button
           className="flex flex-col items-start justify-center"
-          onClick={() =>
+          onClick={() => {
             setcurrent_conversation({
               id: conv.conversation_id,
               user_profile: conv.user_id,
-            })
-          }
+            });
+            setcurrent_small_page("second");
+          }}
         >
           <p className="font-medium">{conv.user_id.username}</p>
           {latest_message && (

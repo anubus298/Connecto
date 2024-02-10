@@ -217,6 +217,228 @@ export type Database = {
           }
         ]
       }
+      group_admins: {
+        Row: {
+          admin_id: number
+          created_at: string
+          group_id: number
+          user_id: string
+        }
+        Insert: {
+          admin_id?: number
+          created_at?: string
+          group_id: number
+          user_id: string
+        }
+        Update: {
+          admin_id?: number
+          created_at?: string
+          group_id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_admins_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_admins_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      group_members: {
+        Row: {
+          created_at: string
+          group_id: number
+          group_member_id: number
+          status: Database["public"]["Enums"]["group_member_status"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          group_id: number
+          group_member_id?: number
+          status?: Database["public"]["Enums"]["group_member_status"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          group_id?: number
+          group_member_id?: number
+          status?: Database["public"]["Enums"]["group_member_status"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      group_members_pending: {
+        Row: {
+          created_at: string
+          group_id: number
+          group_member_id: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          group_id: number
+          group_member_id?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          group_id?: number
+          group_member_id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_members_pending_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_members_pending_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      group_posts: {
+        Row: {
+          comments_count: number | null
+          content: string | null
+          created_at: string
+          group_id: number
+          id: number
+          likes_count: number | null
+          media_url: string | null
+          share_source: number | null
+          shares_count: number | null
+          type: Database["public"]["Enums"]["group_post_type"]
+          user_id: string
+        }
+        Insert: {
+          comments_count?: number | null
+          content?: string | null
+          created_at?: string
+          group_id: number
+          id?: number
+          likes_count?: number | null
+          media_url?: string | null
+          share_source?: number | null
+          shares_count?: number | null
+          type?: Database["public"]["Enums"]["group_post_type"]
+          user_id: string
+        }
+        Update: {
+          comments_count?: number | null
+          content?: string | null
+          created_at?: string
+          group_id?: number
+          id?: number
+          likes_count?: number | null
+          media_url?: string | null
+          share_source?: number | null
+          shares_count?: number | null
+          type?: Database["public"]["Enums"]["group_post_type"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_posts_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_posts_share_source_fkey"
+            columns: ["share_source"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_posts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      groups: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          creator_id: string | null
+          description: string | null
+          id: number
+          logo_url: string | null
+          members_count: number
+          name: string
+          privacy: Database["public"]["Enums"]["group_privacy"]
+          rules: string[] | null
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          creator_id?: string | null
+          description?: string | null
+          id?: number
+          logo_url?: string | null
+          members_count?: number
+          name: string
+          privacy?: Database["public"]["Enums"]["group_privacy"]
+          rules?: string[] | null
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          creator_id?: string | null
+          description?: string | null
+          id?: number
+          logo_url?: string | null
+          members_count?: number
+          name?: string
+          privacy?: Database["public"]["Enums"]["group_privacy"]
+          rules?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "groups_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       likes: {
         Row: {
           created_at: string
@@ -510,6 +732,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_group_admin: {
+        Args: {
+          new_admin_id: string
+          target_group_id: number
+          invoker_id: string
+        }
+        Returns: undefined
+      }
       delete_avatar: {
         Args: {
           avatar_url: string
@@ -567,10 +797,17 @@ export type Database = {
           id: number
         }[]
       }
+      set_recent_notifications_as_read: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       conversation_status: "active" | "blocked"
       friend_type: "pending" | "accepted" | "rejected" | "blocked"
+      group_member_status: "active" | "suspended" | "banned"
+      group_post_type: "default" | "shared"
+      group_privacy: "public" | "private"
     }
     CompositeTypes: {
       [_ in never]: never

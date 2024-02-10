@@ -10,12 +10,14 @@ interface Props {
   setNotifications: Dispatch<SetStateAction<Notification[]>>;
   notifications: Notification[];
   index: number;
+  size?: "big" | "default";
 }
 function Notification_card({
   notification,
   setNotifications,
   notifications,
   index,
+  size = "default",
 }: Props) {
   async function readNotification() {
     await setNotificationAction("read", notification.notification_id);
@@ -103,19 +105,26 @@ function Notification_card({
   return (
     <div
       className={
-        "flex p-2 w-80 h-20 relative " +
-        (!notification.is_read && "bg-gray-50 ")
+        "flex p-2  relative border-2 rounded-md " +
+        (!notification.is_read && "bg-gray-50 ") +
+        (size === "default" ? "w-80 h-20 " : "w-full h-24 ")
       }
     >
-      <div className="flex items-start w-full gap-2">
+      <div
+        className={
+          "flex items-start w-full gap-2 " + (size === "big" && "text-lg")
+        }
+      >
         <Link
-          className="col-span-1 size-[30px]"
+          className={
+            "col-span-1 " + (size === "default" ? "size-[30px]" : "size-[60px]")
+          }
           href={`/home/profile?id=${notification.from.id}`}
         >
           <Avatar_comp
             src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${notification.from.avatar_url}`}
-            height={30}
-            width={30}
+            height={size === "default" ? 30 : 60}
+            width={size === "default" ? 30 : 60}
             alt={notification.from.username + " avatar"}
           />
         </Link>

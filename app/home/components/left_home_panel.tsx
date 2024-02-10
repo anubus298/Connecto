@@ -24,8 +24,8 @@ function Left_home_panel() {
   const sidebarItems: MenuItems[] = [
     {
       icon: <FontAwesomeIcon icon={faUserCircle} />,
-      content: "Account",
-      href: "",
+      content: "Profile",
+      href: "/home/profile",
     },
     {
       icon: <FontAwesomeIcon icon={faGear} />,
@@ -35,7 +35,7 @@ function Left_home_panel() {
     {
       icon: <FontAwesomeIcon icon={faBell} />,
       content: "Notifications",
-      href: "",
+      href: "/home/notifications",
     },
     {
       icon: <FontAwesomeIcon icon={faPager} />,
@@ -45,7 +45,7 @@ function Left_home_panel() {
     {
       icon: <FontAwesomeIcon icon={faUsers} />,
       content: "Communities",
-      href: "",
+      href: "/home/communities",
     },
     {
       icon: <FontAwesomeIcon icon={faBookmark} />,

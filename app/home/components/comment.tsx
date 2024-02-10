@@ -1,5 +1,9 @@
 "use client";
-import { faHeart, faComment } from "@fortawesome/free-regular-svg-icons";
+import {
+  faHeart,
+  faComment,
+  faEyeSlash,
+} from "@fortawesome/free-regular-svg-icons";
 import {
   faEllipsisH,
   faFlag,
@@ -68,6 +72,9 @@ function Comment({
     if (key == "1") {
       setIsDeleteModalOpen(true);
     }
+    if (key == "hide") {
+      setis_hide(true);
+    }
   };
   let items: MenuProps["items"];
   if (comment.is_self) {
@@ -85,6 +92,15 @@ function Comment({
   } else {
     items = [
       {
+        key: "hide",
+        label: (
+          <div className="flex items-center gap-2 text-dark">
+            <FontAwesomeIcon icon={faEyeSlash} />
+            <p>Hide</p>
+          </div>
+        ),
+      },
+      {
         key: "3",
         label: (
           <div className="flex items-center gap-2 text-dark">
@@ -98,6 +114,7 @@ function Comment({
   const [likes_count, setlikes_count] = useState<number>(
     comment.likes_count ?? 0
   );
+  const [is_hide, setis_hide] = useState(false);
   const [is_pending, setis_pending] = useState(false);
   const [replies_count, setReplies_count] = useState<number>(
     comment.replies_count ?? 0
@@ -115,7 +132,7 @@ function Comment({
     }
   }
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  return (
+  return !is_hide ? (
     <>
       <Modal
         title="Delete Comment"
@@ -199,6 +216,14 @@ function Comment({
           <p className="text-sm">{replies_count}</p>
           <FontAwesomeIcon icon={faComment} />
         </button>
+      </div>
+    </>
+  ) : (
+    <>
+      <div className="grid justify-center grid-cols-12 col-span-12 my-2">
+        <div className="flex justify-center col-start-2 col-end-12 py-2 rounded-md select-none bg-gray-50">
+          <h6>This comment is hidden</h6>
+        </div>
       </div>
     </>
   );

@@ -3,6 +3,9 @@ import Avatar_comp from "@/app/components/avatar_comp";
 import SendMessageAction from "@/app/lib/functions/user/message/sendMessage";
 import { Database, Tables } from "@/utils/supabase/supabase";
 import {
+  faArrowLeft,
+  faArrowLeftRotate,
+  faArrowsLeftRightToLine,
   faExclamationCircle,
   faFaceSmile,
   faFlag,
@@ -24,6 +27,8 @@ import {
   useRef,
   useState,
   useContext,
+  Dispatch,
+  SetStateAction,
 } from "react";
 import { Profile } from "../../home_main";
 import BlockUserModal from "./blockModal";
@@ -40,10 +45,16 @@ interface Props {
     avatar_url: any;
     username: any;
   } | null;
+  setcurrent_small_page: Dispatch<
+    SetStateAction<"first" | "second" | "either">
+  >;
+  current_small_page: "first" | "second" | "either";
 }
 function Current_conversation({
   conversation_id,
   my_id,
+  setcurrent_small_page,
+  current_small_page,
   user_profile,
   my_profile,
 }: Props) {
@@ -69,7 +80,7 @@ function Current_conversation({
     return (
       <button
         ref={submitButtonRef}
-        className="w-[10%] bg-primary text-white rounded-r-md"
+        className="md:w-[10%] w-[15%] bg-primary text-white rounded-r-md"
         onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
           e.preventDefault();
           e.currentTarget.form?.requestSubmit();
@@ -284,15 +295,29 @@ function Current_conversation({
             </Badge>
             <p className="text-lg font-semibold">{user_profile.username}</p>
           </div>
-          <button>
-            <FontAwesomeIcon icon={faSearch} className="text-lg text-dark" />
-          </button>
-          <button onClick={() => setDrawer_open(true)}>
-            <FontAwesomeIcon
-              icon={faExclamationCircle}
-              className="text-lg text-dark"
-            />
-          </button>
+          <Button
+            type="text"
+            icon={<FontAwesomeIcon icon={faSearch} className="text-lg " />}
+          ></Button>
+          <Button
+            type="text"
+            icon={
+              <FontAwesomeIcon icon={faExclamationCircle} className="text-lg" />
+            }
+            onClick={() => setDrawer_open(true)}
+          ></Button>
+          {current_small_page === "second" && (
+            <Button
+              type="text"
+              icon={
+                <FontAwesomeIcon
+                  icon={faArrowLeft}
+                  className="text-lg text-dark"
+                />
+              }
+              onClick={() => setcurrent_small_page("first")}
+            ></Button>
+          )}
         </div>
         <div
           className="flex w-full px-1 py-3 overflow-y-scroll bg-gray-50 rounded-md h-[400px] scroll-smooth flex-col-reverse"
@@ -323,7 +348,7 @@ function Current_conversation({
             action={BindSendMessageAction}
           >
             <button
-              className={"w-[5%] text-2xl "}
+              className={"md:w-[5%] w-[10%] text-2xl "}
               onClick={() => setEmoji_picker_open(true)}
             >
               <FontAwesomeIcon
@@ -345,7 +370,7 @@ function Current_conversation({
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 setContent(e.target.value)
               }
-              className="w-[85%] p-2 border-2 focus-visible:outline-primary"
+              className="md:w-[85%] w-[75%] p-2 border-2 focus-visible:outline-primary"
             />
             {emoji_picker_open && (
               <div className="absolute bottom-0 bg-white rounded-md right-full">

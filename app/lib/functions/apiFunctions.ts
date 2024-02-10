@@ -104,3 +104,22 @@ export async function getComments(
     return comments_data;
   } else return null;
 }
+
+export async function getNotifications(
+  supabase: SupabaseClient<Database, "public", Database["public"]>,
+  from: number,
+  to: number,
+  my_id?: string
+) {
+  if (my_id) {
+    const { data: notifications, error } = await supabase
+      .from("notifications")
+      .select("*,from:sender_id(avatar_url,username,id)")
+      .eq("recipient_user_id", my_id)
+      .order("updated_at", { ascending: false })
+      .range(from, to);
+    return notifications;
+  } else {
+    return null;
+  }
+}

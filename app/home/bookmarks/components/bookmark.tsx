@@ -21,14 +21,12 @@ function Bookmark_pallete({ bookmark, my_id }: Props) {
   );
   const [formattedDate, setFormattedDate] = useState("");
   const [pending, setPending] = useState(false);
+  const [is_deleted, setIs_deleted] = useState(false);
   useEffect(() => {
     setFormattedDate(getPrettyDate(bookmark.post_id.created_at));
   }, []);
-  return (
-    <article
-      className="flex w-full gap-3 p-4 rounded-md bg-gray-50"
-      key={bookmark.id}
-    >
+  return !is_deleted ? (
+    <article className="flex w-full gap-3 p-4 rounded-md bg-gray-50">
       <div className="flex items-center gap-2">
         <Link
           className="col-span-1"
@@ -118,6 +116,7 @@ function Bookmark_pallete({ bookmark, my_id }: Props) {
             onClick={async () => {
               setPending(true);
               await unbookmarkPostAction(bookmark.post_id.id);
+              setIs_deleted(true);
               setPending(false);
             }}
           >
@@ -126,6 +125,10 @@ function Bookmark_pallete({ bookmark, my_id }: Props) {
         </div>
       </div>
     </article>
+  ) : (
+    <div className="flex w-full gap-3 p-4 rounded-md bg-gray-50">
+      <h6>this post has been deleted</h6>
+    </div>
   );
 }
 

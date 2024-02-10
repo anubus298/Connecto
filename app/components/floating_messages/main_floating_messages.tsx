@@ -74,7 +74,6 @@ function Main_floating_messages({ my_id, conversations, friends }: Props) {
     }
 
     const onClick: MenuProps["onClick"] = (e) => {
-      console.log(e);
       setselected_conversation(
         conversations.find(
           (conv) => (conv.conversation_id = e.key.split(" ")[1])

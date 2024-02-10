@@ -73,6 +73,7 @@ function Friends_modal({
                 friends.map((friend, index) => {
                   return (
                     <Friend_pallete
+                      key={friend.friendship_id + "friendpallete"}
                       //@ts-ignore
                       friend={friend}
                       index={index}

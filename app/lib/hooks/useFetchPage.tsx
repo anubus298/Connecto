@@ -46,9 +46,7 @@ function useFetchPage<T>(
         }
       } catch (error) {
         if (!controller.signal.aborted) {
-          console.error("Error fetching data:", error);
           setLoading(false);
-          setList([]);
           setHasMore(false);
         }
       }
@@ -62,7 +60,7 @@ function useFetchPage<T>(
     };
   }, [from]);
 
-  return { loading, list, hasMore };
+  return { loading, list, setList, hasMore };
 }
 
 export default useFetchPage;

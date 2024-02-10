@@ -14,6 +14,7 @@ import Conversation_pallete from "./conversation.pallete";
 import Current_conversation from "./current_conversation";
 import Avatar_comp from "@/app/components/avatar_comp";
 import initialiseConversationAction from "@/app/lib/functions/user/message/initialiseConversation";
+import { useMediaQuery } from "react-responsive";
 
 interface Props {
   conversations: {
@@ -115,6 +116,10 @@ function Main_messages({
         user_profile: user.friend,
       });
   }
+  const isMediumScreen = useMediaQuery({ query: "(max-width: 768px)" });
+  const [current_small_page, setcurrent_small_page] = useState<
+    "first" | "second" | "either"
+  >(isMediumScreen ? "first" : "either");
   return (
     <ConfigProvider
       theme={{
@@ -126,114 +131,119 @@ function Main_messages({
       }}
     >
       <div className="grid-cols-12 grid gap-2 *:rounded-md *:p-3">
-        <div className="flex flex-col min-h-[60vh] col-span-12 md:col-span-4 gap-3 bg-white">
-          <h3 className="h3">Messages</h3>
-          <Segmented
-            onChange={(value: string | number) => setcurrent_page(value)}
-            block
-            options={[
-              {
-                label: "conversations",
-                value: "Conversations",
-                icon: <FontAwesomeIcon icon={faEnvelope} />,
-              },
-              {
-                label: "groups",
-                value: "Groups",
-                disabled: true,
-                icon: <FontAwesomeIcon icon={faUserGroup} />,
-              },
-            ]}
-            className="w-full"
-          />
-          {current_page === "Conversations" && (
-            <div className="flex w-full px-1 pt-2 overflow-x-auto rounded-md hide-scrollbar bg-gray-50">
-              {onlineUsers?.map((user) => {
-                return (
-                  <button
-                    onClick={async () =>
-                      await handleConversationsInitializing(user)
-                    }
-                    className="flex flex-col items-center w-20"
-                    key={"onlinePallete:" + user.friend.id}
-                  >
-                    <div className="h-[30px] w-full flex justify-center">
-                      <Badge
-                        dot
-                        status="success"
-                        className="border-[1px] rounded-md border-[#52c41a]"
-                      >
+        {(current_small_page === "first" || !isMediumScreen) && (
+          <div className="flex flex-col md:min-h-[60vh] col-span-12 md:col-span-4 gap-3 bg-white">
+            <h3 className="h3">Messages</h3>
+            <Segmented
+              onChange={(value: string | number) => setcurrent_page(value)}
+              block
+              options={[
+                {
+                  label: "conversations",
+                  value: "Conversations",
+                  icon: <FontAwesomeIcon icon={faEnvelope} />,
+                },
+                {
+                  label: "groups",
+                  value: "Groups",
+                  disabled: true,
+                  icon: <FontAwesomeIcon icon={faUserGroup} />,
+                },
+              ]}
+              className="w-full"
+            />
+            {current_page === "Conversations" && (
+              <div className="flex w-full px-1 pt-2 overflow-x-auto rounded-md hide-scrollbar bg-gray-50">
+                {onlineUsers?.map((user) => {
+                  return (
+                    <button
+                      onClick={async () =>
+                        await handleConversationsInitializing(user)
+                      }
+                      className="flex flex-col items-center w-20"
+                      key={"onlinePallete:" + user.friend.id}
+                    >
+                      <div className="h-[30px] w-full flex justify-center">
+                        <Badge
+                          dot
+                          status="success"
+                          className="border-[1px] rounded-md border-[#52c41a]"
+                        >
+                          <Avatar_comp
+                            height={30}
+                            width={30}
+                            alt={user.friend.username + " avatar"}
+                            src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${user.friend.avatar_url}`}
+                          />
+                        </Badge>
+                      </div>
+                      <div className="flex items-center justify-center w-20 h-7">
+                        <h6 className="overflow-hidden text-xs font-medium text-ellipsis whitespace-nowrap">
+                          {user.friend.username}
+                        </h6>
+                      </div>
+                    </button>
+                  );
+                })}
+                {friends?.map((user) => {
+                  return (
+                    <button
+                      onClick={async () =>
+                        await handleConversationsInitializing(user)
+                      }
+                      className="flex flex-col items-center w-20"
+                      key={"friendPallete:" + user.friend.id}
+                    >
+                      <div className="h-[30px] w-full flex justify-center">
                         <Avatar_comp
                           height={30}
                           width={30}
                           alt={user.friend.username + " avatar"}
                           src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${user.friend.avatar_url}`}
                         />
-                      </Badge>
-                    </div>
-                    <div className="flex items-center justify-center w-20 h-7">
-                      <h6 className="overflow-hidden text-xs font-medium text-ellipsis whitespace-nowrap">
-                        {user.friend.username}
-                      </h6>
-                    </div>
-                  </button>
-                );
-              })}
-              {friends?.map((user) => {
+                      </div>
+                      <div className="flex items-center justify-center w-20 h-7">
+                        <h6 className="overflow-hidden text-xs font-medium text-ellipsis whitespace-nowrap">
+                          {user.friend.username}
+                        </h6>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+            {current_page === "Conversations" &&
+              conversations.map((conv, index) => {
                 return (
-                  <button
-                    onClick={async () =>
-                      await handleConversationsInitializing(user)
-                    }
-                    className="flex flex-col items-center w-20"
-                    key={"friendPallete:" + user.friend.id}
-                  >
-                    <div className="h-[30px] w-full flex justify-center">
-                      <Avatar_comp
-                        height={30}
-                        width={30}
-                        alt={user.friend.username + " avatar"}
-                        src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${user.friend.avatar_url}`}
-                      />
-                    </div>
-                    <div className="flex items-center justify-center w-20 h-7">
-                      <h6 className="overflow-hidden text-xs font-medium text-ellipsis whitespace-nowrap">
-                        {user.friend.username}
-                      </h6>
-                    </div>
-                  </button>
+                  <Conversation_pallete
+                    conv={conv}
+                    setcurrent_small_page={setcurrent_small_page}
+                    setcurrent_conversation={setcurrent_conversation}
+                    key={"conv_id:" + conv.conversation_id}
+                  />
                 );
               })}
-            </div>
-          )}
-          {current_page === "Conversations" &&
-            conversations.map((conv, index) => {
-              return (
-                <Conversation_pallete
-                  friends={friends}
-                  conv={conv}
-                  index={index}
-                  setcurrent_conversation={setcurrent_conversation}
-                  key={conv.conversation_id + index + 1}
-                />
-              );
-            })}
-        </div>
-
-        {current_conversation && (
-          <Current_conversation
-            my_profile={my_profile}
-            key={current_conversation.id}
-            user_profile={current_conversation.user_profile}
-            my_id={my_id}
-            conversation_id={current_conversation.id}
-          />
-        )}
-        {!current_conversation && (
-          <div className="flex items-center justify-center col-span-8 bg-white">
-            <h3 className="text-2xl font-medium">Start a conversation</h3>
           </div>
         )}
+
+        {(current_small_page === "second" || !isMediumScreen) &&
+          current_conversation && (
+            <Current_conversation
+              setcurrent_small_page={setcurrent_small_page}
+              current_small_page={current_small_page}
+              my_profile={my_profile}
+              key={current_conversation.id}
+              user_profile={current_conversation.user_profile}
+              my_id={my_id}
+              conversation_id={current_conversation.id}
+            />
+          )}
+        {(current_small_page === "second" || !isMediumScreen) &&
+          !current_conversation && (
+            <div className="flex items-center justify-center col-span-8 bg-white">
+              <h3 className="text-2xl font-medium">Start a conversation</h3>
+            </div>
+          )}
       </div>
     </ConfigProvider>
   );

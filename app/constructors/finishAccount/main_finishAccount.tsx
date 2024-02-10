@@ -55,7 +55,7 @@ function Main_finishAccount({ action, message }: Props) {
       <div className="flex flex-col items-center col-start-5 col-end-9 gap-6 my-auto">
         <h1 className="text-center h1">finish Your Profile</h1>
         <h6 className="text-sm text-center h6">
-          You can't change username afterword
+          You can&apos;t change username afterword
         </h6>
         <div className="size-[200px] bg-white flex justify-center items-center rounded-lg relative overflow-hidden  ">
           {imagePreview && (

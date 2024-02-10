@@ -52,7 +52,7 @@ export default function RootLayout({ children }: Props) {
             }}
           >
             <GlobalProvider>
-              <div className="grid min-h-screen grid-cols-12 gap-2 bg-gray-100">
+              <div className="grid grid-cols-12 gap-2 bg-gray-100 md:min-h-screen">
                 {children}
               </div>
             </GlobalProvider>

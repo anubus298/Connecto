@@ -10,7 +10,7 @@ import { Tables } from "@/utils/supabase/supabase";
 import { Profile } from "../../home_main";
 import Comment_origin from "./comment_origin";
 import { faClock, faStar, faUser } from "@fortawesome/free-regular-svg-icons";
-import React, { useCallback, useRef, useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import useFetchPage from "@/app/lib/hooks/useFetchPage";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -26,8 +26,9 @@ interface Props {
     is_liked: boolean;
     is_self: boolean;
   })[];
+  setcomments_count?: Dispatch<SetStateAction<number>>;
 }
-function Comments_section({ post_id, comments }: Props) {
+function Comments_section({ post_id, comments, setcomments_count }: Props) {
   const AddCommentActionBind = AddCommentAction.bind(null, post_id);
   const [order, setOrder] = useState({ key: "created_at", value: false });
   const [orderKey, setOrderKey] = useState("Recent");
@@ -50,6 +51,7 @@ function Comments_section({ post_id, comments }: Props) {
           e.preventDefault();
           e.currentTarget.form?.requestSubmit();
           e.currentTarget.form?.reset();
+          setcomments_count && setcomments_count((prev) => prev + 1);
         }}
       >
         Comment
@@ -81,8 +83,9 @@ function Comments_section({ post_id, comments }: Props) {
       setFrom(0);
     }
   };
+  const [is_first_time, setis_first_time] = useState(true);
   return (
-    <div className="w-full p-3 bg-gray-100 rounded-md">
+    <div className="w-full p-2 bg-gray-100 rounded-md md:p-3">
       <div className="flex flex-col items-end w-full px-1 sm:px-2 md:px-4">
         <div className="">
           <Dropdown
@@ -118,7 +121,14 @@ function Comments_section({ post_id, comments }: Props) {
             }
             hasMore={hasMore}
             dataLength={list.length}
-            next={() => setFrom((prev) => prev + 10)}
+            next={() => {
+              if (is_first_time) {
+                setFrom((prev) => prev + comments.length);
+                setis_first_time(false);
+              } else {
+                setFrom((prev) => prev + 10);
+              }
+            }}
           >
             {list.length === 0 && (
               <div className="flex justify-center w-full p-3 h-14">
@@ -139,6 +149,7 @@ function Comments_section({ post_id, comments }: Props) {
                 e.preventDefault();
                 e.currentTarget.form?.requestSubmit();
                 e.currentTarget.form?.reset();
+                setFrom((prev) => prev + 1);
               }
             }}
             name="content"

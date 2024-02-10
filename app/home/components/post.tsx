@@ -7,8 +7,14 @@ import {
   faComment,
   faShareFromSquare,
   faBookmark,
+  faEye,
+  faEyeSlash,
 } from "@fortawesome/free-regular-svg-icons";
-import { faBookmark as faBookmarkSolid } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBookmark as faBookmarkSolid,
+  faMinus,
+  faX,
+} from "@fortawesome/free-solid-svg-icons";
 import {
   faFlag,
   faHeart as faHeartSolid,
@@ -116,8 +122,30 @@ function Post({
           </div>
         ),
       },
+      {
+        key: "3",
+        label: (
+          <div className="flex items-center gap-2 text-dark">
+            <FontAwesomeIcon icon={faEyeSlash} />
+            <p>Hide</p>
+          </div>
+        ),
+      },
     ];
   }
+  !is_in_page &&
+    items.unshift({
+      key: "4",
+      label: (
+        <Link
+          href={"/home/post?id=" + post.id}
+          className="flex items-center gap-2 text-dark"
+        >
+          <FontAwesomeIcon icon={faEye} />
+          <p>View the post</p>
+        </Link>
+      ),
+    });
   const [likes_count, setlikes_count] = useState<number>(post.likes_count ?? 0);
   const [initialSlide, setinitialSlide] = useState(0);
   const [comments_count, setcomments_count] = useState<number>(
@@ -154,7 +182,7 @@ function Post({
   return (
     <article
       ref={postRef}
-      className="flex flex-col gap-6 p-3 bg-white rounded-md"
+      className="flex flex-col gap-6 p-2 bg-white rounded-md md:p-3"
       key={additional_key ?? undefined}
     >
       {/* delete post modal */}
@@ -203,12 +231,11 @@ function Post({
       {/* post modal */}
       {!is_in_page && (
         <Post_modal
-          setIsAssetsModalOpen={setIsAssetsModalOpen}
+          user_id={user_id}
+          my_profile={my_profile}
+          comments={[]}
           setcomments_count={setcomments_count}
-          comments_count={comments_count}
           post={post}
-          dropDownItems={items}
-          handleDropDownClick={handleDropDownClick}
           isPostModalOpen={isPostModalOpen}
           setIsPostModalOpen={setIsPostModalOpen}
         />

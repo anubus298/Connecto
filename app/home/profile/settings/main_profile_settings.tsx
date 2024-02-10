@@ -222,9 +222,7 @@ function Main_profile_settings({ my_profile, personal_info }: Props) {
                       try {
                         e.currentTarget.form?.requestSubmit();
                         setFullName_edit(false);
-                      } catch (error) {
-                        console.log(error);
-                      }
+                      } catch (error) {}
                     }
                   }}
                 >
@@ -256,9 +254,7 @@ function Main_profile_settings({ my_profile, personal_info }: Props) {
                       try {
                         e.currentTarget.form?.requestSubmit();
                         setAddress_edit(false);
-                      } catch (error) {
-                        console.log(error);
-                      }
+                      } catch (error) {}
                     }
                   }}
                 >
@@ -289,9 +285,7 @@ function Main_profile_settings({ my_profile, personal_info }: Props) {
                       try {
                         e.currentTarget.form?.requestSubmit();
                         setBirthday_edit(false);
-                      } catch (error) {
-                        console.log(error);
-                      }
+                      } catch (error) {}
                     }
                   }}
                 >
@@ -321,9 +315,7 @@ function Main_profile_settings({ my_profile, personal_info }: Props) {
                       try {
                         e.currentTarget.form?.requestSubmit();
                         setPhoneNumber_edit(false);
-                      } catch (error) {
-                        console.log(error);
-                      }
+                      } catch (error) {}
                     }
                   }}
                 >
