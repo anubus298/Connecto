@@ -31,9 +31,9 @@ function Notification_card({
         <Link
           onClick={async () => await readNotification()}
           href={`/home/profile?id=${notification.sender_id}`}
-          className={"text-dark h-full w-full p-1 "}
+          className={"text-gray-700 h-full w-full p-1 "}
         >
-          <span className="overflow-hidden font-medium max-w-3">
+          <span className="overflow-hidden font-medium text-dark max-w-3">
             {notification.from.username}{" "}
           </span>
           sent you a friend request.
@@ -44,9 +44,9 @@ function Notification_card({
         <Link
           onClick={async () => await readNotification()}
           href={`/home/post?id=${notification.content_post_id}`}
-          className={"text-dark h-full w-full p-1 "}
+          className={"text-gray-700 h-full w-full p-1 "}
         >
-          <span className="overflow-hidden font-medium max-w-3">
+          <span className="overflow-hidden font-medium text-dark max-w-3">
             {notification.from.username}{" "}
           </span>
           shared your post
@@ -57,9 +57,9 @@ function Notification_card({
         <Link
           onClick={async () => await readNotification()}
           href={`/home/profile?id=${notification.sender_id}`}
-          className={"text-dark h-full w-full p-1 "}
+          className={"text-gray-700 h-full w-full p-1 "}
         >
-          <span className="overflow-hidden font-medium max-w-3">
+          <span className="overflow-hidden font-medium text-dark max-w-3">
             {notification.from.username}{" "}
           </span>
           accepted your friend request
@@ -70,9 +70,9 @@ function Notification_card({
         <Link
           onClick={async () => await readNotification()}
           href={`/home/post?id=${notification.content_post_id}`}
-          className={"text-dark h-full w-full p-1 "}
+          className={"text-gray-700 h-full w-full p-1 "}
         >
-          <span className="overflow-hidden font-medium max-w-3">
+          <span className="overflow-hidden font-medium text-dark max-w-3">
             {notification.from.username}{" "}
           </span>
           liked your post
@@ -83,9 +83,9 @@ function Notification_card({
         <Link
           onClick={async () => await readNotification()}
           href={`/home/post?id=${notification.content_post_id}`}
-          className={"text-dark h-full w-full p-1 "}
+          className={"text-gray-700 h-full w-full p-1 "}
         >
-          <span className="overflow-hidden font-medium max-w-3">
+          <span className="overflow-hidden font-medium text-dark max-w-3">
             {notification.from.username}{" "}
           </span>
           and {notification.likes_count} others liked your post
@@ -105,32 +105,33 @@ function Notification_card({
   return (
     <div
       className={
-        "flex p-2  relative border-2 rounded-md " +
+        "flex p-1 relative border-b-[1px] " +
         (!notification.is_read && "bg-gray-50 ") +
-        (size === "default" ? "w-80 h-20 " : "w-full h-24 ")
+        (size === "default" ? "w-full h-16 " : "w-full h-20 ")
       }
     >
       <div
-        className={
-          "flex items-start w-full gap-2 " + (size === "big" && "text-lg")
-        }
+        className={"flex items-start w-full gap-x-2 " + (size === "big" && "")}
       >
         <Link
-          className={
-            "col-span-1 " + (size === "default" ? "size-[30px]" : "size-[60px]")
-          }
+          className={" " + (size === "default" ? "size-[40px]" : "size-[60px]")}
           href={`/home/profile?id=${notification.from.id}`}
         >
           <Avatar_comp
             src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${notification.from.avatar_url}`}
-            height={size === "default" ? 30 : 60}
-            width={size === "default" ? 30 : 60}
+            height={size === "default" ? 40 : 60}
+            width={size === "default" ? 40 : 60}
             alt={notification.from.username + " avatar"}
           />
         </Link>
-        <p className="absolute bottom-0 text-xs text-gray-700 left-1">
+
+        <time
+          dateTime={notification.created_at}
+          className="absolute bottom-0 text-xs text-gray-700 left-1 text-end"
+        >
           {getPrettyDate(notification.created_at)}
-        </p>
+        </time>
+
         {decide_notifications_text(notification)}
       </div>
     </div>

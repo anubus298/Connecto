@@ -17,6 +17,7 @@ interface MenuItems {
   icon: React.ReactNode;
   content: string;
   href: string;
+  disabled?: boolean;
 }
 function Left_home_panel() {
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 768px)" });
@@ -37,15 +38,12 @@ function Left_home_panel() {
       content: "Notifications",
       href: "/home/notifications",
     },
-    {
-      icon: <FontAwesomeIcon icon={faPager} />,
-      content: "Spaces",
-      href: "",
-    },
+
     {
       icon: <FontAwesomeIcon icon={faUsers} />,
       content: "Communities",
       href: "/home/communities",
+      disabled: true,
     },
     {
       icon: <FontAwesomeIcon icon={faBookmark} />,
@@ -76,8 +74,10 @@ function Left_home_panel() {
                   className="w-full text-xl"
                   href={item.href}
                   key={index + item.content + "sidebarButton"}
+                  aria-disabled={item.disabled}
                 >
                   <Button
+                    disabled={item.disabled}
                     block
                     type="text"
                     size="large"

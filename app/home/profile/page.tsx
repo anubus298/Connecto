@@ -8,6 +8,7 @@ import { cookies } from "next/headers";
 import Other_profile from "./components/other/other_profile";
 import Personal_profile from "./components/personal/personal_profile";
 import { getPosts } from "../page";
+import { getFriends } from "../messages/page";
 export const revalidate = 0;
 async function Page({ searchParams }: { searchParams: { id?: string } }) {
   const cookiesStore = cookies();
@@ -50,6 +51,7 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
       supabase
     );
     const postMedia = await getPostMedia(supabase, searchParams.id, 9);
+    const friends = await getFriends(supabase, searchParams.id);
     const posts: any = await getPosts(supabase, user?.id, searchParams.id, {
       column: "created_at",
       status: false,
@@ -72,8 +74,8 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
           }}
           //@ts-ignore
           my_profile={my_profile}
-          self_id={user?.id}
-          friends={null} //@ts-ignore
+          self_id={user?.id} //@ts-ignore
+          friends={friends} //@ts-ignore
           profile={otherProfile.profile}
         />
       )

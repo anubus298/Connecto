@@ -10,11 +10,7 @@ import {
   faEye,
   faEyeSlash,
 } from "@fortawesome/free-regular-svg-icons";
-import {
-  faBookmark as faBookmarkSolid,
-  faMinus,
-  faX,
-} from "@fortawesome/free-solid-svg-icons";
+import { faBookmark as faBookmarkSolid } from "@fortawesome/free-solid-svg-icons";
 import {
   faFlag,
   faHeart as faHeartSolid,

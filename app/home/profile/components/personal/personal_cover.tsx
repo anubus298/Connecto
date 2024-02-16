@@ -4,7 +4,7 @@ import { Database } from "@/utils/supabase/supabase";
 //prettier-ignore
 //@ts-ignore
 import { useFormStatus,useFormState } from "react-dom";
-import { Alert, Avatar, Button } from "antd";
+import { Alert, Avatar, Button, Modal } from "antd";
 import Image from "next/image";
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,6 +15,7 @@ interface Props {
   profile: Database["public"]["Tables"]["profiles"]["Row"];
 }
 function Personal_cover({ profile }: Props) {
+  const [isProfilePhotoModalOpen, setisProfilePhotoModalOpen] = useState(false);
   const CoverFileInputRef = useRef<HTMLInputElement | null>(null);
   const ProfileFileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedCoverFile, setselectedCoverFile] = useState<File | null>(null);
@@ -231,14 +232,40 @@ function Personal_cover({ profile }: Props) {
               />
             )}
             {!is_profile_edit && current_profile_url && (
-              <Avatar_comp
-                className="border-2 border-white cursor-pointer"
-                size={"large"}
-                src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${current_profile_url}`}
-                height={150}
-                width={150}
-                alt={profile.username + " avatar"}
-              />
+              <>
+                {profile.avatar_url && (
+                  <Modal
+                    centered
+                    className="w-full md:w-[70dvw] relative"
+                    open={isProfilePhotoModalOpen}
+                    footer={null}
+                    onCancel={() => setisProfilePhotoModalOpen(false)}
+                    cancelButtonProps={{ color: "#ffffff" }}
+                  >
+                    <div className="w-full h-full">
+                      <div className="flex items-center justify-center h-[90dvh] w-full">
+                        <Image
+                          src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${profile.avatar_url}`}
+                          height={400}
+                          className="h-auto"
+                          alt={`user avatar`}
+                          width={600}
+                        />
+                      </div>
+                    </div>
+                  </Modal>
+                )}
+                <div onClick={() => setisProfilePhotoModalOpen(true)}>
+                  <Avatar_comp
+                    className="transition border-2 border-white cursor-pointer hover:brightness-75"
+                    size={"large"}
+                    src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${current_profile_url}`}
+                    height={150}
+                    width={150}
+                    alt={profile.username + " avatar"}
+                  />
+                </div>
+              </>
             )}
           </div>
         </div>

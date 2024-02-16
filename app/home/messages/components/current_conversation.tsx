@@ -36,6 +36,7 @@ import { Message } from "./conversation.pallete";
 import His_message_pallete from "./his_message_pallete";
 import My_message_pallete from "./my_message_pallete";
 import { globalContext } from "@/app/lib/globalProvider";
+import { useMediaQuery } from "react-responsive";
 
 interface Props {
   conversation_id: string;
@@ -197,6 +198,8 @@ function Current_conversation({
       (onlineUser) => onlineUser.friend.id === user_profile.id
     )! == -1
   );
+  const isMediumScreen = useMediaQuery({ query: "(max-width: 768px)" });
+
   useEffect(() => {
     setis_online(
       onlineUsers?.findIndex(
@@ -306,7 +309,7 @@ function Current_conversation({
             }
             onClick={() => setDrawer_open(true)}
           ></Button>
-          {current_small_page === "second" && (
+          {current_small_page === "second" && isMediumScreen && (
             <Button
               type="text"
               icon={

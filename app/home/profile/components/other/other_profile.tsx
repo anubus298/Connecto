@@ -8,6 +8,7 @@ import Other_bio from "./other_bio";
 import Other_buttons from "./other_buttons";
 import Other_cover from "./other_cover";
 import { MediaUrl } from "../personal/personal_profile";
+import Other_friends from "./other_friends";
 
 export type Friend = {
   friend: {
@@ -72,7 +73,7 @@ function Other_profile({
           />
         </div>
         <div className="col-span-12 md:col-span-4">
-          <Personal_friends
+          <Other_friends
             user_id={profile.id}
             friends={friends}
             count={profile.friends_count}

@@ -30,7 +30,7 @@ const emailSchema = z.string().email({
 const NameSchema = z.string().refine(
   (firstName: string) => {
     // Custom validation logic
-    const isValidFormat = /^[a-zA-Z]+(?:\s[a-zA-Z]+){0,2}$/.test(firstName);
+    const isValidFormat = /^[a-zA-Z]+$/.test(firstName);
 
     return isValidFormat;
   },

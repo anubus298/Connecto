@@ -1,12 +1,14 @@
 "use client";
 import { faImage, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, ConfigProvider } from "antd";
+import { Button, ConfigProvider, Mentions } from "antd";
 import Image from "next/image";
 import React, { ChangeEvent, useRef, useState } from "react";
 import { addPostAction } from "@/app/lib/functions/user/post/addPost";
 import Link from "next/link";
 import Avatar_comp from "@/app/components/avatar_comp";
+import useSearch from "@/app/lib/hooks/useSearch";
+import { Profile } from "../home_main";
 interface Props {
   avatar: string | null | undefined;
 }
@@ -14,10 +16,15 @@ interface Props {
 function Post_something({ avatar }: Props) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [pending, setPending] = useState(false);
+
+  const [query, setQuery] = useState("");
   const [selectedFiles, setSelectedFiles] = useState<
     { file: File; preview: string }[]
   >([]);
   const [content, setContent] = useState("");
+  const [mentions, setMentions] = useState<{ username: string; id: string }[]>(
+    []
+  );
   function SubmitButton({
     selectedFiles,
   }: {
@@ -42,12 +49,7 @@ function Post_something({ avatar }: Props) {
     };
 
     return (
-      <Button
-        type="primary"
-        disabled={content.length === 0 && selectedFiles.length === 0}
-        loading={pending}
-        onClick={handleSubmit}
-      >
+      <Button type="primary" loading={pending} onClick={handleSubmit}>
         Post
       </Button>
     );
@@ -71,11 +73,14 @@ function Post_something({ avatar }: Props) {
       });
     }
   };
-
   const removeFile = (index: number) => {
     setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
-
+  const { loading, list } = useSearch<Profile>(
+    "/api/friends/search",
+    { empty: "" },
+    query
+  );
   return (
     <ConfigProvider
       theme={{
@@ -112,32 +117,61 @@ function Post_something({ avatar }: Props) {
               ref={fileInputRef}
               multiple
             />
-            <textarea
+
+            <Mentions
+              rows={5}
               name="content"
-              value={content}
               disabled={pending}
-              onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-                setContent(e.target.value)
-              }
-              draggable={false}
+              value={content}
+              prefix={"@"}
+              onSelect={(option) => {
+                setMentions((prev) => [
+                  ...prev,
+                  {
+                    username: option.value ?? "",
+                    id: option.key?.split(",")[1] ?? "",
+                  },
+                ]);
+              }}
+              loading={loading}
+              onSearch={(text) => {
+                setQuery(text);
+              }}
+              onChange={(text) => {
+                setContent(text);
+              }}
               placeholder="What's in your mind"
               className="w-full p-1 resize-none focus-visible:outline-none"
+              options={list.map((user) => {
+                return {
+                  key: "mentionSearch," + user.id,
+                  value: user.username,
+                  label: (
+                    <div className="flex items-center gap-1">
+                      <Avatar_comp
+                        height={30}
+                        width={30}
+                        alt={user.username + " avatar"}
+                        src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${user.avatar_url}`}
+                      />
+                      <h6>{user.username}</h6>
+                    </div>
+                  ),
+                };
+              })}
             />
           </div>
           <div className="flex items-center gap-2">
-            <button
+            <Button
               disabled={pending}
               onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                 e.preventDefault();
                 fileInputRef.current?.click();
               }}
+              icon={<FontAwesomeIcon icon={faImage} className="text-primary" />}
             >
-              <FontAwesomeIcon
-                icon={faImage}
-                className="text-gray-400 transition hover:text-primary"
-                size="2x"
-              />
-            </button>
+              Image/video
+            </Button>
             <SubmitButton selectedFiles={selectedFiles} />
           </div>
         </form>

@@ -17,6 +17,7 @@ interface Props {
   my_id?: string;
   friends: Friend[];
 }
+
 function Primary_navbar({ profile, notifications, my_id, friends }: Props) {
   return (
     <nav className="flex items-center justify-between col-span-12 px-8 py-3 bg-white border-b-2 select-none text-dark h-fit ">

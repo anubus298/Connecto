@@ -21,6 +21,8 @@ import {
 import { Profile } from "../../home_main";
 import { Friend } from "../../profile/components/other/other_profile";
 import BlockUserModal from "./blockModal";
+import { array } from "zod";
+import { data } from "autoprefixer";
 interface Props {
   conv: {
     conversation_id: string;

@@ -787,6 +787,10 @@ export type Database = {
           friends_count: number
         }[]
       }
+      get_unread_conversations_count: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       getmedia_url: {
         Args: {
           t_user_id: string
@@ -795,6 +799,21 @@ export type Database = {
         Returns: {
           urls: string
           id: number
+        }[]
+      }
+      search_friend_profile: {
+        Args: {
+          name_search: string
+        }
+        Returns: {
+          avatar_url: string | null
+          bio: string | null
+          cover_url: string | null
+          friends_count: number
+          id: string
+          is_first_initialised: boolean
+          updated_at: string | null
+          username: string | null
         }[]
       }
       set_recent_notifications_as_read: {

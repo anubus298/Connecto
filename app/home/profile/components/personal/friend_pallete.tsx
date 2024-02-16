@@ -17,6 +17,7 @@ import { Friend } from "../other/other_profile";
 interface Props {
   friend: Friend & { friendship_id: number };
   index: number;
+  is_personal?: boolean;
   setFriends: React.Dispatch<
     React.SetStateAction<
       (Friend & {
@@ -26,7 +27,13 @@ interface Props {
   >;
   friends: (Friend & { friendship_id: number })[];
 }
-function Friend_pallete({ friend, index, friends, setFriends }: Props) {
+function Friend_pallete({
+  friend,
+  index,
+  friends,
+  setFriends,
+  is_personal = true,
+}: Props) {
   const [isUnfriendModalOpen, setIsUnfriendModalOpen] = useState(false);
   const [is_unfriending_pending, setIs_unfriending_pending] = useState(false);
   const handleDropDownClick: MenuProps["onClick"] = async ({ key }) => {
@@ -91,47 +98,52 @@ function Friend_pallete({ friend, index, friends, setFriends }: Props) {
         </div>
       </div>
       <div className="flex items-center justify-end col-span-2 bg-white rounded-r-md">
-        <Modal
-          title={"Unfriend"}
-          centered
-          open={isUnfriendModalOpen}
-          okButtonProps={{
-            loading: is_unfriending_pending,
-          }}
-          onOk={async () => {
-            setIs_unfriending_pending(true);
-            await unfriendAction(friend.friendship_id);
-            let mimic = [...friends];
-            mimic.splice(index, 1);
-            setFriends(mimic);
-            setIsUnfriendModalOpen(false);
-            setIs_unfriending_pending(false);
-          }}
-          onCancel={() => setIsUnfriendModalOpen(false)}
-        >
-          <p>
-            Are you sure you want to unfriend{" "}
-            <span className="font-semibold">{friend.friend.username}</span>
-          </p>
-        </Modal>
-        <div className="px-2">
-          <Dropdown
-            menu={{
-              items,
-              onClick: handleDropDownClick,
-            }}
-            trigger={["click"]}
-            placement="bottomRight"
-          >
-            <button>
-              <FontAwesomeIcon
-                icon={faEllipsisV}
-                className="text-dark"
-                size="2x"
-              />
-            </button>
-          </Dropdown>
-        </div>
+        {is_personal && (
+          <>
+            {" "}
+            <Modal
+              title={"Unfriend"}
+              centered
+              open={isUnfriendModalOpen}
+              okButtonProps={{
+                loading: is_unfriending_pending,
+              }}
+              onOk={async () => {
+                setIs_unfriending_pending(true);
+                await unfriendAction(friend.friendship_id);
+                let mimic = [...friends];
+                mimic.splice(index, 1);
+                setFriends(mimic);
+                setIsUnfriendModalOpen(false);
+                setIs_unfriending_pending(false);
+              }}
+              onCancel={() => setIsUnfriendModalOpen(false)}
+            >
+              <p>
+                Are you sure you want to unfriend{" "}
+                <span className="font-semibold">{friend.friend.username}</span>
+              </p>
+            </Modal>
+            <div className="px-2">
+              <Dropdown
+                menu={{
+                  items,
+                  onClick: handleDropDownClick,
+                }}
+                trigger={["click"]}
+                placement="bottomRight"
+              >
+                <button>
+                  <FontAwesomeIcon
+                    icon={faEllipsisV}
+                    className="text-dark"
+                    size="2x"
+                  />
+                </button>
+              </Dropdown>
+            </div>
+          </>
+        )}
       </div>
     </>
   );

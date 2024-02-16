@@ -12,11 +12,13 @@ interface Props {
   setisFriendModalOpen: Dispatch<SetStateAction<boolean>>;
   user_id: string | null;
   isFriendModalOpen: boolean;
+  is_personal?: boolean;
 }
 function Friends_modal({
   isFriendModalOpen,
   setisFriendModalOpen,
   user_id,
+  is_personal = true,
 }: Props) {
   const [From_to, setFrom_to] = useState({ from: 0, to: 15 });
   const [doneFetching, setDoneFetching] = useState(false);
@@ -76,6 +78,7 @@ function Friends_modal({
                       key={friend.friendship_id + "friendpallete"}
                       //@ts-ignore
                       friend={friend}
+                      is_personal={is_personal}
                       index={index}
                       //@ts-ignore
                       friends={friends}

@@ -4,7 +4,7 @@ import {
   SupabaseClient,
 } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { Friend } from "../profile/components/other/other_profile";
+
 export const revalidate = 0;
 import Main_messages from "./components/main_messages";
 import { getMyProfile } from "../page";
@@ -17,7 +17,14 @@ async function Page() {
     data: { user },
   } = await supabase.auth.getUser();
   const conversations = await getConversations(supabase, user!.id);
-  const friends = await getFriends(supabase, user!.id);
+  let friends = await getFriends(supabase, user!.id);
+  friends = friends?.filter(
+    (friend) =>
+      conversations?.findIndex(
+        //@ts-ignore
+        (conv) => conv?.user_id?.id == friend?.friend?.id
+      ) === -1
+  );
   const my_profile = await getMyProfile(supabase, user!.id);
   return (
     <Main_messages

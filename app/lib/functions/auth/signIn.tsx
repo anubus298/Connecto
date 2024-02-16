@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 
 import { emailSchema, passwordSchema } from "../../zod/schemas";
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
+3;
 export const signInAction = async (formData: FormData) => {
   "use server";
   const email = formData.get("email") as string;

@@ -32,7 +32,7 @@ function Notifications_dropdown({ notifications_source }: Props) {
     items.push({
       key: "seeMore",
       label: (
-        <div className="flex justify-end w-80">
+        <div className="flex justify-end w-full">
           <Link href={"/home/notifications"} className="p-1">
             <Button type="link" size="small" className="text-gray-500 ">
               <p>View all</p>
@@ -72,7 +72,7 @@ function Notifications_dropdown({ notifications_source }: Props) {
           }
         >
           <FontAwesomeIcon
-            className="flex items-center gap-2 text-dark md:text-base"
+            className="flex items-center text-dark md:text-base"
             icon={faBell}
           />
         </Badge>

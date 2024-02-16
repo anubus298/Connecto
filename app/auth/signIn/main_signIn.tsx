@@ -41,7 +41,7 @@ function Main_signIn({ signIn, message, error }: Props) {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: "http://localhost:3000/auth/callback",
+        redirectTo: "https://connecto-nine.vercel.app/auth/callback",
       },
     });
   }
@@ -95,13 +95,13 @@ function Main_signIn({ signIn, message, error }: Props) {
             }
           >
             <FontAwesomeIcon icon={faGoogle} />
-            Google
+            Sign in with Google
           </Button>
           <Link
             href={"/auth/signUp"}
             className="flex items-center justify-end w-full gap-1 text-dark"
           >
-            <p>Sign Up</p>
+            <h6 className="text-xs">Don't have an account</h6>
             <FontAwesomeIcon icon={faArrowRightLong} />
           </Link>
           <p
