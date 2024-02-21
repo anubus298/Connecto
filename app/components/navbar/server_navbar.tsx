@@ -21,10 +21,12 @@ async function Server_Navbar() {
   const profile = await getProfile(supabase, user?.id as string);
   const notifications = await getNotifications(supabase, user?.id as string);
   const friends = await getFriends(supabase, user?.id);
+  const numberOfUnreadedMessages = await getUnReadedMessagesNumber(supabase);
   return (
     <Suspense fallback={<Suspense_Primary_navbar />}>
       <Primary_navbar
         profile={profile}
+        numberOfUnreadedMessages={numberOfUnreadedMessages}
         //@ts-ignore
         friends={friends}
         notifications={notifications}
@@ -58,5 +60,11 @@ async function getNotifications(
     .limit(7)
     .returns<any>();
   return notifications;
+}
+async function getUnReadedMessagesNumber(
+  supabase: SupabaseClient<Database, "public", Database["public"]>
+) {
+  const { data } = await supabase.rpc("get_last_message");
+  return data?.filter((message) => !message.is_read).length;
 }
 export default Server_Navbar;

@@ -101,7 +101,7 @@ function Main_signIn({ signIn, message, error }: Props) {
             href={"/auth/signUp"}
             className="flex items-center justify-end w-full gap-1 text-dark"
           >
-            <h6 className="text-xs">Don't have an account</h6>
+            <h6 className="text-xs">Don&lsquo;t have an account</h6>
             <FontAwesomeIcon icon={faArrowRightLong} />
           </Link>
           <p

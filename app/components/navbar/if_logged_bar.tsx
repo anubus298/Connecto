@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { Dropdown, MenuProps, Modal } from "antd";
+import { Badge, Dropdown, MenuProps, Modal } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import signOutAction from "@/app/lib/functions/auth/signOut";
@@ -28,6 +28,8 @@ interface Props {
     username: string | null;
   };
   notifications_source: Notification[];
+  numberOfUnreadedMessages: number | undefined;
+
   my_id?: string;
   friends: Friend[];
 }
@@ -37,6 +39,7 @@ function If_logged_bar({
   notifications_source,
   my_id,
   friends,
+  numberOfUnreadedMessages,
 }: Props) {
   const { onlineUsers, setOnlineUsers } = useContext(globalContext);
   const router = useRouter();
@@ -171,7 +174,9 @@ function If_logged_bar({
         href={"/home/messages"}
         className="flex items-center gap-2 text-lg text-dark me-6 md:text-base"
       >
-        <FontAwesomeIcon icon={faEnvelope} />
+        <Badge size="small" count={numberOfUnreadedMessages}>
+          <FontAwesomeIcon icon={faEnvelope} />
+        </Badge>
       </Link>
       <Modal
         title="Sign Out"

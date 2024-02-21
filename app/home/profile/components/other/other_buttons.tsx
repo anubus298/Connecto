@@ -4,6 +4,7 @@ import blockUserAction from "@/app/lib/functions/user/friend/blockUser";
 import handleFriendRequestAction from "@/app/lib/functions/user/friend/handleFriendRequestAction";
 import sendFriendRequestAction from "@/app/lib/functions/user/friend/SendFriendRequest";
 import unfriendAction from "@/app/lib/functions/user/friend/unfriend";
+import { sendMessageAction } from "@/app/lib/functions/user/profile/sendMessage";
 import {
   faBan,
   faEllipsisH,
@@ -17,7 +18,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, ConfigProvider, Dropdown, Modal } from "antd";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 interface Props {
   friendship: {
     id?: number;
@@ -28,12 +29,21 @@ interface Props {
 }
 function Other_buttons({ friendship, profile_id }: Props) {
   const [friend_status, setFriend_status] = useState(friendship.status);
+  const [isSendMessageModalOpen, setisSendMessageModalOpen] = useState(false);
+  const [sending_message_pending, setSending_message_pending] = useState(false);
+  const [messageContent, setMessageContent] = useState("");
   const router = useRouter();
   const [friend_button_pending, setFriend_button_pending] = useState(false);
   const [is_my_action, setis_my_action] = useState(friendship.is_my_action);
   const [is_modal_confirm_unfriend_open, setis_modal_confirm_unfriend_open] =
     useState(false);
-
+  async function handleSendMessage() {
+    setSending_message_pending(true);
+    const conv_id = await sendMessageAction(profile_id, messageContent);
+    setSending_message_pending(false);
+    setisSendMessageModalOpen(false);
+    setMessageContent("");
+  }
   async function handleDropDownClick({ key }: { key: string }) {
     if (key === "unfriend") {
       await unfriendAction(friendship.id);
@@ -133,13 +143,37 @@ function Other_buttons({ friendship, profile_id }: Props) {
             ></Button>
           )}
           {friend_status === "added" && (
-            <Button
-              type="primary"
-              size="large"
-              icon={<FontAwesomeIcon icon={faMessage} />}
-            >
-              Message
-            </Button>
+            <>
+              <Modal
+                open={isSendMessageModalOpen}
+                centered
+                closeIcon={null}
+                okButtonProps={{
+                  title: "Send",
+                  loading: sending_message_pending,
+                }}
+                onOk={() => handleSendMessage()}
+                onCancel={() => setisSendMessageModalOpen(false)}
+              >
+                <input
+                  type="text"
+                  value={messageContent}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setMessageContent(e.target.value)
+                  }
+                  placeholder={`type a message`}
+                  className="w-full p-2"
+                />
+              </Modal>
+              <Button
+                onClick={() => setisSendMessageModalOpen(true)}
+                type="primary"
+                size="large"
+                icon={<FontAwesomeIcon icon={faMessage} />}
+              >
+                Message
+              </Button>
+            </>
           )}
         </div>
         <Dropdown

@@ -3,6 +3,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import Main_profile_settings from "./main_profile_settings";
+import { redirect } from "next/navigation";
 
 async function Page() {
   const cookiesStore = cookies();
@@ -11,6 +12,9 @@ async function Page() {
     data: { user },
   } = await supabase.auth.getUser();
   const my_profile = await getMyProfile(supabase, user?.id);
+  if (!my_profile?.username) {
+    redirect("/constructors/newAccount");
+  }
   const personal_info = await getPersonalProfile(supabase, user?.id);
   return (
     <Main_profile_settings

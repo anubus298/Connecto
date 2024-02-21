@@ -4,7 +4,7 @@ import {
   SupabaseClient,
 } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-
+import { redirect } from "next/navigation";
 import { addPostAction } from "../lib/functions/user/post/addPost";
 import Left_home_panel from "./components/left_home_panel";
 import Right_home_panel from "./components/right_home_panel";
@@ -26,6 +26,9 @@ async function Page() {
   );
   const posts = await getPosts(supabase, user?.id);
   const profile = await getMyProfile(supabase, user?.id);
+  if (!profile?.username) {
+    redirect("/constructors/newAccount");
+  }
   const friends = await getFriends(supabase, user?.id);
   return (
     <div className="grid grid-cols-12 gap-2">

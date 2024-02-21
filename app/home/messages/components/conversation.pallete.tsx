@@ -19,10 +19,9 @@ import {
   useState,
 } from "react";
 import { Profile } from "../../home_main";
-import { Friend } from "../../profile/components/other/other_profile";
+
 import BlockUserModal from "./blockModal";
-import { array } from "zod";
-import { data } from "autoprefixer";
+
 interface Props {
   conv: {
     conversation_id: string;
@@ -147,9 +146,15 @@ function Conversation_pallete({
         >
           <p className="font-medium">{conv.user_id.username}</p>
           {latest_message && (
-            <p className="h-5 max-w-[200px] overflow-hidden text-sm whitespace-nowrap text-ellipsis">
-              {latest_message?.[0]?.content}
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="h-5 max-w-[200px] overflow-hidden text-sm whitespace-nowrap text-ellipsis ">
+                {latest_message?.[0]?.content}
+              </p>
+              {!latest_message[0].is_read &&
+                latest_message[0].sender_id == conv.user_id.id && (
+                  <div className="rounded-full size-2 bg-primary"></div>
+                )}
+            </div>
           )}
           {!latest_message && (
             <SkeletonInput active size="small" className="text-sm" />

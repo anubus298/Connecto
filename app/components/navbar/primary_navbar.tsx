@@ -14,11 +14,18 @@ interface Props {
     username: string | null;
   } | null;
   notifications: Notification[];
+  numberOfUnreadedMessages: number | undefined;
   my_id?: string;
   friends: Friend[];
 }
 
-function Primary_navbar({ profile, notifications, my_id, friends }: Props) {
+function Primary_navbar({
+  profile,
+  notifications,
+  my_id,
+  friends,
+  numberOfUnreadedMessages,
+}: Props) {
   return (
     <nav className="flex items-center justify-between col-span-12 px-8 py-3 bg-white border-b-2 select-none text-dark h-fit ">
       <Link href={"/home"} className="flex items-center gap-1">
@@ -36,6 +43,7 @@ function Primary_navbar({ profile, notifications, my_id, friends }: Props) {
       {profile && (
         <If_logged_bar
           profile={profile}
+          numberOfUnreadedMessages={numberOfUnreadedMessages}
           notifications_source={notifications}
           friends={friends}
           my_id={my_id}

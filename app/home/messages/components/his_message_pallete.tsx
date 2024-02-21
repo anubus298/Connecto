@@ -2,10 +2,19 @@ import Avatar_comp from "@/app/components/avatar_comp";
 
 import { getPrettyDate } from "../../components/post";
 import { Message } from "./conversation.pallete";
+import { useEffect } from "react";
+import readMessageAction from "@/app/lib/functions/user/message/readMessage";
+
 interface Props {
   message: Message;
 }
 function His_message_pallete({ message }: Props) {
+  useEffect(() => {
+    async function read() {
+      if (!message.is_read) await readMessageAction(message.message_id);
+    }
+    read();
+  }, []);
   return (
     <div className="relative flex items-stretch justify-end gap-3 px-1 py-2">
       <div className="flex flex-col md:max-w-[30%] max-w-[60%]">

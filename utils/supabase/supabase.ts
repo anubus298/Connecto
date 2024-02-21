@@ -131,6 +131,7 @@ export type Database = {
           conversation_id: string
           created_at: string
           status: Database["public"]["Enums"]["conversation_status"] | null
+          updated_at: string | null
           user_id_1: string
           user_id_2: string
         }
@@ -138,6 +139,7 @@ export type Database = {
           conversation_id?: string
           created_at?: string
           status?: Database["public"]["Enums"]["conversation_status"] | null
+          updated_at?: string | null
           user_id_1: string
           user_id_2: string
         }
@@ -145,6 +147,7 @@ export type Database = {
           conversation_id?: string
           created_at?: string
           status?: Database["public"]["Enums"]["conversation_status"] | null
+          updated_at?: string | null
           user_id_1?: string
           user_id_2?: string
         }
@@ -727,6 +730,38 @@ export type Database = {
           }
         ]
       }
+      user_privacy_settings: {
+        Row: {
+          created_at: string
+          friends_visibilty: Database["public"]["Enums"]["group_privacy"]
+          id: number
+          posts_visibility: Database["public"]["Enums"]["group_privacy"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          friends_visibilty?: Database["public"]["Enums"]["group_privacy"]
+          id?: number
+          posts_visibility?: Database["public"]["Enums"]["group_privacy"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          friends_visibilty?: Database["public"]["Enums"]["group_privacy"]
+          id?: number
+          posts_visibility?: Database["public"]["Enums"]["group_privacy"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_user_privacy_settings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -772,6 +807,17 @@ export type Database = {
             }
             Returns: Record<string, unknown>
           }
+      get_last_message: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          message_id: number
+          created_at: string
+          conversation_id: string
+          sender_id: string
+          content: string
+          is_read: boolean
+        }[]
+      }
       get_non_friends: {
         Args: {
           user_id: string
@@ -815,6 +861,12 @@ export type Database = {
           updated_at: string | null
           username: string | null
         }[]
+      }
+      set_message_as_read: {
+        Args: {
+          messageid: number
+        }
+        Returns: undefined
       }
       set_recent_notifications_as_read: {
         Args: Record<PropertyKey, never>

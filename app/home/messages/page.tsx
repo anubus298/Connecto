@@ -50,6 +50,7 @@ export async function getConversations(
     )
     .or(`user_id_1.eq.${user_id},user_id_2.eq.${user_id}`)
     .eq("status", "active")
+    .order("updated_at", { ascending: false })
     .limit(30)
     .returns<NonNullable<Tables<"conversations">[]>>();
 
