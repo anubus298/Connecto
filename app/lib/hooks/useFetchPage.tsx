@@ -40,7 +40,11 @@ function useFetchPage<T>(
           if (data.error) {
           } else {
             setLoading(false);
-            setList((prev) => [...prev, ...data.data]);
+            if (data.error) {
+              throw new Error(data.error);
+            } else if (data.data) {
+              setList((prev) => [...prev, ...data.data]);
+            }
             setHasMore(data.data.length > 0);
           }
         }

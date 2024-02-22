@@ -4,7 +4,7 @@ import { Database } from "@/utils/supabase/supabase";
 //prettier-ignore
 //@ts-ignore
 import { useFormStatus,useFormState } from "react-dom";
-import { Alert, Avatar, Button, Modal } from "antd";
+import { Alert, Button, Modal } from "antd";
 import Image from "next/image";
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -231,9 +231,9 @@ function Personal_cover({ profile }: Props) {
                 src={profileImagePreview}
               />
             )}
-            {!is_profile_edit && current_profile_url && (
+            {!is_profile_edit && (
               <>
-                {profile.avatar_url && (
+                {
                   <Modal
                     centered
                     className="w-full md:w-[70dvw] relative"
@@ -244,17 +244,17 @@ function Personal_cover({ profile }: Props) {
                   >
                     <div className="w-full h-full">
                       <div className="flex items-center justify-center h-[90dvh] w-full">
-                        <Image
+                        <Avatar_comp
                           src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${profile.avatar_url}`}
                           height={400}
+                          width={400}
                           className="h-auto"
                           alt={`user avatar`}
-                          width={600}
                         />
                       </div>
                     </div>
                   </Modal>
-                )}
+                }
                 <div onClick={() => setisProfilePhotoModalOpen(true)}>
                   <Avatar_comp
                     className="transition border-2 border-white cursor-pointer hover:brightness-75"

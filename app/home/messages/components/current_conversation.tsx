@@ -156,7 +156,7 @@ function Current_conversation({
   useEffect(() => {
     function getMessages(from: number, to: number) {
       fetch(
-        `/api/conversation/get?id=${conversation_id}&is_ascending=0&from=${from}&to=${to}`,
+        `/api/conversation/messages?id=${conversation_id}&is_ascending=0&from=${from}&to=${to}`,
         { method: "GET" }
       )
         .then((res) => res.json())

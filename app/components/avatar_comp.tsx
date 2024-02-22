@@ -58,7 +58,11 @@ function Avatar_comp({
                 ? undefined
                 : `data:image/svg+xml;base64,${toBase64(shimmer(width, height))}`
             }
-            src={src}
+            src={
+              src.slice(src.lastIndexOf("/") + 1) !== "null"
+                ? src
+                : "https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/server/ano.jpg"
+            }
             height={height}
             width={width}
             alt={alt}

@@ -35,7 +35,7 @@ export async function middleware(req: NextRequest) {
       .eq("id", user.id as string);
     if (profile_error) {
       return NextResponse.redirect(new URL("/home", req.url));
-    } else if (!profile[0].is_first_initialised) {
+    } else if (!profile[0]?.is_first_initialised) {
       return res;
     } else {
       return NextResponse.redirect(new URL("/home", req.url));

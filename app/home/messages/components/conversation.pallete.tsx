@@ -43,12 +43,14 @@ export type Message = NonNullable<Tables<"messages"> & { profiles: Profile }>;
 
 function Conversation_pallete({
   conv,
-
   setcurrent_small_page,
   setcurrent_conversation,
 }: Props) {
   const [latest_message, setLatest_message] = useState<Message[] | null>(null);
-
+  const [
+    the_conversation_not_read_by_clicking,
+    setThe_conversation_not_read_by_clicking,
+  ] = useState(false);
   const [isBlockUserModalOpen, setIsBlockUserModalOpen] = useState(false);
   const [dom_loaded, setDom_loaded] = useState(false);
   const items: MenuProps["items"] = [
@@ -81,7 +83,10 @@ function Conversation_pallete({
       onClick: () => setIsBlockUserModalOpen(true),
     },
   ];
-  const { onlineUsers, setOnlineUsers } = useContext(globalContext);
+  const {
+    onlineUsers,
+    setNumberOfUnreadedMessages: setNumberOfUnreadMessages,
+  } = useContext(globalContext);
   const [is_online, setis_online] = useState(
     onlineUsers?.findIndex(
       (onlineUser) => onlineUser.friend.id === conv.user_id.id
@@ -97,11 +102,16 @@ function Conversation_pallete({
   useEffect(() => {
     function getLatestMessage() {
       fetch(
-        `/api/conversation/get?id=${conv.conversation_id}&is_ascending=0&from=0&to=0`,
+        `/api/conversation/messages?id=${conv.conversation_id}&is_ascending=0&from=0&to=0`,
         { method: "GET" }
       )
         .then((res) => res.json())
-        .then((data) => setLatest_message(data.data));
+        .then((data) => {
+          setLatest_message(data.data);
+          setThe_conversation_not_read_by_clicking(
+            !data.data[0].is_read && data.data[0].sender_id == conv.user_id.id
+          );
+        });
     }
     setDom_loaded(true);
     getLatestMessage();
@@ -117,6 +127,15 @@ function Conversation_pallete({
       <div className="relative flex items-center gap-3 px-1 py-2 border-2 border-gray-100 rounded-md hover:border-gray-200">
         <button
           onClick={() => {
+            //subtract 1 notification from NumberOfUnreadMessages context
+            if (the_conversation_not_read_by_clicking) {
+              setThe_conversation_not_read_by_clicking(false);
+              setNumberOfUnreadMessages &&
+                setNumberOfUnreadMessages((prev) =>
+                  prev > 0 ? prev - 1 : prev
+                );
+            }
+
             setcurrent_conversation({
               id: conv.conversation_id,
               user_profile: conv.user_id,
@@ -137,6 +156,13 @@ function Conversation_pallete({
         <button
           className="flex flex-col items-start justify-center"
           onClick={() => {
+            if (the_conversation_not_read_by_clicking) {
+              setThe_conversation_not_read_by_clicking(false);
+              setNumberOfUnreadMessages &&
+                setNumberOfUnreadMessages((prev) =>
+                  prev > 0 ? prev - 1 : prev
+                );
+            }
             setcurrent_conversation({
               id: conv.conversation_id,
               user_profile: conv.user_id,
@@ -150,16 +176,16 @@ function Conversation_pallete({
               <p className="h-5 max-w-[200px] overflow-hidden text-sm whitespace-nowrap text-ellipsis ">
                 {latest_message?.[0]?.content}
               </p>
-              {!latest_message[0].is_read &&
-                latest_message[0].sender_id == conv.user_id.id && (
-                  <div className="rounded-full size-2 bg-primary"></div>
-                )}
+              {the_conversation_not_read_by_clicking && (
+                <div className="rounded-full size-2 bg-primary"></div>
+              )}
             </div>
           )}
           {!latest_message && (
             <SkeletonInput active size="small" className="text-sm" />
           )}
         </button>
+
         <BlockUserModal
           isBlockUserModalOpen={isBlockUserModalOpen}
           user_profile={conv.user_id}

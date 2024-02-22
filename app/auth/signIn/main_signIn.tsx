@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 //@ts-ignore
 import { useFormStatus } from "react-dom";
 import { Button } from "antd";
-
 import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
 import Image from "next/image";
@@ -41,7 +40,8 @@ function Main_signIn({ signIn, message, error }: Props) {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: "https://connecto-nine.vercel.app/auth/callback",
+        // redirectTo: "https://connecto-nine.vercel.app/auth/callback",
+        redirectTo: "http://localhost:3000/auth/callback",
       },
     });
   }
@@ -104,15 +104,19 @@ function Main_signIn({ signIn, message, error }: Props) {
             <h6 className="text-xs">Don&lsquo;t have an account</h6>
             <FontAwesomeIcon icon={faArrowRightLong} />
           </Link>
-          <p
-            className={
-              "p-4 mt-4 text-center " +
-              (error == "1" ? "text-red-600" : "text-primary")
-            }
-          >
-            {message && message}
-          </p>
         </form>
+        <div className="w-64">
+          {message && (
+            <p
+              className={
+                "p-4 mt-4 text-center " +
+                (error == "1" ? "text-red-600" : "text-primary")
+              }
+            >
+              {message}
+            </p>
+          )}
+        </div>
       </div>
     </>
   );

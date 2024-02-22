@@ -10,8 +10,18 @@ export default function GlobalProvider({
   children: React.ReactNode;
 }) {
   const [onlineUsers, setOnlineUsers] = useState<FriendContext[]>([]);
+  const [numberOfUnreadedMessagesContext, setNumberOfUnreadedMessages] =
+    useState(0);
+
   return (
-    <globalContext.Provider value={{ onlineUsers, setOnlineUsers }}>
+    <globalContext.Provider
+      value={{
+        onlineUsers,
+        setOnlineUsers,
+        numberOfUnreadedMessagesContext,
+        setNumberOfUnreadedMessages,
+      }}
+    >
       {children}
     </globalContext.Provider>
   );
@@ -20,4 +30,6 @@ export default function GlobalProvider({
 export const globalContext = createContext<{
   onlineUsers?: FriendContext[];
   setOnlineUsers?: Dispatch<SetStateAction<FriendContext[]>>;
+  numberOfUnreadedMessagesContext?: number;
+  setNumberOfUnreadedMessages?: Dispatch<SetStateAction<number>>;
 }>({});

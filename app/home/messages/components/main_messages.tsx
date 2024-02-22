@@ -10,11 +10,12 @@ import { Badge, ConfigProvider, Segmented } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { Profile } from "../../home_main";
 import { Friend } from "../../profile/components/other/other_profile";
-import Conversation_pallete from "./conversation.pallete";
+
 import Current_conversation from "./current_conversation";
 import Avatar_comp from "@/app/components/avatar_comp";
 import initialiseConversationAction from "@/app/lib/functions/user/message/initialiseConversation";
 import { useMediaQuery } from "react-responsive";
+import InfiniteScrollConvPallete from "./infiniteScrollConvPalletes";
 
 interface Props {
   conversations: {
@@ -152,6 +153,7 @@ function Main_messages({
               ]}
               className="w-full"
             />
+            {/* friends vertical swiper */}
             {current_page === "Conversations" && (
               <div className="flex w-full px-1 pt-2 overflow-x-auto rounded-md hide-scrollbar bg-gray-50">
                 {onlineUsers?.map((user) => {
@@ -212,17 +214,14 @@ function Main_messages({
                 })}
               </div>
             )}
-            {current_page === "Conversations" &&
-              conversations.map((conv, index) => {
-                return (
-                  <Conversation_pallete
-                    conv={conv}
-                    setcurrent_small_page={setcurrent_small_page}
-                    setcurrent_conversation={setcurrent_conversation}
-                    key={"conv_id:" + conv.conversation_id}
-                  />
-                );
-              })}
+            {/* conversations pallete */}
+            {current_page === "Conversations" && (
+              <InfiniteScrollConvPallete
+                conversations={conversations}
+                setcurrent_conversation={setcurrent_conversation}
+                setcurrent_small_page={setcurrent_small_page}
+              />
+            )}
           </div>
         )}
 

@@ -20,7 +20,7 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
   } = await supabase.auth.getUser();
   const my_profile = await getMyProfileData(supabase, user?.id);
 
-  if (!searchParams.id) {
+  if (!searchParams.id || searchParams.id == user?.id) {
     const posts = await getPosts(supabase, user?.id, user?.id, {
       column: "created_at",
       status: false,

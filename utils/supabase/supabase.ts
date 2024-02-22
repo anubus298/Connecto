@@ -646,7 +646,7 @@ export type Database = {
           share_source: number | null
           shares_count: number | null
           type: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           comments_count?: number | null
@@ -658,7 +658,7 @@ export type Database = {
           share_source?: number | null
           shares_count?: number | null
           type?: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           comments_count?: number | null
@@ -670,7 +670,7 @@ export type Database = {
           share_source?: number | null
           shares_count?: number | null
           type?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -722,7 +722,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "profiles_id_fkey"
+            foreignKeyName: "public_profiles_id_fkey"
             columns: ["id"]
             isOneToOne: true
             referencedRelation: "users"

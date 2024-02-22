@@ -100,14 +100,12 @@ function Post_something({ avatar }: Props) {
               href={"/home/profile"}
               className="rounded-full size-[40px] overflow-hidden flex justify-center items-center"
             >
-              {avatar && (
-                <Avatar_comp
-                  src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${avatar}`}
-                  height={30}
-                  width={30}
-                  alt={"user avatar"}
-                />
-              )}
+              <Avatar_comp
+                src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${avatar}`}
+                height={30}
+                width={30}
+                alt={"user avatar"}
+              />
             </Link>
             <input
               onChange={handleFileChange}

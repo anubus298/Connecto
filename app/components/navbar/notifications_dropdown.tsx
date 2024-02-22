@@ -80,5 +80,4 @@ function Notifications_dropdown({ notifications_source }: Props) {
     </ConfigProvider>
   );
 }
-
 export default Notifications_dropdown;

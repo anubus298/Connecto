@@ -53,7 +53,6 @@ export default function RootLayout({ children }: Props) {
             }}
           >
             <GlobalProvider>
-              <Announce_card />
               <div className="grid grid-cols-12 gap-2 bg-gray-100 md:min-h-screen">
                 {children}
               </div>

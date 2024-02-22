@@ -8,7 +8,7 @@ import { useState } from "react";
 function Announce_card() {
   const [show, setShow] = useState(true);
   return show ? (
-    <div className="w-full p-1 bg-primary text-white flex justify-center items-center gap-4">
+    <div className="flex items-center justify-center w-full col-span-12 gap-4 p-1 text-white bg-primary">
       <h6 className="text-sm text-center">
         This site is currently in Alpha, for feedbacks{" "}
         <a

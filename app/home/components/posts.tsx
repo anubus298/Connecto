@@ -66,13 +66,13 @@ function Posts({
           dataLength={list.length}
           next={() => setFrom((prev) => prev + 7)}
         >
-          {list?.map((post, index) => {
+          {list?.map((post) => {
             return (
               <Post
                 show_small={show_small}
                 my_profile={my_profile}
                 post={post}
-                key={String(index + 6548 + 56432 + 1) + post.id}
+                key={post.id + post.user_id}
                 user_id={user_id}
               />
             );

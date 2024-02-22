@@ -29,7 +29,6 @@ interface Props {
   };
   notifications_source: Notification[];
   numberOfUnreadedMessages: number | undefined;
-
   my_id?: string;
   friends: Friend[];
 }
@@ -41,9 +40,13 @@ function If_logged_bar({
   friends,
   numberOfUnreadedMessages,
 }: Props) {
-  const { onlineUsers, setOnlineUsers } = useContext(globalContext);
+  const {
+    setOnlineUsers,
+    numberOfUnreadedMessagesContext,
+    setNumberOfUnreadedMessages,
+  } = useContext(globalContext);
   const router = useRouter();
-  const [Friends, setFriends] = useState(friends);
+  const [Friends] = useState(friends);
   const [isDeleteModalOpen, setisDeleteModalOpen] = useState(false);
   const isMediumScreen = useMediaQuery({ query: "(max-width: 768px)" });
   const [notifications, setNotifications] = useState(notifications_source);
@@ -80,6 +83,8 @@ function If_logged_bar({
   const supabase = createClientComponentClient<Database>();
   //initializing realtime listening
   useEffect(() => {
+    setNumberOfUnreadedMessages &&
+      setNumberOfUnreadedMessages(numberOfUnreadedMessages ?? 0);
     const insertChannel = supabase
       .channel("notification:" + profile?.username)
       .on(
@@ -174,7 +179,7 @@ function If_logged_bar({
         href={"/home/messages"}
         className="flex items-center gap-2 text-lg text-dark me-6 md:text-base"
       >
-        <Badge size="small" count={numberOfUnreadedMessages}>
+        <Badge size="small" count={numberOfUnreadedMessagesContext}>
           <FontAwesomeIcon icon={faEnvelope} />
         </Badge>
       </Link>
