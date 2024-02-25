@@ -12,7 +12,11 @@ export async function middleware(req: NextRequest) {
   if (!user && !req.nextUrl.pathname.startsWith("/auth")) {
     return NextResponse.redirect(new URL("/auth/signIn", req.url));
   }
-  if (user && req.nextUrl.pathname.startsWith("/auth")) {
+  if (
+    user &&
+    req.nextUrl.pathname.startsWith("/auth") &&
+    req.nextUrl.pathname !== "/auth/passwordReset/update"
+  ) {
     return NextResponse.redirect(new URL("/home", req.url));
   }
   if (user && req.nextUrl.pathname === "/constructors/newAccount") {

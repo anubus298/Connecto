@@ -8,8 +8,8 @@ export default function Login({
 }) {
   return (
     <Main_signIn
-      error={searchParams?.error}
       signIn={signInAction}
+      error={searchParams?.error}
       message={searchParams?.message}
     />
   );

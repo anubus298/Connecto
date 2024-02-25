@@ -35,7 +35,7 @@ function Personal_profile({
   profile,
   friends,
   posts,
-  personal_info,
+
   mediaUrl,
   self_id,
 }: Props) {

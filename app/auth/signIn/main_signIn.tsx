@@ -35,13 +35,18 @@ function Main_signIn({ signIn, message, error }: Props) {
       </Button>
     );
   }
-  async function handleOauthClick(e: React.MouseEvent<HTMLButtonElement>) {
+  async function handleOauthClick(
+    e: React.MouseEvent<HTMLButtonElement>,
+    provider: "google" | "facebook"
+  ) {
     e.preventDefault();
     const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
+      provider: provider,
       options: {
-        redirectTo: "https://connecto-nine.vercel.app/auth/callback",
-        // redirectTo: "http://localhost:3000/auth/callback",
+        redirectTo:
+          process.env.NODE_ENV !== "production"
+            ? "http://localhost:3000/auth/callback"
+            : "https://connecto-nine.vercel.app/auth/callback",
       },
     });
   }
@@ -91,17 +96,25 @@ function Main_signIn({ signIn, message, error }: Props) {
           <Button
             className="flex items-center justify-center gap-2"
             onClick={async (e: React.MouseEvent<HTMLButtonElement>) =>
-              await handleOauthClick(e)
+              await handleOauthClick(e, "google")
             }
           >
             <FontAwesomeIcon icon={faGoogle} />
             Sign in with Google
           </Button>
+
           <Link
             href={"/auth/signUp"}
-            className="flex items-center justify-end w-full gap-1 text-dark"
+            className="flex items-center justify-end w-full gap-1 mt-3 text-dark"
           >
             <h6 className="text-xs">Don&lsquo;t have an account</h6>
+            <FontAwesomeIcon icon={faArrowRightLong} />
+          </Link>
+          <Link
+            href={"/auth/passwordReset"}
+            className="flex items-center justify-end w-full gap-1 mt-1 text-dark"
+          >
+            <h6 className="text-xs">Forget my password</h6>
             <FontAwesomeIcon icon={faArrowRightLong} />
           </Link>
         </form>

@@ -26,10 +26,7 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
       status: false,
     });
     const postMedia = await getPostMedia(supabase, user?.id, 9);
-    const { profile, friends, personal_info } = await getMyProfile(
-      supabase,
-      user?.id
-    );
+    const { profile, friends } = await getMyProfile(supabase, user?.id);
     return (
       profile && (
         <Personal_profile
@@ -41,7 +38,6 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
           //@ts-ignore
           friends={friends}
           //@ts-ignore
-          personal_info={personal_info}
         />
       )
     );
@@ -93,12 +89,6 @@ async function getMyProfile(
     .eq("id", user_id as string)
     .limit(1)
     .single();
-  const { data: personal_info, error: personal_info_error } = await supabase
-    .from("personal_info")
-    .select("*")
-    .eq("id", user_id as string)
-    .limit(1)
-    .single();
 
   let { data: friendsRaw, error: friends_error } = await supabase
     .from("friends")
@@ -132,7 +122,6 @@ async function getMyProfile(
   return {
     profile: profile,
     friends: friends,
-    personal_info: personal_info,
   };
 }
 

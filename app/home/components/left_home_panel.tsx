@@ -3,7 +3,6 @@ import {
   faBell,
   faBookmark,
   faGear,
-  faPager,
   faQuestionCircle,
   faUserCircle,
   faUsers,
@@ -31,7 +30,7 @@ function Left_home_panel() {
     {
       icon: <FontAwesomeIcon icon={faGear} />,
       content: "Settings",
-      href: "",
+      href: "/home/settings/general",
     },
     {
       icon: <FontAwesomeIcon icon={faBell} />,

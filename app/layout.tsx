@@ -8,12 +8,14 @@ interface Props {
 config.autoAddCss = false;
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
+  weight: "variable",
   variable: "--spaceGrotesk",
 });
 import "./globals.css";
 import ConfigProvider from "antd/es/config-provider";
 import GlobalProvider from "./lib/globalProvider";
-import Announce_card from "./components/navbar/announce_card";
+
+import BlankLogo from "./components/blankLogo";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -53,6 +55,7 @@ export default function RootLayout({ children }: Props) {
             }}
           >
             <GlobalProvider>
+              <BlankLogo />
               <div className="grid grid-cols-12 gap-2 bg-gray-100 md:min-h-screen">
                 {children}
               </div>
