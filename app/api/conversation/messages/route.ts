@@ -19,9 +19,7 @@ export async function GET(request: NextRequest) {
   const supabase = createRouteHandlerClient<Database>({
     cookies: () => cookieStore,
   });
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data } = await supabase.auth.getUser();
 
   const { data: messages, error: messages_error } = await supabase
     .from("messages")

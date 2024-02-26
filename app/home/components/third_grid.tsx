@@ -1,5 +1,5 @@
 "use client";
-
+import Image from "next/image";
 import { useRef } from "react";
 import { useMediaQuery } from "react-responsive";
 import { Profile } from "../home_main";
@@ -20,7 +20,17 @@ function Third_grid({ friends }: Props) {
             style={{ width: Third_gridRef.current?.offsetWidth }}
           >
             <Suggested_friends friends={friends} />
-            <div className="w-full p-3 bg-white rounded-md h-1/2"></div>
+            <div className="flex flex-col items-center w-full p-3 bg-white rounded-md select-none h-1/2">
+              <Image
+                src={"/svg/walk-together-2-5.svg"}
+                alt="walk together"
+                height={120}
+                width={180}
+              />
+              <h6 className="text-sm font-medium text-center">
+                Help us improving the app by giving feedbacks
+              </h6>
+            </div>
           </div>
         </div>
       )}

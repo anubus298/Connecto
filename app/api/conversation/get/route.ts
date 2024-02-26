@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
   const result = conversations?.map((conv) => {
     const mimic = Object.fromEntries(
       Object.entries(conv)
-        .filter(([key, value]) => {
+        .filter(([, value]) => {
           //@ts-ignore
           return value?.id !== user_id;
         })

@@ -123,7 +123,9 @@ function Comments_section({ post_id, comments, setcomments_count }: Props) {
             dataLength={list.length}
             next={() => {
               if (is_first_time) {
-                setFrom((prev) => prev + comments.length);
+                setFrom(
+                  (prev) => prev + (comments.length === 0 ? 1 : comments.length)
+                );
                 setis_first_time(false);
               } else {
                 setFrom((prev) => prev + 10);

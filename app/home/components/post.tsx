@@ -142,7 +142,7 @@ function Post({
         </Link>
       ),
     });
-  const [likes_count, setlikes_count] = useState<number>(post.likes_count ?? 0);
+  const [likes_count, setLikes_count] = useState<number>(post.likes_count ?? 0);
   const [initialSlide, setinitialSlide] = useState(0);
   const [comments_count, setcomments_count] = useState<number>(
     post.comments_count ?? 0
@@ -152,11 +152,11 @@ function Post({
   const [shareCount, setShareCount] = useState(post.shares_count ?? 0);
   async function handle_like_click() {
     if (is_liked) {
-      setlikes_count(likes_count - 1);
+      setLikes_count(likes_count - 1);
       setis_liked(false);
       await decrementLikeAction(post.id);
     } else {
-      setlikes_count(likes_count + 1);
+      setLikes_count(likes_count + 1);
       setis_liked(true);
       await incrementLikeAction(post.id);
     }
@@ -229,7 +229,20 @@ function Post({
         <Post_modal
           user_id={user_id}
           my_profile={my_profile}
-          comments={[]}
+          comments={[
+            {
+              comment_id: 564,
+              content: "s",
+              created_at: "",
+              is_liked: false,
+              is_self: false,
+              likes_count: 0,
+              post_id: 789,
+              profiles: { avatar_url: "null", username: "dude" },
+              user_id: "qsdqs8",
+              replies_count: 0,
+            },
+          ]}
           setcomments_count={setcomments_count}
           post={post}
           isPostModalOpen={isPostModalOpen}

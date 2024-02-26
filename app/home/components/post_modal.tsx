@@ -1,14 +1,14 @@
 "use client";
 import { Post as PostType, Profile } from "../home_main";
 
-import { Database, Tables } from "@/utils/supabase/supabase";
+import { Tables } from "@/utils/supabase/supabase";
 import { ConfigProvider, Modal } from "antd";
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 //prettier-ignore
 //@ts-ignore
 import { useMediaQuery } from "react-responsive";
 import Post from "./post";
-import Comments_section from "../post/components/comments_section";
+import Comments_section, { Comment } from "../post/components/comments_section";
 
 interface Props {
   post: PostType;
@@ -33,6 +33,7 @@ function Post_modal({
   my_profile,
 }: Props) {
   const isMediumScreen = useMediaQuery({ query: "(max-width: 768px)" });
+
   return (
     <ConfigProvider
       theme={{

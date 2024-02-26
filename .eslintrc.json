@@ -2,6 +2,8 @@
   "extends": "next/core-web-vitals",
   "rules": {
     "react-hooks/exhaustive-deps": "off",
-    "no-console": "error"
+    "no-console": "error",
+    "no-throw-literal": "error",
+    "no-unused-vars": "warn"
   }
 }

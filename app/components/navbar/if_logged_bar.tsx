@@ -69,10 +69,13 @@ function If_logged_bar({
     {
       key: "settings",
       label: (
-        <div className="flex items-center gap-2 text-dark">
+        <Link
+          href={"/home/settings/general"}
+          className="flex items-center gap-2 text-dark"
+        >
           <FontAwesomeIcon icon={faGear} />
           <p>Settings</p>
-        </div>
+        </Link>
       ),
     },
     {

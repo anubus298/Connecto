@@ -55,10 +55,12 @@ function useFetchPage<T>(
         }
       }
     };
+    setDom_loaded(true);
+
     if (dom_loaded) {
       fetchData();
     }
-    setDom_loaded(true);
+
     return () => {
       controller.abort();
     };
