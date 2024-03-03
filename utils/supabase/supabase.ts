@@ -153,14 +153,14 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "conversations_user_id_1_fkey"
+            foreignKeyName: "public_conversations_user_id_1_fkey"
             columns: ["user_id_1"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "conversations_user_id_2_fkey"
+            foreignKeyName: "public_conversations_user_id_2_fkey"
             columns: ["user_id_2"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -323,7 +323,7 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "group_members_pending_user_id_fkey"
+            foreignKeyName: "public_group_members_pending_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -387,7 +387,7 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "group_posts_user_id_fkey"
+            foreignKeyName: "public_group_posts_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -694,6 +694,7 @@ export type Database = {
           avatar_url: string | null
           bio: string | null
           cover_url: string | null
+          created_at: string
           friends_count: number
           id: string
           is_first_initialised: boolean
@@ -704,6 +705,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           cover_url?: string | null
+          created_at?: string
           friends_count?: number
           id: string
           is_first_initialised?: boolean
@@ -714,6 +716,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           cover_url?: string | null
+          created_at?: string
           friends_count?: number
           id?: string
           is_first_initialised?: boolean
@@ -833,6 +836,42 @@ export type Database = {
           friends_count: number
         }[]
       }
+      get_search: {
+        Args: {
+          search_text: string
+        }
+        Returns: {
+          post_id: number
+          user_id: string
+          content: string
+          created_at: string
+          media_url: string
+          likes_count: number
+          comments_count: number
+          shares_count: number
+          type: string
+          share_source: number
+          username: string
+          bio: string
+          avatar_url: string
+          cover_url: string
+          friends_count: number
+        }[]
+      }
+      get_search_profiles: {
+        Args: {
+          search_text: string
+        }
+        Returns: {
+          user_id: string
+          username: string
+          bio: string
+          avatar_url: string
+          cover_url: string
+          friends_count: number
+          created_at: string
+        }[]
+      }
       get_unread_conversations_count: {
         Args: Record<PropertyKey, never>
         Returns: number
@@ -855,11 +894,23 @@ export type Database = {
           avatar_url: string | null
           bio: string | null
           cover_url: string | null
+          created_at: string
           friends_count: number
           id: string
           is_first_initialised: boolean
           updated_at: string | null
           username: string | null
+        }[]
+      }
+      search_text: {
+        Args: {
+          text_to_search: string
+        }
+        Returns: {
+          id: string
+          table_name: string
+          column_name: string
+          search_result: string
         }[]
       }
       set_message_as_read: {

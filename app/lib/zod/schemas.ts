@@ -106,7 +106,10 @@ const safeString = z
       "Invalid characters detected. Only letters, numbers, spaces, and common symbols are allowed.",
   });
 
+const searchQuerySchema = z.string().max(70);
+
 export { passwordSchema };
+export { searchQuerySchema };
 export { ageGreaterThan18Schema };
 export { genderSchema };
 export { phoneNumberSchema };

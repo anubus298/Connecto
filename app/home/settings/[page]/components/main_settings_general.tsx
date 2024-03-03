@@ -12,6 +12,7 @@ async function Main_settings_general() {
     data: { user },
   } = await supabase.auth.getUser();
   let { data: friendsRaw, error: friends_error } = await supabase
+
     .from("friends")
     .select(
       "user_id_1,user_id_2,user_1:friends_user_id_1_fkey(id,username,avatar_url),user_2:friends_user_id_2_fkey(id,username,avatar_url)"
@@ -51,7 +52,7 @@ async function Main_settings_general() {
         // @ts-ignore
         blockedUsers={blockedUsers}
       />
-      <ThemePallete />
+      {/* <ThemePallete /> */}
     </div>
   );
 }

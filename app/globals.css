@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+.dark-mode {
+  color-scheme: dark;
+}
+.light-mode {
+  color-scheme: light;
+}
+
 @layer components {
   .h1 {
     @apply text-5xl font-black select-none;

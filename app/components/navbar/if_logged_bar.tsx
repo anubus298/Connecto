@@ -21,6 +21,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { Friend } from "@/app/home/profile/components/other/other_profile";
 import { FriendContext, globalContext } from "@/app/lib/globalProvider";
+import Search_bar from "./search_bar";
 
 interface Props {
   profile?: {
@@ -54,7 +55,7 @@ function If_logged_bar({
     useState(false);
   function LogOutButton() {
     return (
-      <button className="flex items-center gap-2 text-dark">
+      <button className="flex items-center gap-2 text-dark dark:text-white">
         <FontAwesomeIcon icon={faRightFromBracket} />
         <p>Sign out</p>
       </button>
@@ -71,7 +72,7 @@ function If_logged_bar({
       label: (
         <Link
           href={"/home/settings/general"}
-          className="flex items-center gap-2 text-dark"
+          className="flex items-center gap-2 text-dark dark:text-white"
         >
           <FontAwesomeIcon icon={faGear} />
           <p>Settings</p>
@@ -164,6 +165,7 @@ function If_logged_bar({
   }, [friends]);
   return (
     <div className="flex items-center gap-2">
+      <Search_bar />
       {profile?.username && !isMediumScreen && (
         <Link href={"/home/profile"} className="font-semibold ">
           {profile.username}
@@ -180,7 +182,7 @@ function If_logged_bar({
       <Notifications_dropdown notifications_source={notifications} />
       <Link
         href={"/home/messages"}
-        className="flex items-center gap-2 text-lg text-dark me-6 md:text-base"
+        className="flex items-center gap-2 text-lg text-dark dark:text-white me-6 md:text-base"
       >
         <Badge size="small" count={numberOfUnreadedMessagesContext}>
           <FontAwesomeIcon icon={faEnvelope} />
@@ -204,7 +206,10 @@ function If_logged_bar({
       </Modal>
       <Dropdown menu={{ items, onClick: handleFormClick }} trigger={["click"]}>
         <button>
-          <FontAwesomeIcon icon={faBars} className="text-dark" />
+          <FontAwesomeIcon
+            icon={faBars}
+            className=" text-dark dark:text-white"
+          />
         </button>
       </Dropdown>
     </div>

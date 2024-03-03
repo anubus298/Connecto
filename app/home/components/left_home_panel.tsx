@@ -64,7 +64,7 @@ function Left_home_panel() {
           ref={Left_home_panelRef}
         >
           <div
-            className="sticky top-0 flex flex-col items-center justify-between h-[90dvh] px-3 py-12 font-medium text-white"
+            className="sticky top-0 flex flex-col items-center justify-between h-[90dvh] px-3 py-12 font-medium text-white-light"
             style={{ width: Left_home_panelRef.current?.offsetWidth }}
           >
             {sidebarItems.map((item, index) => {
@@ -80,7 +80,7 @@ function Left_home_panel() {
                     block
                     type="text"
                     size="large"
-                    className="flex items-center justify-start gap-4 text-white hover:text-secondary"
+                    className="flex items-center justify-start gap-4 text-white-light dark:text-white-dark hover:text-secondary"
                   >
                     <div className="w-6">{item.icon}</div>
                     <h6>{item.content}</h6>

@@ -3,6 +3,7 @@ import { Database } from "@/utils/supabase/supabase";
 import Image from "next/image";
 import Link from "next/link";
 import If_logged_bar from "./if_logged_bar";
+import Search_bar from "./search_bar";
 
 export type Notification =
   Database["public"]["Tables"]["notifications"]["Row"] & {
@@ -27,7 +28,7 @@ function Primary_navbar({
   numberOfUnreadedMessages,
 }: Props) {
   return (
-    <nav className="flex items-center justify-between col-span-12 px-8 py-3 bg-white border-b-2 select-none h-fit ">
+    <nav className="flex items-center justify-between col-span-12 px-8 py-3 border-b-2 select-none bg-white-light dark:bg-white-dark h-fit text-dark dark:text-white-light">
       <Link href={"/home"} className="flex items-center gap-1">
         <Image
           height={30}
@@ -35,11 +36,12 @@ function Primary_navbar({
           src="/svg/ofclogo.svg"
           alt="Connecto Logo"
         />
-        <h3 className="text-xl font-black text-dark">
+        <h3 className="text-xl font-black text-dark dark:text-white-light">
           Co<span className="text-secondary">n</span>
           <span className="text-primary">n</span>ecto
         </h3>
       </Link>
+
       {profile && (
         <If_logged_bar
           profile={profile}

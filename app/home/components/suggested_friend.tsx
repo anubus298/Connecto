@@ -39,7 +39,7 @@ function Suggested_friend({
       </Link>
       <Link
         href={`/home/profile?id=${friend.id}`}
-        className="w-1/3 text-xs font-medium"
+        className="w-1/3 overflow-hidden text-xs font-medium text-ellipsis"
       >
         {friend.username}
       </Link>

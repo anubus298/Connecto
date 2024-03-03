@@ -56,7 +56,7 @@ export default function RootLayout({ children }: Props) {
           >
             <GlobalProvider>
               <BlankLogo />
-              <div className="grid grid-cols-12 gap-2 bg-gray-100 md:min-h-screen">
+              <div className="grid grid-cols-12 gap-2 bg-gray-100 dark:bg-[#1e2022] md:min-h-screen">
                 {children}
               </div>
             </GlobalProvider>
