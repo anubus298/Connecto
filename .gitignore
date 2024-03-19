@@ -9,6 +9,8 @@
 # testing
 /coverage
 issues.txt
+cypress/screenshots
+cypress/e2e/2-advanced-examples
 # next.js
 /.next/
 /out/
