@@ -43,6 +43,7 @@ function Asset_modal({
     >
       <Modal
         centered
+        destroyOnClose
         className="w-full md:w-[70dvw] relative"
         open={isAssetsModalOpen}
         footer={null}

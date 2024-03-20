@@ -44,6 +44,7 @@ async function Page({ searchParams }: { searchParams: { id?: string } }) {
   } else {
     const otherProfile = await getOtherProfile(
       searchParams.id as string,
+      user!.id,
       supabase
     );
     const postMedia = await getPostMedia(supabase, searchParams.id, 9);
@@ -127,6 +128,7 @@ async function getMyProfile(
 
 async function getOtherProfile(
   id: string,
+  my_user_id: string,
   supabase: SupabaseClient<Database, "public", Database["public"]>
 ) {
   const { data: profile, error: profile_error } = await supabase
@@ -138,7 +140,11 @@ async function getOtherProfile(
   const { data: friendship, error: friendship_error } = await supabase
     .from("friends")
     .select("friendship_id,status,action_user_id")
-    .or(`user_id_1.eq.${id},user_id_2.eq.${id}`)
+
+    .or(
+      `(user_id_1.in.("${my_user_id}","${id}"))and(user_id_2.in.("${my_user_id}","${id}"))`
+    )
+
     .limit(1)
     .single();
   return { profile: profile, is_friend: friendship };

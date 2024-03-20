@@ -57,14 +57,12 @@ function useFetchPage<T>(
     };
     setDom_loaded(true);
 
-    if (dom_loaded) {
-      fetchData();
-    }
+    fetchData();
 
     return () => {
       controller.abort();
     };
-  }, [from]);
+  }, [from, params.orderKey]);
 
   return { loading, list, setList, hasMore };
 }

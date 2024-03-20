@@ -51,6 +51,7 @@ function Friends_modal({
   return (
     <ConfigProvider theme={{}}>
       <Modal
+        destroyOnClose
         width={"40vw"}
         open={isFriendModalOpen}
         centered

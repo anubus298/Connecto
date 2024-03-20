@@ -23,14 +23,17 @@ function BlockList({ blockedUsers }: Props) {
     <div className="col-span-12 px-2 p-1 mt-3 border-[1px] rounded-md">
       <div className="flex items-center justify-between">
         <h6 className="text-lg font-semibold">Blocked Users</h6>
-        <Button
-          type="text"
-          className="flex items-center gap-2"
-          onClick={() => setis_open((prev) => !prev)}
-        >
-          {is_open ? "close list" : "view list"}
-          <FontAwesomeIcon icon={is_open ? faEyeSlash : faEye} />
-        </Button>
+        {blockedUsers.length > 0 && (
+          <Button
+            type="text"
+            className="flex items-center gap-2"
+            onClick={() => setis_open((prev) => !prev)}
+          >
+            {is_open ? "close list" : "view list"}
+            <FontAwesomeIcon icon={is_open ? faEyeSlash : faEye} />
+          </Button>
+        )}
+        {blockedUsers.length === 0 && <h6 className="text-sm">Empty</h6>}
       </div>
       {is_open && (
         <div className="flex flex-col w-full mt-2">
@@ -56,6 +59,7 @@ function BlockedUserPallete({ user }: { user: Friend }) {
   return is_blocked ? (
     <div className="flex items-center justify-between w-full">
       <Modal
+        destroyOnClose
         title={"Unblock " + user.friend.username}
         centered
         open={modal_open}

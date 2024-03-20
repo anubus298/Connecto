@@ -26,14 +26,20 @@ interface Props {
     is_liked: boolean;
     is_self: boolean;
   })[];
+  is_modal?: boolean;
   setcomments_count?: Dispatch<SetStateAction<number>>;
 }
-function Comments_section({ post_id, comments, setcomments_count }: Props) {
+function Comments_section({
+  post_id,
+  comments,
+  setcomments_count,
+  is_modal,
+}: Props) {
   const AddCommentActionBind = AddCommentAction.bind(null, post_id);
   const [order, setOrder] = useState({ key: "created_at", value: false });
   const [orderKey, setOrderKey] = useState("Recent");
   const [from, setFrom] = useState(0);
-  const { list, hasMore } = useFetchPage<Comment>(
+  const { list, hasMore, loading } = useFetchPage<Comment>(
     "/api/post/getComments",
     { id: post_id, orderKey: order.key, state: order.value },
     comments,
@@ -84,9 +90,10 @@ function Comments_section({ post_id, comments, setcomments_count }: Props) {
     }
   };
   const [is_first_time, setis_first_time] = useState(true);
+
   return (
     <div className="w-full p-2 bg-gray-100 rounded-md md:p-3">
-      <div className="flex flex-col items-end w-full px-1 sm:px-2 md:px-4">
+      <div className="flex flex-col items-end w-full px-1 ">
         <div className="">
           <Dropdown
             menu={{ items, onClick: handleDropDownClick }}
@@ -104,13 +111,16 @@ function Comments_section({ post_id, comments, setcomments_count }: Props) {
             </Button>
           </Dropdown>
         </div>
-        <div className="flex flex-col w-full mt-2 md:gap-0">
+        <div className="w-full">
           <InfiniteScroll
+            height={is_modal ? "40dvh" : "220px"}
             style={{
               rowGap: "1.25rem",
               overflowX: "hidden",
               display: "flex",
               flexDirection: "column",
+              width: "100%",
+              overflowY: is_modal ? "scroll" : "auto",
             }}
             loader={
               <div className="flex justify-center w-full">
@@ -123,18 +133,28 @@ function Comments_section({ post_id, comments, setcomments_count }: Props) {
             dataLength={list.length}
             next={() => {
               if (is_first_time) {
-                setFrom(
-                  (prev) => prev + (comments.length === 0 ? 1 : comments.length)
-                );
+                if (is_modal) {
+                  setFrom(list.length - 1);
+                } else {
+                  setFrom(
+                    (prev) =>
+                      prev + (comments.length === 0 ? 1 : comments.length)
+                  );
+                }
                 setis_first_time(false);
               } else {
                 setFrom((prev) => prev + 10);
               }
             }}
           >
-            {list.length === 0 && (
+            {list.length === 0 && !loading && (
               <div className="flex justify-center w-full p-3 h-14">
                 <h6 className="text-gray-400">Be first to comment</h6>
+              </div>
+            )}
+            {is_modal && is_first_time && loading && (
+              <div className="flex items-center justify-center w-full h-full">
+                <Button size="large" type="text" loading></Button>
               </div>
             )}
             {list.map((comment) => {

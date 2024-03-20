@@ -72,6 +72,7 @@ function Share_modal({
   const bindShareToProfileAction = shareToProfileAction.bind(null, post.id);
   return (
     <Modal
+      destroyOnClose
       open={isShareModalOpen}
       centered
       onCancel={() => setIsShareModalOpen(false)}

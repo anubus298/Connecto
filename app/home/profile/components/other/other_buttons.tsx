@@ -18,7 +18,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, ConfigProvider, Dropdown, Modal } from "antd";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, use, useState } from "react";
 interface Props {
   friendship: {
     id?: number;
@@ -30,6 +30,7 @@ interface Props {
 function Other_buttons({ friendship, profile_id }: Props) {
   const [friend_status, setFriend_status] = useState(friendship.status);
   const [isSendMessageModalOpen, setisSendMessageModalOpen] = useState(false);
+  const [isBlockModalOpen, setisBlockModalOpen] = useState(false);
   const [sending_message_pending, setSending_message_pending] = useState(false);
   const [messageContent, setMessageContent] = useState("");
   const router = useRouter();
@@ -49,8 +50,7 @@ function Other_buttons({ friendship, profile_id }: Props) {
       await unfriendAction(friendship.id);
       setFriend_status("none");
     } else if (key === "block") {
-      await blockUserAction(profile_id);
-      router.push("/home");
+      setisBlockModalOpen(true);
     }
   }
   return (
@@ -102,6 +102,7 @@ function Other_buttons({ friendship, profile_id }: Props) {
           {friend_status === "added" && (
             <>
               <Modal
+                destroyOnClose
                 centered
                 okButtonProps={{
                   loading: friend_button_pending,
@@ -145,6 +146,7 @@ function Other_buttons({ friendship, profile_id }: Props) {
           {friend_status === "added" && (
             <>
               <Modal
+                destroyOnClose
                 open={isSendMessageModalOpen}
                 centered
                 closeIcon={null}
@@ -188,6 +190,24 @@ function Other_buttons({ friendship, profile_id }: Props) {
             <FontAwesomeIcon icon={faEllipsisH} className="text-dark" />
           </Button>
         </Dropdown>
+        <Modal
+          destroyOnClose
+          open={isBlockModalOpen}
+          centered
+          title="blocking"
+          closeIcon={null}
+          okButtonProps={{
+            danger: true,
+            title: "Block",
+          }}
+          onOk={async () => {
+            await blockUserAction(profile_id);
+            router.push("/home");
+          }}
+          onCancel={() => setisBlockModalOpen(false)}
+        >
+          Do you want to block the user?
+        </Modal>
       </div>
     </ConfigProvider>
   );

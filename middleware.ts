@@ -19,6 +19,7 @@ export async function middleware(req: NextRequest) {
   ) {
     return NextResponse.redirect(new URL("/home", req.url));
   }
+
   if (user && req.nextUrl.pathname === "/constructors/newAccount") {
     const { data: personal_info, error: personal_info_error } = await supabase
       .from("personal_info")
@@ -48,7 +49,18 @@ export async function middleware(req: NextRequest) {
   if (user && req.nextUrl.pathname === "/") {
     return NextResponse.redirect(new URL("/home", req.url));
   }
-
+  if (user && req.nextUrl.pathname === "/auth/passwordReset/update") {
+    const { data } = await supabase
+      .from("personal_info")
+      .select("is_password_gonna_reset")
+      .eq("id", user.id)
+      .single();
+    if (data?.is_password_gonna_reset) {
+      return res;
+    } else {
+      return NextResponse.redirect(new URL("/home", req.url));
+    }
+  }
   return res;
 }
 

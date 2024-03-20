@@ -15,13 +15,13 @@ function Assets({ mediaUrl }: Props) {
   return !isTabletOrMobile ? (
     <div className="col-span-4" ref={AssetsRef}>
       <div
-        className="sticky top-0 p-3 rounded-md bg-secondary h-fit"
+        className="sticky top-0 p-3 bg-white rounded-md h-fit"
         style={{ width: AssetsRef.current?.offsetWidth }}
       >
         <div className="flex items-center justify-between">
           <h3 className=" h3">Images</h3>
         </div>
-        <div className="w-full h-[1px] bg-yellow-200 mb-6 mt-[1px]"></div>
+        <div className="w-full h-[1px] bg-gray-200 mb-6 mt-[1px]"></div>
         <div className="grid grid-cols-3 grid-rows-3 gap-1">
           {mediaUrl &&
             mediaUrl.map((media) => {
@@ -51,7 +51,7 @@ function Assets({ mediaUrl }: Props) {
             })}
           {mediaUrl?.length === 0 && (
             <div className="flex items-center justify-center w-full col-span-3 p-10">
-              <p className="text-sm text-yellow-500">Empty</p>
+              <p className="text-sm text-gray-500">Empty</p>
             </div>
           )}
         </div>

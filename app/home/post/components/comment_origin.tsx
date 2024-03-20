@@ -77,78 +77,80 @@ function Comment_origin({ comment }: Props) {
     }
   }
   return (
-    <div className="flex w-full gap-1 p-1 overflow-hidden bg-white border-2 rounded-md h-fit">
-      <div className="size-[35px]">
-        {comment.profiles.avatar_url && (
-          <Link
-            href={
-              comment.is_self
-                ? "/home/profile"
-                : `/home/profile?id=${comment.user_id}`
-            }
-          >
-            <Avatar_comp
-              className="col-span-1 "
-              src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${comment.profiles.avatar_url}`}
-              height={isTabletOrMobile ? 25 : 35}
-              width={isTabletOrMobile ? 25 : 35}
-              alt={comment.profiles.username + " avatar"}
-            />
-          </Link>
-        )}
-      </div>
-      <div className="flex flex-col w-full overflow-hidden">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1">
+    <div className="p-1 bg-white border-2 rounded-md h-fit ">
+      <div className="flex w-full gap-1 h-fit">
+        <div className="size-[30px]">
+          {comment.profiles.avatar_url && (
             <Link
               href={
                 comment.is_self
                   ? "/home/profile"
                   : `/home/profile?id=${comment.user_id}`
               }
-              className="text-sm font-semibold text-dark md:text-base"
             >
-              {comment.profiles.username}
+              <Avatar_comp
+                className="col-span-1 "
+                src={`https://ekfltxjgxftrkugxgflm.supabase.co/storage/v1/object/public/avatars/${comment.profiles.avatar_url}`}
+                height={isTabletOrMobile ? 25 : 30}
+                width={isTabletOrMobile ? 25 : 30}
+                alt={comment.profiles.username + " avatar"}
+              />
             </Link>
-            <time
-              className="text-xs text-gray-600"
-              dateTime={comment.created_at}
-            >
-              {prettyDate}
-            </time>
-          </div>
-          <div className="flex items-center gap-2">
-            <Dropdown
-              menu={{ items, onClick: handleDropDownClick }}
-              trigger={["click"]}
-              placement="bottomLeft"
-            >
-              <button>
-                <FontAwesomeIcon icon={faEllipsisH} />
-              </button>
-            </Dropdown>
-          </div>
+          )}
         </div>
-        <div className="overflow-hidden">
-          <p className="p-2 overflow-hidden text-sm whitespace-pre-wrap rounded-lg md:text-base w-fit ">
-            {comment.content}
-          </p>
-        </div>
-        <div className="flex">
-          <button
-            onClick={handle_like_click}
-            className="flex items-center justify-center gap-1 p-1 text-sm rounded-md md:text-base"
-          >
-            <p className="text-sm">{likes_count}</p>
-            <FontAwesomeIcon
-              icon={is_liked ? faHeartSolid : faHeart}
-              className={is_liked ? "text-primary" : ""}
-            />
-          </button>
-          <button className="flex items-center justify-center gap-1 p-1 text-sm rounded-md md:text-base">
-            <p className="text-sm">{replies_count}</p>
-            <FontAwesomeIcon icon={faComment} />
-          </button>
+        <div className="flex flex-col w-full h-full">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <Link
+                href={
+                  comment.is_self
+                    ? "/home/profile"
+                    : `/home/profile?id=${comment.user_id}`
+                }
+                className="text-sm font-semibold text-dark md:text-base"
+              >
+                {comment.profiles.username}
+              </Link>
+              <time
+                className="text-xs text-gray-600"
+                dateTime={comment.created_at}
+              >
+                {prettyDate}
+              </time>
+            </div>
+            <div className="flex items-center gap-2">
+              <Dropdown
+                menu={{ items, onClick: handleDropDownClick }}
+                trigger={["click"]}
+                placement="bottomLeft"
+              >
+                <button>
+                  <FontAwesomeIcon icon={faEllipsisH} />
+                </button>
+              </Dropdown>
+            </div>
+          </div>
+          <div>
+            <p className="p-1 text-sm whitespace-pre-wrap rounded-lg md:text-base ">
+              {comment.content}
+            </p>
+          </div>
+          <div className="flex">
+            <button
+              onClick={handle_like_click}
+              className="flex items-center justify-center gap-1 p-1 text-sm rounded-md md:text-base"
+            >
+              <p className="text-sm">{likes_count}</p>
+              <FontAwesomeIcon
+                icon={is_liked ? faHeartSolid : faHeart}
+                className={"text-sm " + (is_liked ? "text-primary" : "")}
+              />
+            </button>
+            <button className="flex items-center justify-center gap-1 p-1 text-sm rounded-md md:text-base">
+              <p className="text-sm">{replies_count}</p>
+              <FontAwesomeIcon icon={faComment} className="text-sm" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

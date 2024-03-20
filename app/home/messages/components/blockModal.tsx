@@ -21,6 +21,7 @@ function BlockUserModal({
   const router = useRouter();
   return (
     <Modal
+      destroyOnClose
       title={"Block " + user_profile.username}
       centered
       open={isBlockUserModalOpen}

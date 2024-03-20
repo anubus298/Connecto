@@ -22,6 +22,7 @@ import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { Friend } from "@/app/home/profile/components/other/other_profile";
 import { FriendContext, globalContext } from "@/app/lib/globalProvider";
 import Search_bar from "./search_bar";
+import Left_home_panel_drawer from "../left_home_panel_drawer";
 
 interface Props {
   profile?: {
@@ -47,7 +48,9 @@ function If_logged_bar({
     setNumberOfUnreadedMessages,
   } = useContext(globalContext);
   const router = useRouter();
+  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 768px)" });
   const [Friends] = useState(friends);
+  const [drawer_open, setdrawer_open] = useState(false);
   const [isDeleteModalOpen, setisDeleteModalOpen] = useState(false);
   const isMediumScreen = useMediaQuery({ query: "(max-width: 768px)" });
   const [notifications, setNotifications] = useState(notifications_source);
@@ -165,7 +168,15 @@ function If_logged_bar({
   }, [friends]);
   return (
     <div className="flex items-center gap-2">
-      <Search_bar />
+      <Left_home_panel_drawer
+        drawer_open={drawer_open}
+        profile={profile}
+        numberOfUnreadedMessages={numberOfUnreadedMessages}
+        my_id={my_id}
+        numberOfUnreadedMessagesContext={numberOfUnreadedMessagesContext}
+        setdrawer_open={setdrawer_open}
+      />
+      {!isTabletOrMobile && <Search_bar />}
       {profile?.username && !isMediumScreen && (
         <Link href={"/home/profile"} className="font-semibold ">
           {profile.username}
@@ -185,10 +196,11 @@ function If_logged_bar({
         className="flex items-center gap-2 text-lg text-dark dark:text-white me-6 md:text-base"
       >
         <Badge size="small" count={numberOfUnreadedMessagesContext}>
-          <FontAwesomeIcon icon={faEnvelope} />
+          <FontAwesomeIcon icon={faEnvelope} className="text-xl md:text-base" />
         </Badge>
       </Link>
       <Modal
+        destroyOnClose
         title="Sign Out"
         centered
         open={isDeleteModalOpen}
@@ -204,9 +216,13 @@ function If_logged_bar({
       >
         <p>Are you sure you want to Sign out ?</p>
       </Modal>
-      <Dropdown menu={{ items, onClick: handleFormClick }} trigger={["click"]}>
+      <Dropdown
+        menu={{ items, onClick: handleFormClick }}
+        trigger={isTabletOrMobile ? [] : ["click"]}
+      >
         <button>
           <FontAwesomeIcon
+            onClick={() => isTabletOrMobile && setdrawer_open(true)}
             icon={faBars}
             className=" text-dark dark:text-white"
           />

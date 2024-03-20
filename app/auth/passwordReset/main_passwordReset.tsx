@@ -28,24 +28,26 @@ function Main_passwordReset({ passwordResetAction, error, message }: Props) {
     );
   }
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen col-span-12 gap-1 p-4 mt-10 md:col-start-6 md:col-end-8">
-      <h1 className="text-center h1 text-dark">Reset Password</h1>
-      <form
-        className="flex flex-col justify-center flex-1 gap-2 animate-in"
-        action={passwordResetAction}
-      >
-        <label className="text-md" htmlFor="email">
-          Email
-        </label>
-        <input
-          className="mb-6 input"
-          name="email"
-          placeholder="you@example.com"
-          required
-        />
+    <div className="flex flex-col items-center justify-center min-h-[80vh] col-span-12 gap-1 p-4 mt-10 md:col-start-6 md:col-end-8">
+      <h1 className="mb-8 text-center h1 text-dark">Reset Password</h1>
+      <div className="">
+        <form
+          className="flex flex-col justify-center flex-1 gap-2 animate-in"
+          action={passwordResetAction}
+        >
+          <label className="text-md" htmlFor="email">
+            Email
+          </label>
+          <input
+            className="mb-6 input"
+            name="email"
+            placeholder="you@example.com"
+            required
+          />
 
-        <SubmitButton />
-      </form>
+          <SubmitButton />
+        </form>
+      </div>
       <div className="w-64">
         {message && (
           <p

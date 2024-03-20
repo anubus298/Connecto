@@ -3,7 +3,6 @@ import { Database } from "@/utils/supabase/supabase";
 import Image from "next/image";
 import Link from "next/link";
 import If_logged_bar from "./if_logged_bar";
-import Search_bar from "./search_bar";
 
 export type Notification =
   Database["public"]["Tables"]["notifications"]["Row"] & {

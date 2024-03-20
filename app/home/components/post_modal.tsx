@@ -44,6 +44,7 @@ function Post_modal({
       }}
     >
       <Modal
+        destroyOnClose
         width={isMediumScreen ? "100vw" : "50vw"}
         open={isPostModalOpen}
         centered
@@ -57,7 +58,8 @@ function Post_modal({
           is_in_page={true}
         />
         <Comments_section
-          comments={comments}
+          is_modal={true}
+          comments={[]}
           post_id={post.id}
           setcomments_count={setcomments_count}
         />

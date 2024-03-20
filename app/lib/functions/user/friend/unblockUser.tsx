@@ -14,8 +14,10 @@ async function unblockUserAction(user_2_id?: string) {
     const { data, error } = await supabase
       .from("friends")
       .delete()
-      .filter("user_id_1", "in", `("${user.id}","${user_2_id}")`)
-      .filter("user_id_2", "in", `("${user.id}","${user_2_id}")`);
+      .or(
+        `(user_id_1.in.("${user.id}","${user_2_id}"))and(user_id_2.in.("${user.id}","${user_2_id}"))`
+      );
+
     if (error) throw new Error(error.message);
     else return 1;
   } else return 0;

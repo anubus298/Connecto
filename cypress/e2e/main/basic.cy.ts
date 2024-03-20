@@ -4,6 +4,7 @@ const login = () => {
     cy.get('input[name="email"]').type("gg@gmail.com");
     cy.get('input[type="password"]').type("987612345saf");
     cy.get("button").contains("Sign In").click();
+    cy.wait(5000);
     //check if username not null
     cy.get(".flex.items-center.gap-2")
       .find('a.font-semibold[href="/home/profile"]')
