@@ -50,6 +50,10 @@ export async function GET(request: Request) {
     }
     return NextResponse.redirect("/");
   } else {
+    const { data } = await supabase
+      .from("personal_info")
+      .update({ is_password_gonna_reset: true })
+      .eq("id", user!.id);
     return NextResponse.redirect("/auth/passwordReset/update");
   }
 }

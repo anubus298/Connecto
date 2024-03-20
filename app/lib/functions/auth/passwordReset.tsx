@@ -14,9 +14,7 @@ export const passwordResetAction = async (formData: FormData) => {
     return redirect("/auth/passwordReset?error=1&message=Invalid Email");
   }
   const supabase = createServerActionClient<Database>({ cookies });
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo:
       process.env.NODE_ENV !== "production"
@@ -25,10 +23,7 @@ export const passwordResetAction = async (formData: FormData) => {
   });
   if (!error) {
     //set personal_info.is_password_gonna_reset to true
-    const { data } = await supabase
-      .from("personal_info")
-      .update({ is_password_gonna_reset: true })
-      .eq("id", user!.id);
+
     return redirect(
       "/auth/passwordReset?message=verification mail was sent to your email"
     );
