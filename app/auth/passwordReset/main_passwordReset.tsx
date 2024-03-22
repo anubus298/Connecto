@@ -14,6 +14,7 @@ function Main_passwordReset({ passwordResetAction, error, message }: Props) {
     const { pending } = useFormStatus();
     return (
       <Button
+        data-cy="submit-button"
         type="primary"
         loading={pending}
         onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
@@ -51,6 +52,8 @@ function Main_passwordReset({ passwordResetAction, error, message }: Props) {
       <div className="w-64">
         {message && (
           <p
+            data-cy="output-message"
+            data-cy-error={error === "1" ? "true" : "false"}
             className={
               "p-4 mt-4 text-center " +
               (error == "1" ? "text-red-600" : "text-primary")

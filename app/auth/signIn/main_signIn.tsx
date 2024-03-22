@@ -23,6 +23,7 @@ function Main_signIn({ signIn, message, error }: Props) {
     return (
       <Button
         type="primary"
+        data-cy="sign-in-button"
         loading={pending}
         onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
           e.preventDefault();
@@ -94,6 +95,7 @@ function Main_signIn({ signIn, message, error }: Props) {
           <SubmitButton />
           <h6 className="font-semibold text-center">or</h6>
           <Button
+            data-cy="google-oauth-button"
             className="flex items-center justify-center gap-2"
             onClick={async (e: React.MouseEvent<HTMLButtonElement>) =>
               await handleOauthClick(e, "google")
@@ -107,14 +109,15 @@ function Main_signIn({ signIn, message, error }: Props) {
             href={"/auth/signUp"}
             className="flex items-center justify-end w-full gap-1 mt-3 text-dark"
           >
-            <h6 className="text-xs">Don&lsquo;t have an account</h6>
+            <h6 className="text-xs">I Don&lsquo;t have an account</h6>
             <FontAwesomeIcon icon={faArrowRightLong} />
           </Link>
           <Link
+            data-cy="password-reset-button"
             href={"/auth/passwordReset"}
             className="flex items-center justify-end w-full gap-1 mt-1 text-dark"
           >
-            <h6 className="text-xs">Forget my password</h6>
+            <h6 className="text-xs">I forgot my password</h6>
             <FontAwesomeIcon icon={faArrowRightLong} />
           </Link>
         </form>

@@ -9,4 +9,5 @@ export default defineConfig({
     video: true,
     videoCompression: true,
   },
+  env: {},
 });

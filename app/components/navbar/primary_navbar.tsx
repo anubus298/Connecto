@@ -27,7 +27,7 @@ function Primary_navbar({
   numberOfUnreadedMessages,
 }: Props) {
   return (
-    <nav className="flex items-center justify-between col-span-12 px-8 py-3 border-b-2 select-none bg-white-light dark:bg-white-dark h-fit text-dark dark:text-white-light">
+    <nav className="sticky top-0 z-40 flex items-center justify-between w-full col-span-12 px-8 py-3 border-b-2 select-none bg-white-light dark:bg-white-dark h-fit text-dark dark:text-white-light">
       <Link href={"/home"} className="flex items-center gap-1">
         <Image
           height={30}
