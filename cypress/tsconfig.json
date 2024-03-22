@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es2015",
-    "noEmit": true,
-    "types": ["cypress"],
+    "strict": true,
+
+    "types": ["cypress", "node"],
   },
   "include": ["../node_modules/cypress", "./**/*.ts"],
 }

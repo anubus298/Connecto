@@ -26,7 +26,7 @@ function Main_search({
   query,
 }: Props) {
   return (
-    <div className="col-start-3 col-end-10 p-3 bg-white dark:bg-whiteDark text-dark dark:text-white">
+    <div className="col-span-12 p-3 bg-white md:col-start-3 md:col-end-10 dark:bg-whiteDark text-dark dark:text-white">
       <div className="w-full">
         <Search_bar init={query} className="w-full mb-2" />
       </div>

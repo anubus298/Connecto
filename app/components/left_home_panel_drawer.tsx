@@ -13,10 +13,12 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Badge, Button, Drawer } from "antd";
 import Link from "next/link";
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 import Avatar_comp from "./avatar_comp";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import Search_bar from "./navbar/search_bar";
+import { usePathname } from "next/navigation";
 interface MenuItems {
   icon: React.ReactNode;
   content: string;
@@ -44,6 +46,10 @@ function Left_home_panel_drawer({
   my_id,
 }: Props) {
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const pathname = usePathname();
+  useEffect(() => {
+    setdrawer_open(false);
+  }, [pathname]);
   const primarySidebarItems: MenuItems[] = [
     {
       icon: <FontAwesomeIcon size="lg" icon={faEnvelope} />,
@@ -135,6 +141,7 @@ function Left_home_panel_drawer({
               </Badge>
               <h6 className="text-xl">Messages</h6>
             </Link>
+            <Search_bar />
             {sidebarItems.map((item, index) => {
               return (
                 <Link

@@ -1,7 +1,7 @@
 "use client";
 //prettier-ignore
 //@ts-ignore
-import { useFormStatus } from "react-dom";
+import { useFormStatus ,useFormState} from "react-dom";
 import AddCommentAction from "@/app/lib/functions/user/post/addComment";
 import { Button, Dropdown, MenuProps } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,7 +10,7 @@ import { Tables } from "@/utils/supabase/supabase";
 import { Profile } from "../../home_main";
 import Comment_origin from "./comment_origin";
 import { faClock, faStar, faUser } from "@fortawesome/free-regular-svg-icons";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import useFetchPage from "@/app/lib/hooks/useFetchPage";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -39,13 +39,23 @@ function Comments_section({
   const [order, setOrder] = useState({ key: "created_at", value: false });
   const [orderKey, setOrderKey] = useState("Recent");
   const [from, setFrom] = useState(0);
-  const { list, hasMore, loading } = useFetchPage<Comment>(
+  const { list, setList, hasMore, loading } = useFetchPage<Comment>(
     "/api/post/getComments",
     { id: post_id, orderKey: order.key, state: order.value },
     comments,
     from,
     from + 10
   );
+  const [state, formAction]: [Comment, any] = useFormState(
+    AddCommentActionBind,
+    null
+  );
+  //update list when a new comment added
+  useEffect(() => {
+    if (state) {
+      setList((prev) => [...prev, state]);
+    }
+  }, [state]);
   function SubmitButton() {
     const { pending } = useFormStatus();
     return (
@@ -164,7 +174,7 @@ function Comments_section({
             })}
           </InfiniteScroll>
         </div>
-        <form action={AddCommentActionBind} className="w-full mt-4">
+        <form action={formAction} className="w-full mt-4">
           <input
             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
               if (e.key === "Enter") {
