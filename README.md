@@ -23,7 +23,7 @@
 </p>
 
 <p align="center">
-  <img src="https://github.com/anubus298/SafoMart/blob/Connecto/assets/schema.png" width="600" />
+  ![login page](assets/cat.png)
 </p>
 
 # Key Features
@@ -74,7 +74,7 @@ This was my first time dealing with PostgreSQL, where I found it difficult at fi
 Creating tables and their relations was a continuous process. By that, I mean I started with the base tables (posts, profiles, personal_info), and every time I needed a new feature, I created the corresponding tables for it.
 
 **Schema:**
-<img src="https://github.com/anubus298/Connecto/blob/Connecto/assets/schema.png" width="600" />
+![tables schema](assets/schema.png)
 
 ### Triggers:
 
