@@ -1,9 +1,11 @@
 import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
 import { NextRequest, NextResponse } from "next/server";
+
 import { Database } from "./utils/supabase/supabase";
 export const revalidate = 0;
 export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
+  const res = NextResponse.next(); // Pass request through next-intl first
+
   const supabase = createMiddlewareClient<Database>({ req, res });
   await supabase.auth.getSession();
   const {
